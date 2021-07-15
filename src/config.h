@@ -14,9 +14,9 @@
 //quindi su (argv[2]). Vale il contrario per il caso di P
 
 #define buff 250000
-#define SIZE 10
+#define SIZE 2
 
-#define h_addr h_addr_list[0] /* for backward compatibility */
+#define h_addr h_addr_list[0] /* for backwards compatibility */
 
 //set message connection speed (baud rate?) (forse no, lo si fa con comunicazione client server tipo listen) (no però qui va settata...)
 

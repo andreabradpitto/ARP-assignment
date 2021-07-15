@@ -54,8 +54,8 @@ int main(int argc, char *argv[])
     printf("L: my PID is %d\n", Lpid);
 
     int logfd;
-    char *logpath = "/tmp/test.txt";
-    logfd = open(logpath, O_RDWR); // metto write only?
+    char *logpath = "log.txt";
+    logfd = open(logpath, O_CREAT | O_WRONLY);
     char buffer[BUFSIZE];          //char buffer[BUFSIZE] = ""; //ma ho già il buffer nel main, uso quello?
     ssize_t ret_in;
 
@@ -95,9 +95,10 @@ int main(int argc, char *argv[])
                 write(0, &buffer, BUFSIZE);
             }
             break;*/
-            printf("\nThe log file is accessible at: '/tmp/test.txt'");
+            printf("\nThe log file is accessible at: '/tmp/test.txt'"); // FALSO!
         }
     }
+    close(logfd);
     close(atoi(argv[4]));
     return 0;
 }

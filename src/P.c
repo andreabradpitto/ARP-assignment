@@ -174,6 +174,7 @@ int main(int argc, char *argv[])
                     dt = ((float)t) / ((float)CLOCKS_PER_SEC); //by doing like this, the first cycle (and only that one) has a meaningless dt value
                     //token.token_value = msg.value + dt * (((float)1) - (powf(msg.value, ((float)2)) / ((float)2))) * ((float)2) * ((float)M_PI) * rf;
                     token.token_value = msg.value + dt * (1 - (powf(msg.value, 2) / 2)) * 2 * M_PI * rf;
+                    //token.token_value = msg.value + 1;
                     t = clock();
                     //printf("[P node sending message]\n");
                     usleep(1000000); //waiting time (in microseconds) applied by process P before sending the updated token [default: 1000]
