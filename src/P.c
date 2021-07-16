@@ -14,6 +14,7 @@
 #include <syslog.h>
 #include <fcntl.h>
 #include <math.h>
+#include <sys/prctl.h> // required by prctl()
 #include "config.h"
 
 //This process is the computational core. It is also the nevralgic waypoint of communications: all other nodes involved are
@@ -55,6 +56,7 @@ int main(int argc, char *argv[])
 
     pid_t Ppid;
     Ppid = getpid();
+    prctl(PR_SET_PDEATHSIG, SIGHUP); // Asks the kernel to deliver the SIGHUP signal when parent dies, i.e. also terminates P
     printf("P: my PID is %d\n", Ppid);
     //roberto: char array with just a float inside
     //new token = received token + DT x (1. - (received token)^2/2) x 2 pi x RF
@@ -72,9 +74,13 @@ int main(int argc, char *argv[])
     sockfd = socket(AF_INET, SOCK_STREAM, 0); //create a new socket
     if (sockfd < 0)
     {
-        error("\nError creating a new socket");
+        if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int)) < 0)
+            error("\nP: setsockopt(SO_REUSEADDR) failed");
     }
-
+    //if (sockfd < 0)
+    //{
+        //error("\nP: Error creating a new socket");
+    //}
     if (!run_mode)
     {
         server = gethostbyname("ZenBook");

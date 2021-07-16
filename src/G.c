@@ -14,6 +14,7 @@
 #include <syslog.h>
 #include <fcntl.h>
 #include <math.h>
+#include <sys/prctl.h> // required by prctl()
 #include "config.h"
 
 //This process can be run in 2 modes: debug mode (single machine) or normal mode (communicating with other PCs);
@@ -50,11 +51,17 @@ int main(int argc, char *argv[])
 
 	pid_t Gpid;
 	Gpid = getpid();
+	prctl(PR_SET_PDEATHSIG, SIGHUP); // Asks kernel to deliver the SIGHUP signal when parent dies, i.e. also terminates G
 	printf("G: my PID is %d\n", Gpid);
 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); //create a new socket
 	if (sockfd < 0)
-		error("\nError creating a new socket");
+    {
+        if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int)) < 0)
+            error("\nG: setsockopt(SO_REUSEADDR) failed");
+    }
+	//if (sockfd < 0)
+		//error("\nG: Error creating a new socket");
 	bzero((char *)&serv_addr, sizeof(serv_addr)); //the function bzero() sets all values inside a buffer to zero
 	portno = 5000;
 	serv_addr.sin_family = AF_INET; //this contains the code for the family of the address

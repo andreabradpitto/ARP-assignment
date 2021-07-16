@@ -14,6 +14,7 @@
 #include <syslog.h>
 #include <fcntl.h>
 #include <math.h>
+#include <sys/prctl.h> // required by prctl()
 #include "config.h"
 
 #define BUFSIZE 1024
@@ -51,6 +52,7 @@ int main(int argc, char *argv[])
 
     pid_t Lpid;
     Lpid = getpid();
+    prctl(PR_SET_PDEATHSIG, SIGHUP); // Asks kernel to deliver the SIGHUP signal when parent dies, i.e. also terminates L
     printf("L: my PID is %d\n", Lpid);
 
     int logfd;
