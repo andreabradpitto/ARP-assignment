@@ -73,19 +73,17 @@ int main(int argc, char *argv[])
 
 	//char welcome2[80] = "Available commands: 'kill -18 %d', 'kill -12 %d', 'kill -10 %d'", Spid, Spid, Spid;
 	char welcome2[80] = "Available commands: kill -18 ";
-	//char temp[20];
-	//sprintf(temp, "%d", Spid);
-	//strcat(welcome2, temp);
-	//strncpy(temp, "', 'kill -12 ", sizeof(temp));
-	//strcat(welcome2, temp);
-	//sprintf(*temp, "%d", Spid);
-	//strcat(welcome2, temp);
-	//strncpy(temp, "', 'kill -10 ", sizeof(temp));
-	//strcat(welcome2, temp);
-	//sprintf(*temp, "%d", Spid);
-	//strcat(welcome2, temp);
-	//strncpy(temp, "'", sizeof(temp));
-	//strcat(welcome2, temp);
+	char temp[20];
+	sprintf(temp, "%d", Spid);
+	strcat(welcome2, temp);
+	strncpy(temp, ", kill -12 ", sizeof(temp));
+	strcat(welcome2, temp);
+	sprintf(temp, "%d", Spid);
+	strcat(welcome2, temp);
+	strncpy(temp, ", kill -10 ", sizeof(temp));
+	strcat(welcome2, temp);
+	sprintf(temp, "%d", Spid);
+	strcat(welcome2, temp);
 
 	char welcome3[56] = "18 is to resume, 12 to pause, 10 to output a log.";
 	char welcome4[46] = "To end, press Ctrl + C in the Output Terminal";
