@@ -17,20 +17,10 @@
 #include <sys/prctl.h> // required by prctl()
 #include "config.h"
 
-//This process is the computational core. It is also the nevralgic waypoint of communications: all other nodes involved are
-//in some way or another bond to P
+// This process is the computational core. It is also the nevralgic waypoint of communications: all other nodes involved are
+// in some way or another bond to P
 
-/*
-Instructions for compiling this node (explanation in italian):
-La compilazione va a buon fine, ma il linker non trova il riferimento alla funzione pow().
-Quando usi funzioni dall'header <math.h> con GCC, devi specificare esplicitamente la libreria "m" (per "math")
-passando come argomento "-lm" (elle minuscola seguita dalla libreria, in questo caso "m") (-lm va messa alla fine del comando):
-gcc P.c -o P -lm
-gcc P.c -o P -Wall -Wextra -Werror -pedantic -lm
-aggiungi anche -std=c11, dato che di default GCC usa estensioni fuori standard
-*/
-
-void error(const char *m) // Display a message about the error on stderr and then aborts the program
+void error(const char *m) // Display a message about the error on stderr and then abort the program
 {
     perror(m);
     exit(0);
@@ -59,13 +49,12 @@ int main(int argc, char *argv[])
     prctl(PR_SET_PDEATHSIG, SIGHUP); // Asks the kernel to deliver the SIGHUP signal when parent dies, i.e. also terminates P
     printf("P: my PID is %d\n", Ppid);
     //roberto: char array with just a float inside
-    //new token = received token + DT x (1. - (received token)^2/2) x 2 pi x RF
 
     struct message msg;
     //struct in_addr addr;
 
-    int sockfd; //socket file descriptor
-    int portno; //stores the port number on which the server accepts connections
+    int sockfd; // socket file descriptor
+    int portno; // stores the port number on which the server accepts connections
     int n;
     struct sockaddr_in serv_addr;
     struct hostent *server;
@@ -177,7 +166,6 @@ int main(int argc, char *argv[])
                     //This section is related to the communication with G, as the one with L is all set
                     t = clock() - t;
                     dt = ((float)t) / ((float)CLOCKS_PER_SEC); //by doing like this, the first cycle (and only that one) has a meaningless dt value
-                    //token.token_value = msg.value + dt * (((float)1) - (powf(msg.value, ((float)2)) / ((float)2))) * ((float)2) * ((float)M_PI) * RF;
                     token.token_value = msg.value + dt * (1.0 - powf(msg.value, 2.0) / 2.0) * 2 * M_PI * (float)RF; // float() da togliere (anche i .0)
                     //token.token_value = msg.value + 1;
                     t = clock();

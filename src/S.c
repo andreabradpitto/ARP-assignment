@@ -17,41 +17,39 @@
 #include <sys/prctl.h> // required by prctl()
 #include "config.h"
 
-//This is the process that is used to communicate with the terminal. It receives and handles 3 different commands: start, pause, log.
-//In order to use it, you have to type e.g. "kill -9 1234", where the first number is the signal chosen whilst the second
-//is the PID of the node S. You only interact with S, as the rest of the code handles internally all the commands issued.
+// This is the process that is used to communicate with the terminal. It receives and handles 3 different commands: start, pause, log.
+// In order to use it, you have to type e.g. "kill -9 1234", where the first number is the signal chosen whilst the second
+// is the PID of the node S. You only interact with S, as the rest of the code handles all the commands issued internally.
 
-int state = 1;	  //these 2 values are stored as global variables because you cannot pass any
-int logprint = 2; //argument of choice to the signal handlers
+// These 3 flags are stored as global variables because you cannot pass any argument of choice to the signal handlers
+int start_flag = 0;
+int stop_flag = 0;
+int log_flag = 0;
 
-int flag1 = 0;
-int flag2 = 0;
-int flag3 = 0;
-
+// This handler is devoted to resuming token computation, as well as all other tasks in all the nodes
 void start_handler(int signum)
 {
 	if (signum == SIGCONT)
 	{
-		//This handler is devoted to resuming token computation, as well as all other tasks in all the nodes
-		flag1 = 1;
+		start_flag = 1;
 	}
 }
 
+// This handler is devoted to manage pause the execution of the nodes
 void stop_handler(int signum)
 {
 	if (signum == SIGUSR2)
 	{
-		//This handler is devoted to manage pause the execution of the nodes
-		flag2 = 1;
+		stop_flag = 1;
 	}
 }
 
+// This handler issues the printing on terminal of the log file
 void log_handler(int signum)
 {
 	if (signum == SIGUSR1)
 	{
-		//This handler issues the printing on terminal of the log file
-		flag3 = 1;
+		log_flag = 1;
 	}
 }
 
@@ -63,10 +61,15 @@ int main(int argc, char *argv[])
 	close(atoi(argv[4]));
 	close(atoi(argv[5]));
 
+	int state = 1; 	  // state = 0: P and G communication stopped ; state = 1: P and G communication resumed/in progress
+	int logprint = 2; // logprint = 2: do not print output on screen; logprint = 3: print output on screen
+
 	pid_t Spid;
 	Spid = getpid();
 	prctl(PR_SET_PDEATHSIG, SIGHUP); // Asks the kernel to deliver the SIGHUP signal when parent dies, i.e. also terminates S
+	printf("S: my PID is %d\n", Spid);
 
+	// Creation of Input Terminal welcome message, including dynamic Spid injection
 	char welcome0[1] = "";
 	char welcome1[146] = "[This is the Input Terminal, through which you can send signals to the running processes. "
 						 "Please also che the Output Terminal to inspect outputs]";
@@ -94,40 +97,36 @@ int main(int argc, char *argv[])
 							 "echo $welcome2; echo $welcome0; echo $command1; echo $command2; echo $command3; "
 							 "echo $welcome0; echo $welcome3; echo $welcome0; exec bash\"");
 
-	printf("S: my PID is %d\n", Spid);
-
-	signal(SIGCONT, start_handler); // kill -18 Spid
-	signal(SIGUSR2, stop_handler);	// kill -12 Spid
+	signal(SIGCONT, start_handler); // reacts to "kill -18 Spid"
+	signal(SIGUSR2, stop_handler);	// reacts to "kill -12 Spid"
 									//Con SIGSTOP mi blocca la S e non posso mandare l'avviso agli altri nodi:
 									//Se faccio così (SIGUSR2) blocco tutti tranne S,
 									//il quale comunque non fa nulla fino a nuovo input
-	signal(SIGUSR1, log_handler);	// kill -10 Spid
+	signal(SIGUSR1, log_handler);	// reacts to "kill -10 Spid"
+
 	while (1)
 	{
-		if (flag1)
+		if (start_flag)
 		{
 			printf("\n\nReceived start command by user\n");
 			state = 1;
-			write(atoi(argv[1]), &state, sizeof(int)); //write(pfd1[1], &state, sizeof(int));
-			flag1 = 0;
-			break;
+			write(atoi(argv[1]), &state, sizeof(int));
+			start_flag = 0;
 		}
-		if (flag2)
+		if (stop_flag)
 		{
 			printf("\n\nReceived stop command by user\n");
 			state = 0;
-			write(atoi(argv[1]), &state, sizeof(int)); //write(pfd1[1], &state, sizeof(int));
-			flag2 = 0;
-			break;
+			write(atoi(argv[1]), &state, sizeof(int));
+			stop_flag = 0;
 		}
-		if (flag3)
+		if (log_flag)
 		{
 			printf("\n\nReceived log command by user\n");
 			logprint = 3;
-			write(atoi(argv[1]), &logprint, sizeof(int)); //write(pfd1[1], &logprint, sizeof(int));
-			flag3 = 0;
+			write(atoi(argv[1]), &logprint, sizeof(int));
+			log_flag = 0;
 			logprint = 2;
-			break;
 		}
 	}
 

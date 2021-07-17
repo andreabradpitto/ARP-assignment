@@ -17,9 +17,9 @@
 #include <sys/prctl.h> // required by prctl()
 #include "config.h"
 
-//This process can be run in 2 modes: debug mode (single machine) or normal mode (communicating with other PCs);
-//in the first case it receives tokens from P and then sends them back to it, in the other scenario it still
-//receives data from P, but the token is sent to another machine
+// This process can be run in 2 modes: debug mode (single machine) or normal mode (communicating with other PCs);
+// in the first case it receives tokens from P and then sends them back to it, in the other scenario it still
+// receives data from P, but the token is sent to another machine
 
 void error(const char *m) // display a message about the error on stderr and then abort the program
 {

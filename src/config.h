@@ -9,9 +9,6 @@
 #define WAITING_TIME_MICROSECS 1000000 		// waiting time, in microseconds, applied by process P before sending the updated token [default: 1000]
 #define RUN_MODE 0 							// set to 0 to go debug mode, 1 for multiple machine
 
-//attenzione al caso run_mode = 1, quando do G a un altro tizio, assicurati che sia pronto a ricevere da atoi(argv[3]),
-//quindi su (argv[2]). Vale il contrario per il caso di P
-
 #define LOCAL_IP "localhost" 				// localhost name (equivalent to 127.0.0.1 and machine's own name, Ubuntu's "Hostname")
 #define LOCAL_PORT 5000						// chosen local port for the communication
 
@@ -19,7 +16,10 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define h_addr h_addr_list[0] /* for backwards compatibility */
+#define h_addr h_addr_list[0] // added for backwards compatibility
+
+//attenzione al caso run_mode = 1, quando do G a un altro tizio, assicurati che sia pronto a ricevere da atoi(argv[3]),
+//quindi su (argv[2]). Vale il contrario per il caso di P
 
 //set message connection speed (baud rate?) (forse no, lo si fa con comunicazione client server tipo listen) (no però qui va settata...)
 

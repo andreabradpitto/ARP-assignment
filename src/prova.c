@@ -21,7 +21,7 @@
 
 // potrei aggiungere degli sleep(1) all'inzio di ogni processo per aspettare siano tutti pronti...
 
-int main(int argc, char *argv[]) //int main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 
 	int logfd;
@@ -52,4 +52,7 @@ int main(int argc, char *argv[]) //int main(int argc, char *argv[])
 	float c = a;
 	float d = (float)a;
 	printf("a: %d, b: %f, c: %f, d: %f", a, b, c, d);
+
+	float e = 12.5 - a;
+	printf("\ne: %f", e);
 }

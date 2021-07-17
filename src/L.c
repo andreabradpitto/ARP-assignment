@@ -17,10 +17,8 @@
 #include <sys/prctl.h> // required by prctl()
 #include "config.h"
 
-
-
-//This process is the one responsible for logs. It registers every input received and, when prompted,
-//outputs in the terminal all the history (log) of what happened since the beginning
+// This process is the one responsible for logs. It registers every input received and, when prompted,
+// outputs in the terminal all the history (log) of what happened since the beginning
 
 /*
 void timestamp()

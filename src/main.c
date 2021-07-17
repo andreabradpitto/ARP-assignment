@@ -21,19 +21,11 @@
 
 int main(int argc, char *argv[])
 {
-	int P, G, S, L;
+	pid_t P, G, S, L; // also "int P, G, S, L;"" is fine
 
-	int pfd1[2]; // file descriptors for pipe 1
-	int pfd2[2]; // file descriptors for pipe 2
-	int pfd3[2]; // file descriptors for pipe 3
-
-	//const int BSIZE = 100;
-	//char buf[BSIZE]; // mi serve per P read da G
-
-	//float token = 1;
-	//int state = 1; // state = 0 is the pause flag, = 1 equals unpause //FORSE da shiftare tutto? non credo, ma potrebbe
-	//intereferire con gli std out e in eccetera
-	//int logprint = 2; // when = 3, issue a log print (2 is default value: it does nothing) direi che non serve più
+	int pfd1[2]; // file descriptors for pipe 1 (S writes on it, P reads from it)
+	int pfd2[2]; // file descriptors for pipe 2 (G writes on it, P reads from it)
+	int pfd3[2]; // file descriptors for pipe 3 (P writes on it, L reads from it)
 
 	int wait_status = 0;
 
@@ -60,7 +52,7 @@ int main(int argc, char *argv[])
 	char read3[2];
 	char write3[2];
 
-	// Load the fd input/output (3rd arg.) into the char array (1st arg.), while formatting it as stated in 2nd arg.
+	// Load the pipe's fd read/write end (3rd arg.) into the char array (1st arg.), while formatting it as stated in 2nd arg.
 	sprintf(read1, "%d", pfd1[0]);
 	sprintf(write1, "%d", pfd1[1]);
 	sprintf(read2, "%d", pfd2[0]);
@@ -159,6 +151,8 @@ int main(int argc, char *argv[])
 		printf("\n[This is the Output Terminal, which shows the processes' outputs. "
 			   "Use the Input Terminal to send signals to the processes. "
 			   "Press Ctrl + C to end]\n\n");
+
+		printf("main: PID is %d\n", getpid());
 
 		wait(&wait_status); // waits for any child to die before proceeding; equivalent to: waitpid(-1, &wait_status, 0);
 		close(pfd1[0]);

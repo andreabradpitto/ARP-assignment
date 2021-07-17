@@ -6,10 +6,10 @@ default: build
 
 build:
 	$(CC) $(SDIR)/main.c -o main
-	$(CC) $(SDIR)/P.c -o P -lm
 	$(CC) $(SDIR)/S.c -o S
-	$(CC) $(SDIR)/L.c -o L
+	$(CC) $(SDIR)/P.c -o P -lm
 	$(CC) $(SDIR)/G.c -o G
+	$(CC) $(SDIR)/L.c -o L
 
 .PHONY: clean
 
