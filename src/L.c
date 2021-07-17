@@ -17,7 +17,7 @@
 #include <sys/prctl.h> // required by prctl()
 #include "config.h"
 
-#define BUFSIZE 1024
+
 
 //This process is the one responsible for logs. It registers every input received and, when prompted,
 //outputs in the terminal all the history (log) of what happened since the beginning
@@ -55,9 +55,11 @@ int main(int argc, char *argv[])
     prctl(PR_SET_PDEATHSIG, SIGHUP); // Asks kernel to deliver the SIGHUP signal when parent dies, i.e. also terminates L
     printf("L: my PID is %d\n", Lpid);
 
+    char *pretty_time;
     int logfd;
     char *logpath = "log.txt";
     logfd = open(logpath, O_CREAT | O_WRONLY);
+    #define BUFSIZE 1024
     char buffer[BUFSIZE];          //char buffer[BUFSIZE] = ""; //ma ho già il buffer nel main, uso quello?
     ssize_t ret_in;
 

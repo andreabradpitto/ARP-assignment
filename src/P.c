@@ -63,15 +63,14 @@ int main(int argc, char *argv[])
 
     struct message msg;
     //struct in_addr addr;
-    char address[13] = "192.168.1.233"; //dovrei usare NEXT_IP ma non riesco a farlo funzionare
+    char address[] = NEXT_IP;
 
     int sockfd; //socket file descriptor
     int portno; //stores the port number on which the server accepts connections
     int n;
     struct sockaddr_in serv_addr;
     struct hostent *server;
-    portno = 5000;                            //port number definition
-    sockfd = socket(AF_INET, SOCK_STREAM, 0); //create a new socket
+    sockfd = socket(AF_INET, SOCK_STREAM, 0); // create a new socket
     if (sockfd < 0)
     {
         if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int)) < 0)
@@ -81,9 +80,10 @@ int main(int argc, char *argv[])
     //{
         //error("\nP: Error creating a new socket");
     //}
-    if (!run_mode)
+    if (!RUN_MODE)
     {
-        server = gethostbyname("ZenBook");
+        server = gethostbyname(LOCAL_IP);
+        portno = LOCAL_PORT;
     }
     else
     {
@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
                 }
                 if (FD_ISSET(atoi(argv[2]), &readfds)) //read of second pipe (data coming from G) is ready
                 {
-                    /*Attenzione al caso run_mode = 1, qui il tizio prima deve mandarmi dati sulla pipe 2 coerentemente
+                    /*Attenzione al caso RUN_MODE = 1, qui il tizio prima deve mandarmi dati sulla pipe 2 coerentemente
                     con come sto facendo io. Mi basta il token (float) da lui*/
 
                     read(atoi(argv[2]), &token, sizeof(token_struct)); //qui anche posso fare per indirizzo (&), passo tutto msg
@@ -178,12 +178,12 @@ int main(int argc, char *argv[])
                     //This section is related to the communication with G, as the one with L is all set
                     t = clock() - t;
                     dt = ((float)t) / ((float)CLOCKS_PER_SEC); //by doing like this, the first cycle (and only that one) has a meaningless dt value
-                    //token.token_value = msg.value + dt * (((float)1) - (powf(msg.value, ((float)2)) / ((float)2))) * ((float)2) * ((float)M_PI) * rf;
-                    token.token_value = msg.value + dt * (1 - (powf(msg.value, 2) / 2)) * 2 * M_PI * rf;
+                    //token.token_value = msg.value + dt * (((float)1) - (powf(msg.value, ((float)2)) / ((float)2))) * ((float)2) * ((float)M_PI) * RF;
+                    token.token_value = msg.value + dt * (1.0 - powf(msg.value, 2.0) / 2.0) * 2 * M_PI * (float)RF; // float() da togliere (anche i .0)
                     //token.token_value = msg.value + 1;
                     t = clock();
                     //printf("[P node sending message]\n");
-                    usleep(1000000); //waiting time (in microseconds) applied by process P before sending the updated token [default: 1000]
+                    usleep(WAITING_TIME_MICROSECS); // waiting time, in microseconds, applied by process P before sending the updated token
                     token.token_timestamp = msg.timestamp;
                     n = write(sockfd, &token, sizeof(token_struct));
                     if (n < 0)

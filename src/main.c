@@ -19,8 +19,6 @@
 // This is the main, you have to only execute this command: ./main (you can also run sudo netstat -tulpn for socket troubleshooting)
 // The duty of this piece of code is to load config data and to launch all the needed processes (S, P, G and L)
 
-// potrei aggiungere degli sleep(1) all'inzio di ogni processo per aspettare siano tutti pronti...
-
 int main(int argc, char *argv[])
 {
 	//pid_t Ppid, Gpid, Spid, Lpid;
@@ -56,12 +54,12 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	char read1[SIZE];
-	char write1[SIZE];
-	char read2[SIZE];
-	char write2[SIZE];
-	char read3[SIZE];
-	char write3[SIZE];
+	char read1[2];
+	char write1[2];
+	char read2[2];
+	char write2[2];
+	char read3[2];
+	char write3[2];
 
 	sprintf(read1, "%d", pfd1[0]);	//load the fd input/output (3rd arg.) into the char array (1st arg.),
 	sprintf(write1, "%d", pfd1[1]); //while formatting it as stated in 2nd arg

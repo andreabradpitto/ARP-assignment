@@ -21,3 +21,4 @@ clean:
 	rm -f G
 
 # https://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/
+# magari alla fine aggiungi folder obj per gli eseguibili

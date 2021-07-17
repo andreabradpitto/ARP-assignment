@@ -43,4 +43,13 @@ int main(int argc, char *argv[]) //int main(int argc, char *argv[])
         printf("new_val = %d\n", new_numero);
         close(fd2);
 	}
+
+	//int res = 100 - 10 / 2 * 4;
+	//printf("%d", res);
+
+	int a = 11;
+	float b = 3;
+	float c = a;
+	float d = (float)a;
+	printf("a: %d, b: %f, c: %f, d: %f", a, b, c, d);
 }
