@@ -17,6 +17,8 @@
 #include <math.h>
 #include "config.h"
 
+// puo tornare utile per i test (online compilers, analisi sinusoidi)
+
 int main()
 {
     float dt = 0;
@@ -33,5 +35,3 @@ int main()
     }
     return 0;
 }
-
-

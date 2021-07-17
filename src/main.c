@@ -21,7 +21,7 @@
 
 // potrei aggiungere degli sleep(1) all'inzio di ogni processo per aspettare siano tutti pronti...
 
-int main(int argc, char *argv[]) //int main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	//pid_t Ppid, Gpid, Spid, Lpid;
 	int P, G, S, L;
@@ -156,9 +156,7 @@ int main(int argc, char *argv[]) //int main(int argc, char *argv[])
 			}
 		}
 
-		//printf("\nAvailable commands: 'kill -18 Spid', 'kill -12 Spid', 'kill -10 Spid'\n\n");
-		//printf("Replace 'Spid' with the correct value in each command; '18' is to resume, '12' to pause, '10' to output a log.");
-		//printf(" Ctrl + C to end\n\n");
+		// Welcome the user with useful information
 		printf("\n[This is the Output Terminal, which shows the processes' outputs. "
 			   "Use the Input Terminal to send signals to the processes. "
 			   "Press Ctrl + C to end]\n\n");

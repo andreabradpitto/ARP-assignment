@@ -88,7 +88,8 @@ int main(int argc, char *argv[])
 	setenv("command2", command2, 1);
 	setenv("command3", command3, 1);
 
-	// launch a new terminal (Input Terminal) that allows the user to send signals to the running processes
+	// Launch a new terminal (Input Terminal) that allows the user to send signals to the running processes
+	// while welcoming the user with useful information
 	int exit_status = system("gnome-terminal -- sh -c \"echo $welcome0; echo $welcome1; echo $welcome0; "
 							 " echo $welcome2; echo $welcome0; echo $command1; echo $command2; echo $command3; "
 							 "echo $welcome0; echo $welcome3; echo $welcome0; exec bash\"");
