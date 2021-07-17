@@ -68,22 +68,31 @@ int main(int argc, char *argv[])
 	prctl(PR_SET_PDEATHSIG, SIGHUP); // Asks the kernel to deliver the SIGHUP signal when parent dies, i.e. also terminates S
 
 	char welcome0[1] = "";
-	char welcome1[203] = "[This is the Input Terminal, through which you can send signals to the running processes. "
+	char welcome1[146] = "[This is the Input Terminal, through which you can send signals to the running processes. "
 						 "Please also che the Output Terminal to inspect outputs]";
 
 	//char welcome2[80] = "Available commands: 'kill -18 %d', 'kill -12 %d', 'kill -10 %d'", Spid, Spid, Spid;
-	char welcome2[80] = "Available commands: kill -18 ";
+	char welcome2[20] = "Available commands:";
+	char command1[30] = "kill -10 ";
+	char command2[30] = "kill -12 ";
+	char command3[30] = "kill -18 ";
+	char trail1[11] = "output log";
+	char trail2[6] = "pause";
+	char trail3[7] = "resume";
 	char temp[20];
 	sprintf(temp, "%d", Spid);
-	strcat(welcome2, temp);
-	strncpy(temp, ", kill -12 ", sizeof(temp));
-	strcat(welcome2, temp);
-	sprintf(temp, "%d", Spid);
-	strcat(welcome2, temp);
-	strncpy(temp, ", kill -10 ", sizeof(temp));
-	strcat(welcome2, temp);
-	sprintf(temp, "%d", Spid);
-	strcat(welcome2, temp);
+	strncat(command1, temp, (sizeof(command1) - strlen(command1)));
+	strncat(command1, trail1, (sizeof(command1) - strlen(command1)));
+	strncat(command2, temp, (sizeof(command2) - strlen(command2)));
+	strncat(command2, trail2, (sizeof(command2) - strlen(command2)));
+	strncat(command3, temp, (sizeof(command3) - strlen(command3)));
+	strncat(command3, trail3, (sizeof(command3) - strlen(command3)));
+	//sprintf(temp, "%d", Spid);
+	//strcat(welcome2, temp);
+	//strncpy(temp, ", kill -10 ", sizeof(temp));
+	//strcat(welcome2, temp);
+	//sprintf(temp, "%d", Spid);
+	//strcat(welcome2, temp);
 
 	char welcome3[56] = "18 is to resume, 12 to pause, 10 to output a log.";
 	char welcome4[46] = "To end, press Ctrl + C in the Output Terminal";
@@ -92,9 +101,13 @@ int main(int argc, char *argv[])
 	setenv("welcome2", welcome2, 1);
 	setenv("welcome3", welcome3, 1);
 	setenv("welcome4", welcome4, 1);
+	setenv("command1", command1, 1);
+	setenv("command2", command2, 1);
+	setenv("command3", command3, 1);
 
 	// launch a new terminal (Input Terminal) that allows the user to send signals to the running processes
 	int exit_status = system("gnome-terminal -- sh -c \"echo $welcome1; echo $welcome0; echo $welcome2; "
+							 "echo $command1; echo $command2; echo $command3; "
 							 "echo $welcome3; echo $welcome0; echo $welcome4; echo $welcome0; exec bash\"");
 
 	printf("S: my PID is %d (-> Spid)\n", Spid);
