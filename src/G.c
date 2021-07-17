@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 	int n;
 	char *pretty_time;
 
-	token_struct token;
+	token_strc token;
 	token.token_value = 5;
 	token.token_timestamp = time(NULL);
 
@@ -88,14 +88,14 @@ int main(int argc, char *argv[])
 
 			while (1)
 			{
-				n = read(newsockfd, &token, sizeof(token_struct));
+				n = read(newsockfd, &token, sizeof(token_strc));
 				if (n < 0)
 					error("\nError reading from socket");
 
 				//printf("\nHere is the message: %f | received at: %li", token.token_value, token.token_timestamp);
 				pretty_time = ctime(&token.token_timestamp);
 				printf("\nHere is the message: %f | received at: %s", token.token_value, pretty_time);
-				write(atoi(argv[3]), &token, sizeof(token_struct));
+				write(atoi(argv[3]), &token, sizeof(token_strc));
 			}
 		}
 	}
@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
 
 			//cioé così non mi cambia nulla tra le due RUN_MODE (portno già è inutile)... forse è ok?
 			printf("\nHere is the message: %f | received at: %li", token.token_value, token.token_timestamp);
-			write(atoi(argv[3]), &token, sizeof(token_struct));
+			write(atoi(argv[3]), &token, sizeof(token_strc));
 		}
 	}
 

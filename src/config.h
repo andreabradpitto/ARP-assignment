@@ -29,12 +29,11 @@ struct message
 	float value; //prima era di tipo char
 	int status;
 };
-struct message msg[250000]; //definition of the message		//forse da togliere
 
-typedef struct
+typedef struct token_struct
 {
-	float token_value;
 	time_t token_timestamp;
-} token_struct;
+	float token_value;
+} token_strc;
 
 #endif

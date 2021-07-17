@@ -21,12 +21,11 @@
 
 int main(int argc, char *argv[])
 {
-	//pid_t Ppid, Gpid, Spid, Lpid;
 	int P, G, S, L;
 
-	int pfd1[2]; //file descriptors for pipe 1
-	int pfd2[2]; //file descriptors for pipe 2
-	int pfd3[2]; //file descriptors for pipe 3
+	int pfd1[2]; // file descriptors for pipe 1
+	int pfd2[2]; // file descriptors for pipe 2
+	int pfd3[2]; // file descriptors for pipe 3
 
 	//const int BSIZE = 100;
 	//char buf[BSIZE]; // mi serve per P read da G
@@ -38,17 +37,17 @@ int main(int argc, char *argv[])
 
 	int wait_status = 0;
 
-	if (pipe(pfd1) < 0) //error condition on pipe 1
+	if (pipe(pfd1) < 0) // error condition for pipe 1
 	{
 		perror("\nPipe 1 creation error");
 		return -1;
 	}
-	if (pipe(pfd2) < 0) //error condition on pipe 2
+	if (pipe(pfd2) < 0) // error condition for pipe 2
 	{
 		perror("\nPipe 2 creation error");
 		return -1;
 	}
-	if (pipe(pfd3) < 0) //error condition on pipe 2
+	if (pipe(pfd3) < 0) // error condition for pipe 3
 	{
 		perror("\nPipe 3 creation error");
 		return -1;
@@ -61,33 +60,35 @@ int main(int argc, char *argv[])
 	char read3[2];
 	char write3[2];
 
-	sprintf(read1, "%d", pfd1[0]);	//load the fd input/output (3rd arg.) into the char array (1st arg.),
-	sprintf(write1, "%d", pfd1[1]); //while formatting it as stated in 2nd arg
+	// Load the fd input/output (3rd arg.) into the char array (1st arg.), while formatting it as stated in 2nd arg.
+	sprintf(read1, "%d", pfd1[0]);
+	sprintf(write1, "%d", pfd1[1]);
 	sprintf(read2, "%d", pfd2[0]);
 	sprintf(write2, "%d", pfd2[1]);
 	sprintf(read3, "%d", pfd3[0]);
 	sprintf(write3, "%d", pfd3[1]);
 
-	argv[0] = read1;  //pipe1: read
-	argv[1] = write1; //pipe1: write
-	argv[2] = read2;  //pipe2: read
-	argv[3] = write2; //pipe2: write
-	argv[4] = read3;  //pipe3: read
-	argv[5] = write3; //pipe3: write
-	//I will be passing to each node all the pipe ends, by transforming their fd in char and then reverting them to integers
+	// Preparing to send all pipe ends to the children of this process, by transforming their fd in char
+	// They will be reverted back to integers inside those children
+	argv[0] = read1;  // pipe1: read
+	argv[1] = write1; // pipe1: write
+	argv[2] = read2;  // pipe2: read
+	argv[3] = write2; // pipe2: write
+	argv[4] = read3;  // pipe3: read
+	argv[5] = write3; // pipe3: write
 
 	S = fork();
 
-	if (S < 0) //error condition on fork
+	if (S < 0) // error condition on fork
 	{
 		perror("\nFork S");
 		return -1;
 	}
 
-	if (S == 0) //S process
+	if (S == 0) // S process
 	{
 		char *node_name = "./S";
-		if (execvp(node_name, argv) < 0) //error handling for file S
+		if (execvp(node_name, argv) < 0) // error handling for S process
 		{
 			perror("\nExec failed for S");
 			return -1;
@@ -98,16 +99,16 @@ int main(int argc, char *argv[])
 	{
 		G = fork();
 
-		if (G < 0) //error condition on fork
+		if (G < 0) // error condition on fork
 		{
 			perror("\nFork G");
 			return -1;
 		}
 
-		if (G == 0) //G process
+		if (G == 0) // G process
 		{
 			char *node_name = "./G";
-			if (execvp(node_name, argv) < 0) //error handling for file G
+			if (execvp(node_name, argv) < 0) // error handling for G process
 			{
 				perror("\nExec failed for G");
 				return -1;
@@ -123,10 +124,10 @@ int main(int argc, char *argv[])
 				return -1;
 			}
 
-			if (P == 0) //P process
+			if (P == 0) // P process
 			{
 				char *node_name = "./P";
-				if (execvp(node_name, argv) < 0) //error handling for file P
+				if (execvp(node_name, argv) < 0) //error handling for P process
 				{
 					perror("\nExec failed for P");
 					return -1;
@@ -136,16 +137,16 @@ int main(int argc, char *argv[])
 			{
 				L = fork();
 
-				if (L < 0) //error condition on fork
+				if (L < 0) // error condition on fork
 				{
 					perror("\nFork L");
 					return -1;
 				}
 
-				if (L == 0) //L process
+				if (L == 0) // L process
 				{
 					char *node_name = "./L";
-					if (execvp(node_name, argv) < 0) //error handling for file L
+					if (execvp(node_name, argv) < 0) // error handling for L process
 					{
 						perror("\nExec failed for L");
 						return -1;

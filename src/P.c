@@ -30,7 +30,7 @@ gcc P.c -o P -Wall -Wextra -Werror -pedantic -lm
 aggiungi anche -std=c11, dato che di default GCC usa estensioni fuori standard
 */
 
-void error(const char *m) //Display a message about the error on stderr and then aborts the program
+void error(const char *m) // Display a message about the error on stderr and then aborts the program
 {
     perror(m);
     exit(0);
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
     int state = 1;
 
-    token_struct token;
+    token_strc token;
     token.token_value = 0;
     token.token_timestamp = time(NULL);
 
@@ -63,7 +63,6 @@ int main(int argc, char *argv[])
 
     struct message msg;
     //struct in_addr addr;
-    char address[] = NEXT_IP;
 
     int sockfd; //socket file descriptor
     int portno; //stores the port number on which the server accepts connections
@@ -87,7 +86,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        server = gethostbyname(address);
+        server = gethostbyname(NEXT_IP);
         portno = NEXT_PORT;
     }
 
@@ -104,22 +103,22 @@ int main(int argc, char *argv[])
         error("\nConnection failed");
 
     //printf("[P node sending the first message]\n");
-    n = write(sockfd, &token, sizeof(token_struct));
+    n = write(sockfd, &token, sizeof(token_strc));
     if (n < 0)
         error("\nError writing to socket");
 
     while (1)
     {
-        tv.tv_sec = 2;  //amount of seconds the select listens for incoming data from either pipe 1 and 2
-        tv.tv_usec = 0; //same as the previous line, but with microseconds
-        fd_set readfds; //set of involved pipes from which P needs to read through the select
+        tv.tv_sec = 2;  // amount of seconds the select listens for incoming data from either pipe 1 and 2
+        tv.tv_usec = 0; // same as the previous line, but with microseconds
+        fd_set readfds; // set of involved pipes from which P needs to read through the select
         int maxfd;
-        FD_ZERO(&readfds);               //inizialization of the set
-        FD_SET(atoi(argv[0]), &readfds); //addition of the desired pipe ends to the set
+        FD_ZERO(&readfds);               // inizialization of the set
+        FD_SET(atoi(argv[0]), &readfds); // addition of the desired pipe ends to the set
         FD_SET(atoi(argv[2]), &readfds);
         maxfd = atoi(argv[0]) > atoi(argv[2]) ? atoi(argv[0]) : atoi(argv[2]);
 
-        if (state == 1) //running situation
+        if (state == 1) // running situation
         {
             retval = select(maxfd + 1, &readfds, NULL, NULL, &tv);
 
@@ -130,7 +129,7 @@ int main(int argc, char *argv[])
 
             else if (retval > 0)
             {
-                if (FD_ISSET(atoi(argv[0]), &readfds)) //read of first pipe (data coming from S) is ready
+                if (FD_ISSET(atoi(argv[0]), &readfds)) // read of first pipe (data coming from S) is ready
                 {
                     read(atoi(argv[0]), &state, sizeof(int));
                     switch (state)
@@ -164,7 +163,7 @@ int main(int argc, char *argv[])
                     /*Attenzione al caso RUN_MODE = 1, qui il tizio prima deve mandarmi dati sulla pipe 2 coerentemente
                     con come sto facendo io. Mi basta il token (float) da lui*/
 
-                    read(atoi(argv[2]), &token, sizeof(token_struct)); //qui anche posso fare per indirizzo (&), passo tutto msg
+                    read(atoi(argv[2]), &token, sizeof(token_strc)); //qui anche posso fare per indirizzo (&), passo tutto msg
                     msg.status = 99;                                   // special code to distinguish data coming from 2nd pipe
                     msg.value = token.token_value;                     //ma come lo sa che è un float?! (prima c'era " = buffer")
                     //qui infatti è da sistemare: devo anche ricevere il timestamp, e quindi devo risolvere il problema di
@@ -185,7 +184,7 @@ int main(int argc, char *argv[])
                     //printf("[P node sending message]\n");
                     usleep(WAITING_TIME_MICROSECS); // waiting time, in microseconds, applied by process P before sending the updated token
                     token.token_timestamp = msg.timestamp;
-                    n = write(sockfd, &token, sizeof(token_struct));
+                    n = write(sockfd, &token, sizeof(token_strc));
                     if (n < 0)
                         error("\nError writing to socket");
                 }
