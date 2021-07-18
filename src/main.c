@@ -4,7 +4,6 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
-#include <netdb.h>
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -18,6 +17,7 @@
 
 // This is the main, you have to only execute this command: ./main (you can also run sudo netstat -tulpn for socket troubleshooting)
 // The duty of this piece of code is to load config data and to launch all the needed processes (S, P, G and L)
+
 
 int main(int argc, char *argv[])
 {

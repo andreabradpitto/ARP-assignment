@@ -55,4 +55,18 @@ int main(int argc, char *argv[])
 
 	float e = 12.5 - a;
 	printf("\ne: %f", e);
+
+	time_t tempo;
+	tempo = time(NULL);
+	printf("\n%li", tempo);
+	sleep(1);
+	time_t* tempoPtr = &tempo;
+	time(tempoPtr);
+	//*tempoPtr = time(NULL);
+	printf("\n%li", *tempoPtr);
+
+	float numer = 4.3;
+	int denom = 2;
+	float ris = numer / denom;
+	printf("\nris: %f", ris);
 }

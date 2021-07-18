@@ -4,7 +4,6 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
-#include <netdb.h>
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -20,6 +19,7 @@
 // This is the process that is used to communicate with the terminal. It receives and handles 3 different commands: start, pause, log.
 // In order to use it, you have to type e.g. "kill -9 1234", where the first number is the signal chosen whilst the second
 // is the PID of the node S. You only interact with S, as the rest of the code handles all the commands issued internally.
+
 
 // These 3 flags are stored as global variables because you cannot pass any argument of choice to the signal handlers
 int start_flag = 0;
@@ -61,13 +61,13 @@ int main(int argc, char *argv[])
 	close(atoi(argv[4]));
 	close(atoi(argv[5]));
 
-	int state = 1; 	  // state = 0: P and G communication stopped ; state = 1: P and G communication resumed/in progress
-	int logprint = 2; // logprint = 2: do not print output on screen; logprint = 3: print output on screen
-
 	pid_t Spid;
 	Spid = getpid();
-	prctl(PR_SET_PDEATHSIG, SIGHUP); // Asks the kernel to deliver the SIGHUP signal when parent dies, i.e. also terminates S
+	prctl(PR_SET_PDEATHSIG, SIGHUP); // asks the kernel to deliver the SIGHUP signal when parent dies, i.e. also terminates S
 	printf("S: my PID is %d\n", Spid);
+
+	int state = 1; 	  // state = 0: P and G communication stopped ; state = 1: P and G communication resumed/in progress
+	int logprint = 2; // logprint = 2: do not print output on screen; logprint = 3: print output on screen
 
 	// Creation of Input Terminal welcome message, including dynamic Spid injection
 	char welcome0[1] = "";

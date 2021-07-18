@@ -4,7 +4,6 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
-#include <netdb.h>
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -21,6 +20,7 @@
 // in the first case it receives tokens from P and then sends them back to it, in the other scenario it still
 // receives data from P, but the token is sent to another machine
 
+
 void error(const char *m) // display a message about the error on stderr and then abort the program
 {
 	perror(m);
@@ -35,84 +35,87 @@ int main(int argc, char *argv[])
 	close(atoi(argv[4]));
 	close(atoi(argv[5]));
 
+	pid_t Gpid;
+	Gpid = getpid();
+	prctl(PR_SET_PDEATHSIG, SIGHUP); // asks the kernel to deliver the SIGHUP signal when parent dies, i.e. also terminates G
+	printf("G: my PID is %d\n", Gpid);
+
 	int sockfd; // socket file descriptor
 	int newsockfd;
 	int portno = LOCAL_PORT; // port of the server for the client connection // forse da eliminare del tutto
 	socklen_t clilen;
 	struct sockaddr_in serv_addr, cli_addr;
-	int n;
+	int n; // read() handle
 	char *pretty_time;
+	int first_token = 1; // used to acknowledge the very first token received
 
 	token_strc token;
-	token.token_value = 5;
+	token.token_value = 0;
 	token.token_timestamp = time(NULL);
 
-	//il buffer lo prendo dal main...
-	//char buffer[256]; //qua è un casino coi dati capire se mi serva o no; credo di sì, proviene da esempio server.c "del prof"
-
-	pid_t Gpid;
-	Gpid = getpid();
-	prctl(PR_SET_PDEATHSIG, SIGHUP); // Asks kernel to deliver the SIGHUP signal when parent dies, i.e. also terminates G
-	printf("G: my PID is %d\n", Gpid);
-
-	sockfd = socket(AF_INET, SOCK_STREAM, 0); //create a new socket
+	sockfd = socket(AF_INET, SOCK_STREAM, 0); // create a new socket
 	if (sockfd < 0)
-    {
-        if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int)) < 0)
-            error("\nG: setsockopt(SO_REUSEADDR) failed");
-    }
-	//if (sockfd < 0)
-		//error("\nG: Error creating a new socket");
-	bzero((char *)&serv_addr, sizeof(serv_addr)); //the function bzero() sets all values inside a buffer to zero
-	serv_addr.sin_family = AF_INET; //this contains the code for the family of the address
+		error("\nError creating a new socket (G process)");
+
+	bzero((char *) &serv_addr, sizeof(serv_addr));  // the function bzero() sets all values inside a buffer to zero
+	serv_addr.sin_family = AF_INET; 				// this contains the code for the family of the address
 	serv_addr.sin_addr.s_addr = INADDR_ANY;
 	serv_addr.sin_port = htons(portno);
-	if (bind(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) //the bind() system call binds a socket to an address
+	if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) //the bind() system call binds a socket to an address
 		error("\nError on binding");
-	listen(sockfd, 5); //system call that allows the process to listen for connections over the socket
+
+	listen(sockfd, MAX_REQS); // system call that allows this process to listen for connections over the socket
 	//printf("[G node waiting for messages]\n");
+
 	if (!RUN_MODE)
 	{
 		clilen = sizeof(cli_addr);
-		newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr, (socklen_t *)&clilen);
-		//The accept() system call causes the process to block until a client connects to the server
+		// The accept() system call causes the process to block until a client connects to the server
+		newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, (socklen_t *) &clilen);
 		if (newsockfd < 0)
 		{
 			perror("\n'accept()' system call failed");
-			return 1;
+			return -1;
 		}
-		else
+		else // Connection accepted
 		{
-			//puts("Connection accepted\n");
-			sleep(1);
-
 			while (1)
 			{
 				n = read(newsockfd, &token, sizeof(token_strc));
 				if (n < 0)
 					error("\nError reading from socket");
 
-				//printf("\nHere is the message: %f | received at: %li", token.token_value, token.token_timestamp);
-				pretty_time = ctime(&token.token_timestamp);
-				printf("\nHere is the message: %f | received at: %s", token.token_value, pretty_time);
-				write(atoi(argv[3]), &token, sizeof(token_strc));
+				if (first_token) // the token value depends on time delays, so skip the first one received, as it is always 0
+				{
+					first_token = 0;
+					write(atoi(argv[3]), &token, sizeof(token_strc));
+				}
+				else
+				{
+					//printf("\nG: Token timestamp: %li | Token value: %f", token.token_timestamp, token.token_value);
+					pretty_time = ctime(&token.token_timestamp);
+					pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
+					printf("\nG: Token timestamp (fancy): %s | Token value: %f", pretty_time, token.token_value);
+					write(atoi(argv[3]), &token, sizeof(token_strc));
+				}
 			}
 		}
 	}
-	else //This is the code relative to the multiple machine case // non penso che io debba implementarlo!
+	else // this is the code portion relative to the multiple machine case // non penso che io debba implementarlo!
 	{
-		//close(atoi(argv[3])); /*This has to be discussed with the guy whose machine is the next of the chain*/
+		//close(atoi(argv[3])); // tyhis has to be discussed with the guy whose machine is the next of the chain
 		while (1)
 		{
 			portno = NEXT_PORT; //in realtà questo credo sia inutile, se non lo metto rimane 5000 come ho messo io,
 								//tanto il client che si connette è il mio P, del quale scelgo io la porta. Diverso il caso del nome della macchina
 
-			//cioé così non mi cambia nulla tra le due RUN_MODE (portno già è inutile)... forse è ok?
-			printf("\nHere is the message: %f | received at: %li", token.token_value, token.token_timestamp);
+			//cioe cosi non mi cambia nulla tra le due RUN_MODE (portno gia e inutile)... forse e ok?
+			printf("\nG: Token timestamp: %li | Token value: %f", token.token_timestamp, token.token_value);
 			write(atoi(argv[3]), &token, sizeof(token_strc));
 		}
 	}
 
+	close(atoi(argv[3]));
 	close(sockfd);
 	return 0;
 }

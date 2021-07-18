@@ -5,35 +5,33 @@
 
 #define NEXT_IP "192.168.1.233" 			// IP address of the next machine in the chain
 #define NEXT_PORT 5000						// chosen remote port for the communication
-#define RF 100.0 							// sine wave frequency [default: 100.0]
+#define RF 100.0 							// sine wave frequency [default: 1.0]
 #define WAITING_TIME_MICROSECS 1000000 		// waiting time, in microseconds, applied by process P before sending the updated token [default: 1000]
 #define RUN_MODE 0 							// set to 0 to go debug mode, 1 for multiple machine
 
-#define LOCAL_IP "localhost" 				// localhost name (equivalent to 127.0.0.1 and machine's own name, Ubuntu's "Hostname")
+#define LOCAL_IP "localhost" 				// localhost name (equivalent to 127.0.0.1 and to machine's own name, i.e. Linux's "Hostname")
 #define LOCAL_PORT 5000						// chosen local port for the communication
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
 
-#define h_addr h_addr_list[0] // added for backwards compatibility
+#define MAX_REQS 5							// maximum number of allowed requests on sockets
 
 //attenzione al caso run_mode = 1, quando do G a un altro tizio, assicurati che sia pronto a ricevere da atoi(argv[3]),
 //quindi su (argv[2]). Vale il contrario per il caso di P
 
-//set message connection speed (baud rate?) (forse no, lo si fa con comunicazione client server tipo listen) (no però qui va settata...)
-
 struct message
 {
-	time_t timestamp;
-	float value; //prima era di tipo char
-	int status;
+	time_t timestamp; // timestamp of the token
+	int status; 	  // status = 0: pause; status = 1: computing; status = 3: log print; status = 99 token data in value
+	float value;      // if status == 99 this stores token_value, irrelevant otherwise
 };
 
 typedef struct token_struct
 {
-	time_t token_timestamp;
-	float token_value;
-} token_strc;
+	time_t token_timestamp; // timestamp of the token
+	float token_value; 		// actual token value
+} token_strc; // struct alias
 
 #endif
