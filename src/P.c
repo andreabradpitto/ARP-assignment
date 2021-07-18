@@ -61,6 +61,8 @@ int main(int argc, char *argv[])
     sockfd = socket(AF_INET, SOCK_STREAM, 0); // create a new socket
     if (sockfd < 0)
         error("\nError creating a new socket (P process)");
+	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int)) < 0)
+        error("\nP: setsockopt(SO_REUSEADDR) failed");
 
     if (!RUN_MODE)
     {

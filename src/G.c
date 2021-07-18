@@ -56,6 +56,8 @@ int main(int argc, char *argv[])
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); // create a new socket
 	if (sockfd < 0)
 		error("\nError creating a new socket (G process)");
+	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int)) < 0)
+        error("\nG: setsockopt(SO_REUSEADDR) failed");
 
 	bzero((char *) &serv_addr, sizeof(serv_addr));  // the function bzero() sets all values inside a buffer to zero
 	serv_addr.sin_family = AF_INET; 				// this contains the code for the family of the address
