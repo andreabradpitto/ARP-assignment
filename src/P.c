@@ -123,20 +123,20 @@ int main(int argc, char *argv[])
                         msg.status = state;
                         msg.value = 0;
                         msg.timestamp = time(NULL);
-                        write(atoi(argv[5]), &msg, sizeof(struct message)); // send "pause" command acknowledgement to L
+                        write(atoi(argv[5]), &msg, sizeof(struct message)); // send "pause" command acknowledgment to L
                         break;
                     case 1: // continue token computation: state is unchanged
                         msg.status = state;
                         msg.value = 0;
                         msg.timestamp = time(NULL);
                         printf("\nNodes are already running, no need to unpause");
-                        write(atoi(argv[5]), &msg, sizeof(struct message)); // send "continue" command acknowledgement to L
+                        write(atoi(argv[5]), &msg, sizeof(struct message)); // send "continue" command acknowledgment to L
                         break;
                     case 3: // send print command to L
                         msg.status = state;
                         msg.value = 0;
                         msg.timestamp = time(NULL);
-                        write(atoi(argv[5]), &msg, sizeof(struct message)); // send "print" command acknowledgement to L
+                        write(atoi(argv[5]), &msg, sizeof(struct message)); // send "print" command acknowledgment to L
                         break;
                     }
                 }
@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
                         first_token = 0;
                     }
                     else
-                        write(atoi(argv[5]), &msg, sizeof(struct message)); // send "data reception" acknowledgement to L
+                        write(atoi(argv[5]), &msg, sizeof(struct message)); // send "data reception" acknowledgment to L
 
                     // This section is related to the communication with G, as the one with L is completed
                     t = clock() - t;
@@ -195,14 +195,14 @@ int main(int argc, char *argv[])
                         msg.value = 0;
                         msg.timestamp = time(NULL);
                         printf("\nProcesses are already stopped, no need to pause");
-                        write(atoi(argv[5]), &msg, sizeof(struct message)); // send "pause" command acknowledgement to L
+                        write(atoi(argv[5]), &msg, sizeof(struct message)); // send "pause" command acknowledgment to L
                         break;
                     case 1: // resume token computation
                         state = 1;
                         msg.status = state;
                         msg.value = 0;
                         msg.timestamp = time(NULL);
-                        write(atoi(argv[5]), &msg, sizeof(struct message)); // send "continue" command acknowledgement to L
+                        write(atoi(argv[5]), &msg, sizeof(struct message)); // send "continue" command acknowledgment to L
                         break;
                     }
                 }

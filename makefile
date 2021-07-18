@@ -5,16 +5,11 @@ SDIR = src
 default: build
 
 build:
-	$(CC) $(SDIR)/main.c -o main
-	chmod +x main
-	$(CC) $(SDIR)/S.c -o S
-	chmod +x S
-	$(CC) $(SDIR)/P.c -o P -lm
-	chmod +x P
-	$(CC) $(SDIR)/G.c -o G
-	chmod +x G
-	$(CC) $(SDIR)/L.c -o L
-	chmod +x L
+	$(CC) $(SDIR)/main.c -o main && chmod +x main
+	$(CC) $(SDIR)/S.c -o S && chmod +x S
+	$(CC) $(SDIR)/P.c -o P -lm && chmod +x P
+	$(CC) $(SDIR)/G.c -o G && chmod +x G
+	$(CC) $(SDIR)/L.c -o L && chmod +x L
 
 .PHONY: clean
 
