@@ -6,6 +6,7 @@ sposta magari in cartella obj gli eseguibili a parte main, anche il log lì fors
 dovrò fare rimozione librerie non usate
 leggi pdf prima di consegnare e anche la nota di Keep. Consegna su aulaweb e scrivi mail (con link a Github)
 Trova modo di poter rendere facili da esportare i dati della sinusoide in .csv o simili
+Magari in P caso multi machine fai sen solo di token.token value (il float e basta)
 
 
 
