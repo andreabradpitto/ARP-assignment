@@ -5,14 +5,9 @@
 #include <time.h>
 #include <errno.h>
 #include <netdb.h>
-//#include <sys/wait.h>
-//#include <sys/types.h>
-//#include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <signal.h>
-//#include <syslog.h>
-//#include <fcntl.h>
 #include <math.h>
 #include <sys/prctl.h> // non-posix?
 #include "config.h"
@@ -49,7 +44,8 @@ int main(int argc, char *argv[])
     int retval = 0; // variable used to store select() ouput
 
     float dt = 0;   // time delay between reception and delivery time instants of the token
-    clock_t t = 0;
+    clock_t time1 = 0;
+    clock_t time2 = 0;
 
     int n;          // write() handle
 	int first_token = 1; // used to acknowledge the very first token received
@@ -97,18 +93,25 @@ int main(int argc, char *argv[])
     if (n < 0)
         error("\nError writing to socket");
 
-    tv.tv_sec = 2;  // amount of seconds the select listens for incoming data from either pipe 1 and 2
-    tv.tv_usec = 0; // same as the previous line, but with microseconds
-    fd_set readfds; // set of involved pipes from which P needs to read through the select
-    FD_ZERO(&readfds);               // inizialization of the set
-    FD_SET(atoi(argv[0]), &readfds); // addition of the desired pipe ends to the set (read from S)
-    FD_SET(atoi(argv[2]), &readfds); // addition of the desired pipe ends to the set (read from G)
-    int maxfd = atoi(argv[0]) > atoi(argv[2]) ? atoi(argv[0]) : atoi(argv[2]);
-
     while (1)
     {
+        tv.tv_sec = 2;  // amount of seconds the select listens for incoming data from either pipe 1 and 2
+        tv.tv_usec = 0; // same as the previous line, but with microseconds
+        int maxfd = atoi(argv[0]) > atoi(argv[2]) ? atoi(argv[0]) : atoi(argv[2]); // compute highest fd for select() 1st arg.
+
+        fd_set readfds;                     // set of involved pipes from which P needs to read through the select
+        FD_ZERO(&readfds);                  // inizialization of the set
+        FD_SET(atoi(argv[0]), &readfds);    // addition of the desired pipe ends to the set (read from S)
+        FD_SET(atoi(argv[2]), &readfds);    // addition of the desired pipe ends to the set (read from G)
+    
         if (state == 1) // token computation is active
         {
+            printf("\ntime1: %li time2: %li", time1, time2);    // sposta salvataggio time sotto if (state == 0)
+                                                                // rinomina in time received e sent, riga 150 non va bene!
+                                                                // prova a mettere microsecs piu alti per non avere risultati
+                                                                // che esplodono
+                                                                // mi sa che devo mandare da G il nuovo timestamp
+            time1 = time2 / CLOCKS_PER_SEC - WAITING_TIME_MICROSECS * powf(10, -6);
             retval = select(maxfd + 1, &readfds, NULL, NULL, &tv);
 
             if (retval == -1)
@@ -148,7 +151,7 @@ int main(int argc, char *argv[])
                 {
                     /* Attenzione al caso RUN_MODE = 1, qui il tizio prima deve mandarmi dati sulla pipe 2 coerentemente
                     con come sto facendo io. Mi basta il token (float) da lui */
-
+                    time1 = clock() - time2;
                     read(atoi(argv[2]), &token, sizeof(token));
                     msg.status = 99; // special code to distinguish data coming from the 2nd pipe (G -> P)
                     msg.value = token.token_value;
@@ -162,11 +165,9 @@ int main(int argc, char *argv[])
                         write(atoi(argv[5]), &msg, sizeof(struct message)); // send "data reception" acknowledgment to L
 
                     // This section is related to the communication with G, as the one with L is completed
-                    t = clock() - t;
-                    dt = ((float)t) / ((float)CLOCKS_PER_SEC); // by doing like this, the very first cycle has a meaningless dt value (i.e. 0)
+                    dt = ((float)time1) / ((float)CLOCKS_PER_SEC); // by doing like this, the very first cycle has a meaningless dt value (i.e. 0)
                     token.token_value = msg.value + dt * (1 - powf(msg.value, 2) / 2) * 2 * M_PI * RF;
-                    t = clock();
-                    //printf("[P node sending message]\n");
+                    time2 = clock();
                     usleep(WAITING_TIME_MICROSECS); // waiting time, in microseconds, applied to process P before it can send the updated token
                     token.token_timestamp = time(NULL);
                     n = write(sockfd, &token, sizeof(token));

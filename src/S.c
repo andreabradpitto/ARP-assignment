@@ -2,17 +2,10 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
-//#include <time.h>
 #include <errno.h>
 #include <sys/wait.h>
 #include <sys/types.h>
-//#include <netinet/in.h>
-//#include <sys/socket.h>
-//#include <sys/time.h>
 #include <signal.h>
-//#include <syslog.h>
-//#include <fcntl.h>
-//#include <math.h>
 #include <sys/prctl.h> // non-posix?
 #include "config.h"
 
@@ -97,7 +90,7 @@ int main(int argc, char *argv[])
 							 "echo $welcome2; echo $welcome0; echo $command1; echo $command2; echo $command3; "
 							 "echo $welcome0; echo $welcome3; echo $welcome0; exec bash\"");
 
-	signal(SIGCONT, start_handler); // reacts to "kill -18 Spid"
+	signal(SIGCONT, start_handler);	// reacts to "kill -18 Spid"
 	signal(SIGUSR2, stop_handler);	// reacts to "kill -12 Spid"
 									//Con SIGSTOP mi blocca la S e non posso mandare l'avviso agli altri nodi:
 									//Se faccio così (SIGUSR2) blocco tutti tranne S,
@@ -108,21 +101,21 @@ int main(int argc, char *argv[])
 	{
 		if (start_flag)
 		{
-			printf("\n\nReceived start command by user\n");
+			printf("\n\nReceived start command by user\n\n");
 			state = 1;
 			write(atoi(argv[1]), &state, sizeof(int));
 			start_flag = 0;
 		}
 		if (stop_flag)
 		{
-			printf("\n\nReceived stop command by user\n");
+			printf("\n\nReceived stop command by user\n\n");
 			state = 0;
 			write(atoi(argv[1]), &state, sizeof(int));
 			stop_flag = 0;
 		}
 		if (log_flag)
 		{
-			printf("\n\nReceived log command by user\n");
+			printf("\n\nReceived log command by user\n\n");
 			logprint = 3;
 			write(atoi(argv[1]), &logprint, sizeof(int));
 			log_flag = 0;

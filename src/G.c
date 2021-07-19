@@ -4,15 +4,10 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
-//#include <sys/wait.h>
-//#include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <signal.h>
-//#include <syslog.h>
-//#include <fcntl.h>
-//#include <math.h>
 #include <sys/prctl.h> // non-posix?
 #include "config.h"
 
@@ -79,7 +74,7 @@ int main(int argc, char *argv[])
 			perror("\n'accept()' system call failed");
 			return -1;
 		}
-		else // Connection accepted
+		else // connection accepted
 		{
 			while (1)
 			{

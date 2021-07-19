@@ -9,12 +9,20 @@ sposta magari in cartella obj gli eseguibili a parte main, anche il log lì fors
 "dato che durante il debugging ho creato un output su schermo solido e convincente, ho deciso di cambiare leggermente il senso di log print"
 
 leggi pdf prima di consegnare e anche la nota di Keep. Consegna su aulaweb e scrivi mail (con link a Github)
+
 Trova modo di poter rendere facili da esportare i dati della sinusoide in .csv o simili
-Magari in P caso multi machine fai sen solo di token.token value (il float e basta)
+
+Magari in P caso multi machine fai send solo di token.token value (il float e basta)
 
 Problema tabs da github per config.h
 
 Magari spiega in readme che il config è come header per le restrizioni covid
+
+conteggio token impazzisce
+
+multiple pause resume fa casino
+
+Al posto di fancy metti time in microseconds o quello che è (tipo epoch time)
 
 
 
