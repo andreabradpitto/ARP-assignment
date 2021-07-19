@@ -5,16 +5,16 @@
 #include <time.h>
 #include <errno.h>
 #include <netdb.h>
-#include <sys/wait.h>
-#include <sys/types.h>
-#include <netinet/in.h>
+//#include <sys/wait.h>
+//#include <sys/types.h>
+//#include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <signal.h>
-#include <syslog.h>
-#include <fcntl.h>
+//#include <syslog.h>
+//#include <fcntl.h>
 #include <math.h>
-#include <sys/prctl.h> // required by prctl()
+#include <sys/prctl.h> // non-posix?
 #include "config.h"
 
 // This process is the computational core. It is also the nevralgic waypoint of communications:
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 
     int state = 1;
 
-    token_strc token;
+    token token;
     token.token_value = 0;
     token.token_timestamp = time(NULL); // get the current time and store it in token_timestamp
     struct message msg;
@@ -60,9 +60,13 @@ int main(int argc, char *argv[])
     struct hostent *server;
     sockfd = socket(AF_INET, SOCK_STREAM, 0); // create a new socket
     if (sockfd < 0)
+    {
         error("\nError creating a new socket (P process)");
+    }
 	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int)) < 0)
+    {
         error("\nP: setsockopt(SO_REUSEADDR) failed");
+    }
 
     if (!RUN_MODE)
     {
@@ -89,7 +93,7 @@ int main(int argc, char *argv[])
         error("\nConnection failed");
 
     //printf("[P node sending the first message]\n");
-    n = write(sockfd, &token, sizeof(token_strc));
+    n = write(sockfd, &token, sizeof(token));
     if (n < 0)
         error("\nError writing to socket");
 
@@ -145,7 +149,7 @@ int main(int argc, char *argv[])
                     /* Attenzione al caso RUN_MODE = 1, qui il tizio prima deve mandarmi dati sulla pipe 2 coerentemente
                     con come sto facendo io. Mi basta il token (float) da lui */
 
-                    read(atoi(argv[2]), &token, sizeof(token_strc));
+                    read(atoi(argv[2]), &token, sizeof(token));
                     msg.status = 99; // special code to distinguish data coming from the 2nd pipe (G -> P)
                     msg.value = token.token_value;
                     msg.timestamp = token.token_timestamp;
@@ -165,7 +169,7 @@ int main(int argc, char *argv[])
                     //printf("[P node sending message]\n");
                     usleep(WAITING_TIME_MICROSECS); // waiting time, in microseconds, applied to process P before it can send the updated token
                     token.token_timestamp = time(NULL);
-                    n = write(sockfd, &token, sizeof(token_strc));
+                    n = write(sockfd, &token, sizeof(token));
                     if (n < 0)
                         error("\nError writing to socket");
                 }

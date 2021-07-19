@@ -4,16 +4,16 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
-#include <sys/wait.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <sys/time.h>
+//#include <sys/wait.h>
+//#include <sys/types.h>
+//#include <netinet/in.h>
+//#include <sys/socket.h>
+//#include <sys/time.h>
 #include <signal.h>
 #include <syslog.h>
 #include <fcntl.h>
-#include <math.h>
-#include <sys/prctl.h> // required by prctl()
+//#include <math.h>
+#include <sys/prctl.h> // non-posix?
 #include "config.h"
 
 // This process is the one responsible for logs. It registers every input received and, when prompted,

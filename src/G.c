@@ -4,16 +4,16 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
-#include <sys/wait.h>
-#include <sys/types.h>
+//#include <sys/wait.h>
+//#include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <signal.h>
-#include <syslog.h>
-#include <fcntl.h>
-#include <math.h>
-#include <sys/prctl.h> // required by prctl()
+//#include <syslog.h>
+//#include <fcntl.h>
+//#include <math.h>
+#include <sys/prctl.h> // non-posix?
 #include "config.h"
 
 // This process can be run in 2 modes: debug mode (single machine) or normal mode (communicating with other PCs);
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 	char *pretty_time;
 	int first_token = 1; // used to acknowledge the very first token received
 
-	token_strc token;
+	token token;
 	token.token_value = 0;
 	token.token_timestamp = time(NULL);
 
@@ -83,14 +83,14 @@ int main(int argc, char *argv[])
 		{
 			while (1)
 			{
-				n = read(newsockfd, &token, sizeof(token_strc));
+				n = read(newsockfd, &token, sizeof(token));
 				if (n < 0)
 					error("\nError reading from socket");
 
 				if (first_token) // the token value depends on time delays, so skip the first one received, as it is always 0
 				{
 					first_token = 0;
-					write(atoi(argv[3]), &token, sizeof(token_strc));
+					write(atoi(argv[3]), &token, sizeof(token));
 				}
 				else
 				{
@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
 					pretty_time = ctime(&token.token_timestamp);
 					pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
 					printf("\nG: Token timestamp (fancy): %s | Token value: %f", pretty_time, token.token_value);
-					write(atoi(argv[3]), &token, sizeof(token_strc));
+					write(atoi(argv[3]), &token, sizeof(token));
 				}
 			}
 		}
@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
 
 			//cioe cosi non mi cambia nulla tra le due RUN_MODE (portno gia e inutile)... forse e ok?
 			printf("\nG: Token timestamp: %li | Token value: %f", token.token_timestamp, token.token_value);
-			write(atoi(argv[3]), &token, sizeof(token_strc));
+			write(atoi(argv[3]), &token, sizeof(token));
 		}
 	}
 

@@ -2,18 +2,18 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
-#include <time.h>
+//#include <time.h>
 #include <errno.h>
 #include <sys/wait.h>
 #include <sys/types.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <sys/time.h>
+//#include <netinet/in.h>
+//#include <sys/socket.h>
+//#include <sys/time.h>
 #include <signal.h>
-#include <syslog.h>
-#include <fcntl.h>
-#include <math.h>
-#include <sys/prctl.h> // required by prctl()
+//#include <syslog.h>
+//#include <fcntl.h>
+//#include <math.h>
+#include <sys/prctl.h> // non-posix?
 #include "config.h"
 
 // This is the process that is used to communicate with the terminal. It receives and handles 3 different commands: start, pause, log.
