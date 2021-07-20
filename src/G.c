@@ -41,12 +41,12 @@ int main(int argc, char *argv[])
 	socklen_t clilen;
 	struct sockaddr_in serv_addr, cli_addr;
 	int n; // read() handle
+	long int time_var = 0;
 	char *pretty_time;
-	int first_token = 1; // used to acknowledge the very first token received
 
 	token token;
-	token.token_value = 0;
-	token.token_timestamp = time(NULL);
+	token.value = 0;
+	gettimeofday(&token.timestamp, NULL); // get the current time and store it in timestamp
 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); // create a new socket
 	if (sockfd < 0)
@@ -82,19 +82,12 @@ int main(int argc, char *argv[])
 				if (n < 0)
 					error("\nError reading from socket");
 
-				if (first_token) // the token value depends on time delays, so skip the first one received, as it is always 0
-				{
-					first_token = 0;
-					write(atoi(argv[3]), &token, sizeof(token));
-				}
-				else
-				{
-					//printf("\nG: Token timestamp: %li | Token value: %f", token.token_timestamp, token.token_value);
-					pretty_time = ctime(&token.token_timestamp);
-					pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
-					printf("\nG: Token timestamp (fancy): %s | Token value: %f", pretty_time, token.token_value);
-					write(atoi(argv[3]), &token, sizeof(token));
-				}
+				//printf("\nG: Token timestamp: %li | Token value: %f", token.timestamp, token.value);
+				pretty_time = ctime(&token.timestamp.tv_sec);
+				pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
+				printf("\nG: Token timestamp (fancy): %s | Token value: %f", pretty_time, token.value);
+				gettimeofday(&token.timestamp, NULL); // giusto metterlo?
+				write(atoi(argv[3]), &token, sizeof(token));
 			}
 		}
 	}
@@ -107,7 +100,7 @@ int main(int argc, char *argv[])
 								//tanto il client che si connette è il mio P, del quale scelgo io la porta. Diverso il caso del nome della macchina
 
 			//cioe cosi non mi cambia nulla tra le due RUN_MODE (portno gia e inutile)... forse e ok?
-			printf("\nG: Token timestamp: %li | Token value: %f", token.token_timestamp, token.token_value);
+			//printf("\nG: Token timestamp: %li | Token value: %f", token.timestamp, token.value);
 			write(atoi(argv[3]), &token, sizeof(token));
 		}
 	}

@@ -69,4 +69,16 @@ int main(int argc, char *argv[])
 	int denom = 2;
 	float ris = numer / denom;
 	printf("\nris: %f", ris);
+
+	printf("\n\nTEMPO\n");
+	struct timeval token_timestamp;
+	//clock_gettime(0, token_timestamp);
+	//time_t *pointer = &(token_timestamp->tv_sec);
+	//printf("%li", *pointer);
+	gettimeofday(&token_timestamp, NULL);
+	printf("%li", token_timestamp.tv_sec);
+
+
+
+	printf("\n\n");
 }

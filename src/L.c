@@ -35,6 +35,8 @@ int main(int argc, char *argv[])
     char buffer[bufsize];
     //ssize_t ret_in;
 
+    long int time_var = 0;
+
     struct message msg;
 
     //openlog("[Assignment]", 0, LOG_USER);
@@ -52,17 +54,20 @@ int main(int argc, char *argv[])
         case 0: // logging acknowledgment of pause signal
             // //prima era: syslog(LOG_INFO, "%s%s", time_stamp(), " from S pause command issued\n");
             //syslog(LOG_INFO, "\n%lu%s", msg.timestamp, " - from S - pause command issued");
-            sprintf(buffer, "\n%li%s", msg.timestamp, " - received from S - pause command issued");
+            time_var = msg.timestamp.tv_sec * 1000000 + msg.timestamp.tv_usec;
+            sprintf(buffer, "\n%li%s", time_var, " - received from S - pause command issued");
             write(logfd, &buffer, sizeof(buffer)); //non so se venga riscritto tutto ogni volta sul buffer, da controllare
             break;
         case 1: // logging acknowledgment of resume/continue signal
-            sprintf(buffer, "\n%li%s", msg.timestamp, " - received from S - continue command issued");
+            time_var = msg.timestamp.tv_sec * 1000000 + msg.timestamp.tv_usec;
+            sprintf(buffer, "\n%li%s", time_var, " - received from S - continue command issued");
             write(logfd, &buffer, sizeof(buffer));
             break;
         case 99: // logging acknowledgment of token value
-            pretty_time = ctime(&msg.timestamp);
-            pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
-            sprintf(buffer, "\n%s%s%f", pretty_time, " - received from G - sent value: ", msg.value);
+            //pretty_time = ctime(&msg.timestamp);
+            //pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
+            time_var = msg.timestamp.tv_sec * 1000000 + msg.timestamp.tv_usec;
+            sprintf(buffer, "\n%li%s%f", time_var, " - received from G - sent value: ", msg.value);
             write(logfd, &buffer, sizeof(buffer));
             break;
         case 3: // open log file request received

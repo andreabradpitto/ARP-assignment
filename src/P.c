@@ -36,19 +36,18 @@ int main(int argc, char *argv[])
     int state = 1;
 
     token token;
-    token.token_value = 0;
-    token.token_timestamp = time(NULL); // get the current time and store it in token_timestamp
+    token.value = 0;
+    gettimeofday(&token.timestamp, NULL); // get the current time and store it in timestamp
     struct message msg;
 
-    struct timeval tv;
-    int retval = 0; // variable used to store select() ouput
+    struct timeval select_tv;   // defines select() patience (timeout)
+    int retval = 0;             // variable used to store select() ouput
 
-    float dt = 0;   // time delay between reception and delivery time instants of the token
-    clock_t time1 = 0;
-    clock_t time2 = 0;
+    float dt = 0;               // time delay between reception and delivery time instants of the token
+    struct timeval t_received;  // time at which the token is received
+    struct timeval t_sent;      // time at which the token is sent
 
     int n;          // write() handle
-	int first_token = 1; // used to acknowledge the very first token received
 
     int sockfd;     // socket file descriptor
     int portno;     // stores the port number on which the server accepts connections
@@ -89,14 +88,16 @@ int main(int argc, char *argv[])
         error("\nConnection failed");
 
     //printf("[P node sending the first message]\n");
+    gettimeofday(&t_sent, NULL);
+    token.timestamp = t_sent;
     n = write(sockfd, &token, sizeof(token));
     if (n < 0)
         error("\nError writing to socket");
 
     while (1)
     {
-        tv.tv_sec = 2;  // amount of seconds the select listens for incoming data from either pipe 1 and 2
-        tv.tv_usec = 0; // same as the previous line, but with microseconds
+        select_tv.tv_sec = 2;  // amount of seconds the select listens for incoming data from either pipe 1 and 2
+        select_tv.tv_usec = 0; // same as the previous line, but with microseconds
         int maxfd = atoi(argv[0]) > atoi(argv[2]) ? atoi(argv[0]) : atoi(argv[2]); // compute highest fd for select() 1st arg.
 
         fd_set readfds;                     // set of involved pipes from which P needs to read through the select
@@ -106,13 +107,7 @@ int main(int argc, char *argv[])
     
         if (state == 1) // token computation is active
         {
-            printf("\ntime1: %li time2: %li", time1, time2);    // sposta salvataggio time sotto if (state == 0)
-                                                                // rinomina in time received e sent, riga 150 non va bene!
-                                                                // prova a mettere microsecs piu alti per non avere risultati
-                                                                // che esplodono
-                                                                // mi sa che devo mandare da G il nuovo timestamp
-            time1 = time2 / CLOCKS_PER_SEC - WAITING_TIME_MICROSECS * powf(10, -6);
-            retval = select(maxfd + 1, &readfds, NULL, NULL, &tv);
+            retval = select(maxfd + 1, &readfds, NULL, NULL, &select_tv);
 
             if (retval == -1)
             {
@@ -129,20 +124,20 @@ int main(int argc, char *argv[])
                     case 0: // stop token computation
                         msg.status = state;
                         msg.value = 0;
-                        msg.timestamp = time(NULL);
+                        gettimeofday(&msg.timestamp, NULL);
                         write(atoi(argv[5]), &msg, sizeof(struct message)); // send "pause" command acknowledgment to L
                         break;
                     case 1: // continue token computation: state is unchanged
                         msg.status = state;
                         msg.value = 0;
-                        msg.timestamp = time(NULL);
+                        gettimeofday(&msg.timestamp, NULL);
                         printf("\nNodes are already running, no need to unpause");
                         write(atoi(argv[5]), &msg, sizeof(struct message)); // send "continue" command acknowledgment to L
                         break;
                     case 3: // send print command to L
                         msg.status = state;
                         msg.value = 0;
-                        msg.timestamp = time(NULL);
+                        gettimeofday(&msg.timestamp, NULL);
                         write(atoi(argv[5]), &msg, sizeof(struct message)); // send "print" command acknowledgment to L
                         break;
                     }
@@ -151,28 +146,27 @@ int main(int argc, char *argv[])
                 {
                     /* Attenzione al caso RUN_MODE = 1, qui il tizio prima deve mandarmi dati sulla pipe 2 coerentemente
                     con come sto facendo io. Mi basta il token (float) da lui */
-                    time1 = clock() - time2;
                     read(atoi(argv[2]), &token, sizeof(token));
+                    gettimeofday(&t_received, NULL);
                     msg.status = 99; // special code to distinguish data coming from the 2nd pipe (G -> P)
-                    msg.value = token.token_value;
-                    msg.timestamp = token.token_timestamp;
-
-                    if (first_token) // the token value depends on time delays, so skip the first one received, as it is always 0
-                    {
-                        first_token = 0;
-                    }
-                    else
-                        write(atoi(argv[5]), &msg, sizeof(struct message)); // send "data reception" acknowledgment to L
+                    msg.value = token.value;
+                    msg.timestamp = token.timestamp;
+                    //printf("\nt_received.tv_sec: %li ", t_received.tv_sec);
+                    //printf("t_sent.tv_sec: %li ", t_sent.tv_sec);
+                    //printf("t_received.tv_usec: %li ", t_received.tv_usec);
+                    //printf("t_sent.tv_usec: %li ", t_sent.tv_usec);
+                    //printf("DT: %f", dt);
+                    write(atoi(argv[5]), &msg, sizeof(struct message)); // send "data reception" acknowledgment to L
 
                     // This section is related to the communication with G, as the one with L is completed
-                    dt = ((float)time1) / ((float)CLOCKS_PER_SEC); // by doing like this, the very first cycle has a meaningless dt value (i.e. 0)
-                    token.token_value = msg.value + dt * (1 - powf(msg.value, 2) / 2) * 2 * M_PI * RF;
-                    time2 = clock();
-                    usleep(WAITING_TIME_MICROSECS); // waiting time, in microseconds, applied to process P before it can send the updated token
-                    token.token_timestamp = time(NULL);
+                    dt = (t_received.tv_sec - t_sent.tv_sec) + (t_received.tv_usec - t_sent.tv_usec) / (float)1000000;
+                    token.value = msg.value + dt * (1 - powf(msg.value, 2) / 2) * 2 * M_PI * RF;
+                    gettimeofday(&token.timestamp, NULL);
                     n = write(sockfd, &token, sizeof(token));
+                    gettimeofday(&t_sent, NULL);
                     if (n < 0)
                         error("\nError writing to socket");
+                    usleep(WAITING_TIME_MICROSECS); // waiting time, in microseconds, applied to process P before it can send the updated token
                 }
             }
             else if (retval == 0)
@@ -181,7 +175,7 @@ int main(int argc, char *argv[])
 
         else // state = 0: token computation is paused
         {
-            retval = select(maxfd + 1, &readfds, NULL, NULL, &tv);
+            retval = select(maxfd + 1, &readfds, NULL, NULL, &select_tv);
 
             if (retval == -1)
             {
@@ -198,7 +192,7 @@ int main(int argc, char *argv[])
                     case 0: // keep computation paused: state is unchanged
                         msg.status = state;
                         msg.value = 0;
-                        msg.timestamp = time(NULL);
+                        gettimeofday(&msg.timestamp, NULL);
                         printf("\nProcesses are already stopped, no need to pause");
                         write(atoi(argv[5]), &msg, sizeof(struct message)); // send "pause" command acknowledgment to L
                         break;
@@ -206,7 +200,7 @@ int main(int argc, char *argv[])
                         state = 1;
                         msg.status = state;
                         msg.value = 0;
-                        msg.timestamp = time(NULL);
+                        gettimeofday(&msg.timestamp, NULL);
                         write(atoi(argv[5]), &msg, sizeof(struct message)); // send "continue" command acknowledgment to L
                         break;
                     }

@@ -22,7 +22,11 @@ conteggio token impazzisce
 
 multiple pause resume fa casino
 
+check con schemino dei valori dei timestamp (soprattutto guardando cosa c'è in G) per capire bene se nel caso multi macchina debba cambiare di molto il codice
+
 Al posto di fancy metti time in microseconds o quello che è (tipo epoch time)
+
+rinomina msg in log_msg e message in log_message?
 
 
 
