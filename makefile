@@ -1,5 +1,7 @@
-CC=gcc		# Specify the C compiler to use
-CFLAGS=-I.	# List of flags to pass to the compilation command
+# Specify the C compiler to use
+CC=gcc
+# List of flags to pass to the compilation command
+CFLAGS=-I.
 SDIR = src
 
 default: build

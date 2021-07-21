@@ -5,9 +5,8 @@
 #include <sys/types.h>
 #include "config.h"
 
-// This is the main, which launches all the other processes.
-// The duty of this piece of code is to load configuration data and
-// to launch all the involved processes (S, P, G and L)
+// This is the main, which launches all the other processes. The duty of this piece of code
+// is to load configuration data and to launch all the involved processes (S, P, G and L)
 
 int main(int argc, char *argv[])
 {
@@ -34,8 +33,6 @@ int main(int argc, char *argv[])
 		perror("\nPipe 3 creation error");
 		return -1;
 	}
-
-	//printf("\n%d %d %d %d %d %d", pfd1[0], pfd1[1], pfd2[0], pfd2[1], pfd3[0], pfd3[1]); // check file descriptors' values
 
 	char read1[2];
 	char write1[2];

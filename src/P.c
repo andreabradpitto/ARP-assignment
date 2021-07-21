@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
     if (n < 0)
         error("\nError writing to socket");
     gettimeofday(&t_sent, NULL);
-    log_msg.status = 9; // special code to distinguish logs relative to tokens sent by P
+    log_msg.status = 9; // special code to distinguish log entries relative to tokens sent by P
     log_msg.value = token.value;
     log_msg.timestamp = t_sent;
     write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "token sent" acknowledgment to L
@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
                     gettimeofday(&token.timestamp, NULL);
                     n = write(sockfd, &token, sizeof(token)); // sending the new token to G
                     gettimeofday(&t_sent, NULL);
-                    log_msg.status = 9; // special code to distinguish logs relative to tokens sent by P
+                    log_msg.status = 9; // special code to distinguish log entries relative to tokens sent by P
                     log_msg.value = token.value;
                     log_msg.timestamp = t_sent;
                     write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "token sent" acknowledgment to L

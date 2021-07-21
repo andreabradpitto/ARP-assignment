@@ -6,4 +6,6 @@ Dato più semplice per il caso multi-machine (char array with just a float insid
 
 Cose da vedere ora: fifo/named pipes, casino dei timestamps (forse almeno una tra t_sent e t_received sono superflue)
 
+Scrivi che usi una tua formula visto che la sua non va. Non ho perso tempo dietro ai limiti che non aveva senso
+
 Fai code format

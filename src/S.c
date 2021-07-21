@@ -91,9 +91,9 @@ int main(int argc, char *argv[])
 	signal(SIGUSR1, log_handler);	// reacts to "kill -10 Spid"
 
 	// Note on SIGCONT:
-	// As other processes never actually stop (only computation stops),
-	// SIGCONT does not have any effect, but is useful here as a third custom signal
-	// with no undesired side effects
+	// As other processes never actually stop (only token computation is halted),
+	// the SIGCONT signal does not have any effect, but is useful here as
+	// a third custom signal which also does not produce undesired side effects
 
 	while (1)
 	{
