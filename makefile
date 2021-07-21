@@ -1,3 +1,7 @@
+# 2019 ARP assignment V2.0
+# Andrea Pitto - S3942710
+# 10 - 07 - 2020
+
 # Specify the C compiler to use
 CC=gcc
 # List of flags to pass to the compilation command
@@ -21,3 +25,4 @@ clean:
 	rm -f S
 	rm -f L
 	rm -f G
+	rm -f log.txt

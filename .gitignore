@@ -54,7 +54,10 @@ dkms.conf
 # VSCode
 .vscode
 
+# Log file
 log.txt
+
+# Executables
 main
 S
 P

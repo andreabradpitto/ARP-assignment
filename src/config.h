@@ -1,3 +1,7 @@
+// 2019 ARP assignment V2.0
+// Andrea Pitto - S3942710
+// 10 - 07 - 2020
+
 // This header stores all the definitions and settings needed by the processes
 
 #ifndef CONFIG_H
