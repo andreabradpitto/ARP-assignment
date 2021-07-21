@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
             pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
             time_var = log_msg.timestamp.tv_sec * 1000000 + log_msg.timestamp.tv_usec;
             log_file = fopen(logpath, "a");
-            fprintf(log_file, "%li %s %s %s\n", time_var, "-", pretty_time, "- from S - pause");
+            fprintf(log_file, "%li %s %s %s\n", time_var, "|", pretty_time, "| from S | pause | undefined");
             fclose(log_file);
             break;
         case 1: // logging acknowledgment of resume/continue signal
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
             pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
             time_var = log_msg.timestamp.tv_sec * 1000000 + log_msg.timestamp.tv_usec;
             log_file = fopen(logpath, "a");
-            fprintf(log_file, "%li %s %s %s\n", time_var, "-", pretty_time, "- from S - start");
+            fprintf(log_file, "%li %s %s %s\n", time_var, "|", pretty_time, "| from S | start | undefined");
             fclose(log_file);
             break;
         case 8: // logging acknowledgment of token value received by P
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
             pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
             time_var = log_msg.timestamp.tv_sec * 1000000 + log_msg.timestamp.tv_usec;
             log_file = fopen(logpath, "a");
-            fprintf(log_file, "%li %s %s %s %9f\n", time_var, "-", pretty_time, "- from G - value -", log_msg.value);
+            fprintf(log_file, "%li %s %s %s %9f\n", time_var, "|", pretty_time, "| from G | value |", log_msg.value);
             fclose(log_file);
             break;
         case 9: // logging acknowledgment of token value sent by P
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
             pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
             time_var = log_msg.timestamp.tv_sec * 1000000 + log_msg.timestamp.tv_usec;
             log_file = fopen(logpath, "a");
-            fprintf(log_file, "%li %s %s %s %9f\n", time_var, "-", pretty_time, "- from P - value -", log_msg.value);
+            fprintf(log_file, "%li %s %s %s %9f\n", time_var, "|", pretty_time, "| from P | value |", log_msg.value);
             fclose(log_file);
             break;
         case 3: // open log file request received
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
             pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
             time_var = log_msg.timestamp.tv_sec * 1000000 + log_msg.timestamp.tv_usec;
             log_file = fopen(logpath, "a");
-            fprintf(log_file, "%li %s %s %s\n", time_var, "-", pretty_time, "- from S - logrq");
+            fprintf(log_file, "%li %s %s %s\n", time_var, "|", pretty_time, "| from S | logrq | undefined");
             fclose(log_file);
             int exit_status = system("xdg-open $log_file");
             break;
