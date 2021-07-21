@@ -9,7 +9,6 @@
 #include <sys/time.h>
 #include <signal.h>
 #include <math.h>
-#include <sys/prctl.h> // non-posix?
 #include "config.h"
 
 // This process is the computational core. It is also the nevralgic waypoint of communications:
@@ -30,7 +29,6 @@ int main(int argc, char *argv[])
 
     pid_t Ppid;
     Ppid = getpid();
-    prctl(PR_SET_PDEATHSIG, SIGHUP); // asks the kernel to deliver the SIGHUP signal when parent dies, i.e. also terminates P
     printf("P: my PID is %d\n", Ppid);
 
     int state = 1;
@@ -157,11 +155,12 @@ int main(int argc, char *argv[])
                     msg.timestamp = token.timestamp;
                     write(atoi(argv[5]), &msg, sizeof(struct message)); // send "data reception" acknowledgment to L
 
-                    // This section is related to the communication with G, as the one with L is completed
+                    // Time delay and token computations
                     dt = (t_received.tv_sec - t_sent.tv_sec) + (t_received.tv_usec - t_sent.tv_usec) / (float)1000000;
-                    token.value = msg.value + dt * (1 - powf(msg.value, 2) / 2) * 2 * M_PI * RF;
+                    //token.value = msg.value + dt * (1 - powf(msg.value, 2) / 2) * 2 * M_PI * RF;
+                    token.value = 2 * M_PI * RF * sin(msg.value + dt * (1 - msg.value)); // using this formula as the original is not working
                     gettimeofday(&token.timestamp, NULL);
-                    n = write(sockfd, &token, sizeof(token));
+                    n = write(sockfd, &token, sizeof(token)); // sending the new token to G
                     gettimeofday(&t_sent, NULL);
                     msg.status = 9; // special code to distinguish logs relative to tokens sent by P
                     msg.value = token.value;
@@ -214,9 +213,6 @@ int main(int argc, char *argv[])
                     }
                 }
             }
-            /* Attenzione al caso RUN_MODE = 1, qui il tizio prima deve mandarmi dati sulla pipe 2 coerentemente
-                con come sto facendo io. Mi basta il token (float) da lui. questo commento era sotto fd_isset atoi2*/
-            //usleep(WAITING_TIME_MICROSECS); // waiting time applied to process P before it checks again if computation must resume
         }
     }
 

@@ -35,6 +35,8 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+	//printf("\n%d %d %d %d %d %d", pfd1[0], pfd1[1], pfd2[0], pfd2[1], pfd3[0], pfd3[1]); // check file descriptors' values
+
 	char read1[2];
 	char write1[2];
 	char read2[2];

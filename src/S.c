@@ -6,7 +6,6 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <signal.h>
-#include <sys/prctl.h> // non-posix?
 #include "config.h"
 
 // This is the process that is used to communicate with the terminal. It receives and handles 3 different commands: start, pause, log.
@@ -56,7 +55,6 @@ int main(int argc, char *argv[])
 
 	pid_t Spid;
 	Spid = getpid();
-	prctl(PR_SET_PDEATHSIG, SIGHUP); // asks the kernel to deliver the SIGHUP signal when parent dies, i.e. also terminates S
 	printf("S: my PID is %d\n", Spid);
 
 	// Creation of Input Terminal welcome message, including dynamic Spid injection

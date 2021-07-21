@@ -6,7 +6,6 @@
 #include <errno.h>
 #include <signal.h>
 #include <fcntl.h>
-#include <sys/prctl.h> // non-posix?
 #include "config.h"
 
 // This process is the one responsible for logs. It registers every input received and, when prompted,
@@ -23,7 +22,6 @@ int main(int argc, char *argv[])
 
     pid_t Lpid;
     Lpid = getpid();
-    prctl(PR_SET_PDEATHSIG, SIGHUP); // asks the kernel to deliver the SIGHUP signal when parent dies, i.e. also terminates L
     printf("L: my PID is %d\n", Lpid);
 
     char *pretty_time;
@@ -67,7 +65,7 @@ int main(int argc, char *argv[])
                 pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
                 time_var = msg.timestamp.tv_sec * 1000000 + msg.timestamp.tv_usec;
                 log_file = fopen(logpath, "a");
-                fprintf(log_file, "%li %s %s %s %f\n", time_var, "-", pretty_time, "- from G - value - ", msg.value);
+                fprintf(log_file, "%li %s %s %s %9f\n", time_var, "-", pretty_time, "- from G - value - ", msg.value);
                 fclose(log_file);
                 break;
             case 9: // logging acknowledgment of token value sent by P
@@ -75,7 +73,7 @@ int main(int argc, char *argv[])
                 pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
                 time_var = msg.timestamp.tv_sec * 1000000 + msg.timestamp.tv_usec;
                 log_file = fopen(logpath, "a");
-                fprintf(log_file, "%li %s %s %s %f\n", time_var, "-", pretty_time, "- from P - value - ", msg.value);
+                fprintf(log_file, "%li %s %s %s %9f\n", time_var, "-", pretty_time, "- from P - value - ", msg.value);
                 fclose(log_file);
                 break;
             case 3: // open log file request received
