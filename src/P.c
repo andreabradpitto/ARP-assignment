@@ -80,19 +80,25 @@ int main(int argc, char *argv[])
         exit(0);
     }
 
-    bzero((char *) &serv_addr, sizeof(serv_addr)); // the function bzero() sets all values inside a buffer to zero
-    serv_addr.sin_family = AF_INET;                // this contains the code for the family of the address
+    bzero((char *) &serv_addr, sizeof(serv_addr));  // the function bzero() sets all values inside a buffer to zero
+    serv_addr.sin_family = AF_INET;                 // this contains the code for the family of the address
     bcopy((char *) server->h_addr_list[0], (char *) &serv_addr.sin_addr.s_addr, server->h_length);
     serv_addr.sin_port = htons(portno);
     if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
         error("\nConnection failed");
 
-    //printf("[P node sending the first message]\n");
+    // P process sending the first message and starting the cycle
     gettimeofday(&t_sent, NULL);
     token.timestamp = t_sent;
     n = write(sockfd, &token, sizeof(token));
     if (n < 0)
         error("\nError writing to socket");
+    gettimeofday(&t_sent, NULL);
+    msg.status = 9; // special code to distinguish logs relative to tokens sent by P
+    msg.value = token.value;
+    msg.timestamp = t_sent;
+    write(atoi(argv[5]), &msg, sizeof(struct message)); // send "token sent" acknowledgment to L
+    usleep(WAITING_TIME_MICROSECS); // waiting time, in microseconds, applied to process P before it can check for new incoming tokens
 
     while (1)
     {
@@ -107,6 +113,7 @@ int main(int argc, char *argv[])
     
         if (state == 1) // token computation is active
         {
+            //printf("\n\tDentro state = 1");
             retval = select(maxfd + 1, &readfds, NULL, NULL, &select_tv);
 
             if (retval == -1)
@@ -123,32 +130,29 @@ int main(int argc, char *argv[])
                     {
                     case 0: // stop token computation
                         msg.status = state;
-                        msg.value = 0;
                         gettimeofday(&msg.timestamp, NULL);
+                        //printf("\nActive - go pause");
                         write(atoi(argv[5]), &msg, sizeof(struct message)); // send "pause" command acknowledgment to L
                         break;
                     case 1: // continue token computation: state is unchanged
                         msg.status = state;
-                        msg.value = 0;
                         gettimeofday(&msg.timestamp, NULL);
-                        printf("\nNodes are already running, no need to unpause");
+                        //printf("\nNodes are already running, no need to unpause");
                         write(atoi(argv[5]), &msg, sizeof(struct message)); // send "continue" command acknowledgment to L
                         break;
-                    case 3: // send print command to L
+                    case 3: // request log file opening to L
                         msg.status = state;
-                        msg.value = 0;
                         gettimeofday(&msg.timestamp, NULL);
                         write(atoi(argv[5]), &msg, sizeof(struct message)); // send "print" command acknowledgment to L
+                        state = 0; // pause computation upon log file opening
                         break;
                     }
                 }
                 if (FD_ISSET(atoi(argv[2]), &readfds)) // read of second pipe (data incoming from G) is ready
                 {
-                    /* Attenzione al caso RUN_MODE = 1, qui il tizio prima deve mandarmi dati sulla pipe 2 coerentemente
-                    con come sto facendo io. Mi basta il token (float) da lui */
                     read(atoi(argv[2]), &token, sizeof(token));
                     gettimeofday(&t_received, NULL);
-                    msg.status = 99; // special code to distinguish data coming from the 2nd pipe (G -> P)
+                    msg.status = 8; // special code to distinguish data coming from the 2nd pipe (G -> P)
                     msg.value = token.value;
                     msg.timestamp = token.timestamp;
                     write(atoi(argv[5]), &msg, sizeof(struct message)); // send "data reception" acknowledgment to L
@@ -159,9 +163,14 @@ int main(int argc, char *argv[])
                     gettimeofday(&token.timestamp, NULL);
                     n = write(sockfd, &token, sizeof(token));
                     gettimeofday(&t_sent, NULL);
+                    msg.status = 9; // special code to distinguish logs relative to tokens sent by P
+                    msg.value = token.value;
+                    msg.timestamp = t_sent;
+                    write(atoi(argv[5]), &msg, sizeof(struct message)); // send "token sent" acknowledgment to L
                     if (n < 0)
                         error("\nError writing to socket");
-                    usleep(WAITING_TIME_MICROSECS); // waiting time, in microseconds, applied to process P before it can send the updated token
+                    usleep(WAITING_TIME_MICROSECS); // waiting time, in microseconds, applied to process P
+                                                    // before it can check for new incoming tokens
                 }
             }
             else if (retval == 0)
@@ -170,6 +179,7 @@ int main(int argc, char *argv[])
 
         else // state = 0: token computation is paused
         {
+            //printf("\n\tDentro state = 0");
             retval = select(maxfd + 1, &readfds, NULL, NULL, &select_tv);
 
             if (retval == -1)
@@ -186,20 +196,27 @@ int main(int argc, char *argv[])
                     {
                     case 0: // keep computation paused: state is unchanged
                         msg.status = state;
-                        msg.value = 0;
                         gettimeofday(&msg.timestamp, NULL);
-                        printf("\nProcesses are already stopped, no need to pause");
+                        //printf("\nProcesses are already stopped, no need to pause");
                         write(atoi(argv[5]), &msg, sizeof(struct message)); // send "pause" command acknowledgment to L
                         break;
                     case 1: // resume token computation
                         msg.status = state;
-                        msg.value = 0;
                         gettimeofday(&msg.timestamp, NULL);
+                        //printf("\nPaused - go active");
                         write(atoi(argv[5]), &msg, sizeof(struct message)); // send "continue" command acknowledgment to L
+                        break;
+                    case 3: // request log file opening to L
+                        msg.status = state;
+                        gettimeofday(&msg.timestamp, NULL);
+                        write(atoi(argv[5]), &msg, sizeof(struct message)); // send "print" command acknowledgment to L
                         break;
                     }
                 }
             }
+            /* Attenzione al caso RUN_MODE = 1, qui il tizio prima deve mandarmi dati sulla pipe 2 coerentemente
+                con come sto facendo io. Mi basta il token (float) da lui. questo commento era sotto fd_isset atoi2*/
+            //usleep(WAITING_TIME_MICROSECS); // waiting time applied to process P before it checks again if computation must resume
         }
     }
 

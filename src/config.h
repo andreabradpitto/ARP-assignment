@@ -24,8 +24,9 @@
 struct message
 {
 	struct timeval timestamp;	// timestamp of the token
-	int status;		  			// status = 0: pause; status = 1: computing; status = 3: log print; status = 99 token data in value
-	float value;				// if status == 99 this stores token_value, irrelevant otherwise
+	int status;		  			// status = 0: pause; status = 1: computing; status = 3: open log file;
+								// status = 8 new token data value from G; status = 9 new token data value from P
+	float value;				// if status == 8 | satus == 9 this stores token.value, irrelevant otherwise
 };
 
 typedef struct token_struct

@@ -5,13 +5,12 @@
 #include <time.h>
 #include <errno.h>
 #include <signal.h>
-#include <syslog.h>
 #include <fcntl.h>
 #include <sys/prctl.h> // non-posix?
 #include "config.h"
 
 // This process is the one responsible for logs. It registers every input received and, when prompted,
-// outputs in the terminal all the history (log) of what happened since the beginning
+// opens the current log file via the user's preferred application
 
 
 int main(int argc, char *argv[])
@@ -28,22 +27,18 @@ int main(int argc, char *argv[])
     printf("L: my PID is %d\n", Lpid);
 
     char *pretty_time;
-    int logfd;
     char *logpath = "log.txt";
-    logfd = open(logpath, O_CREAT | O_WRONLY); //guarda se e questo a causare problemi coi permessi
-    int bufsize = 1024; //da eliminare se in fondo tolgo bzero()
-    char buffer[bufsize];
-    //ssize_t ret_in;
+    setenv("log_file", logpath, 1);
+    FILE* log_file = fopen(logpath, "w+");
 
     long int time_var = 0;
 
     struct message msg;
 
-    //openlog("[Assignment]", 0, LOG_USER);
-
     while (1)
     {
-        // read() is a blocking function by default (i.e. when O_NONBLOCK is not set): wait here until some data is available
+        // read() is a blocking function by default (i.e. when, like here, O_NONBLOCK is not set):
+        // wait here until some data is available
         read(atoi(argv[4]), &msg, sizeof(struct message));
 
         //holds a series of text lines in couples:
@@ -51,45 +46,52 @@ int main(int argc, char *argv[])
         //<timestamp> <sent value> (a sample of the wave)
         switch (msg.status)
         {
-        case 0: // logging acknowledgment of pause signal
-            // //prima era: syslog(LOG_INFO, "%s%s", time_stamp(), " from S pause command issued\n");
-            //syslog(LOG_INFO, "\n%lu%s", msg.timestamp, " - from S - pause command issued");
-            time_var = msg.timestamp.tv_sec * 1000000 + msg.timestamp.tv_usec;
-            sprintf(buffer, "\n%li%s", time_var, " - received from S - pause command issued");
-            write(logfd, &buffer, sizeof(buffer)); //non so se venga riscritto tutto ogni volta sul buffer, da controllare
-            break;
-        case 1: // logging acknowledgment of resume/continue signal
-            time_var = msg.timestamp.tv_sec * 1000000 + msg.timestamp.tv_usec;
-            sprintf(buffer, "\n%li%s", time_var, " - received from S - continue command issued");
-            write(logfd, &buffer, sizeof(buffer));
-            break;
-        case 99: // logging acknowledgment of token value
-            //pretty_time = ctime(&msg.timestamp);
-            //pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
-            time_var = msg.timestamp.tv_sec * 1000000 + msg.timestamp.tv_usec;
-            sprintf(buffer, "\n%li%s%f", time_var, " - received from G - sent value: ", msg.value);
-            write(logfd, &buffer, sizeof(buffer));
-            break;
-        case 3: // open log file request received
-            printf("\nUser asked to open logfile"); // cosi, ammesso che funzioni, me lo fa nello stesso terminale.
-                                                    // Dovrei aprirne uno nuovo ma con la tecnica di S mi sa che non va.
-            //int L_terminal = system("gnome-terminal");
-            //qui metti L_terminal come std output
-
-            /*while ((ret_in = read(logfd, &buffer, BUFSIZE)) > 0)
-            {
-                write(0, &buffer, BUFSIZE);
-            }
-            break;*/
-            printf("\nThe log file is accessible at: '/tmp/test.txt'"); // FALSO!
-            break;
+            case 0: // logging acknowledgment of pause signal
+                pretty_time = ctime(&msg.timestamp.tv_sec);
+                pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
+                time_var = msg.timestamp.tv_sec * 1000000 + msg.timestamp.tv_usec;
+                log_file = fopen(logpath, "a");
+                fprintf(log_file, "%li %s %s %s\n", time_var, "-", pretty_time, "- from S - pause");
+                fclose(log_file);
+                break;
+            case 1: // logging acknowledgment of resume/continue signal
+                pretty_time = ctime(&msg.timestamp.tv_sec);
+                pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
+                time_var = msg.timestamp.tv_sec * 1000000 + msg.timestamp.tv_usec;
+                log_file = fopen(logpath, "a");
+                fprintf(log_file, "%li %s %s %s\n", time_var, "-", pretty_time, "- from S - start");
+                fclose(log_file);
+                break;
+            case 8: // logging acknowledgment of token value received by P
+                pretty_time = ctime(&msg.timestamp.tv_sec);
+                pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
+                time_var = msg.timestamp.tv_sec * 1000000 + msg.timestamp.tv_usec;
+                log_file = fopen(logpath, "a");
+                fprintf(log_file, "%li %s %s %s %f\n", time_var, "-", pretty_time, "- from G - value - ", msg.value);
+                fclose(log_file);
+                break;
+            case 9: // logging acknowledgment of token value sent by P
+                pretty_time = ctime(&msg.timestamp.tv_sec);
+                pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
+                time_var = msg.timestamp.tv_sec * 1000000 + msg.timestamp.tv_usec;
+                log_file = fopen(logpath, "a");
+                fprintf(log_file, "%li %s %s %s %f\n", time_var, "-", pretty_time, "- from P - value - ", msg.value);
+                fclose(log_file);
+                break;
+            case 3: // open log file request received
+                pretty_time = ctime(&msg.timestamp.tv_sec);
+                pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
+                time_var = msg.timestamp.tv_sec * 1000000 + msg.timestamp.tv_usec;
+                log_file = fopen(logpath, "a");
+                fprintf(log_file, "%li %s %s %s\n", time_var, "-", pretty_time, "- from S - logrq");
+                fclose(log_file);
+                int exit_status = system("xdg-open $log_file");            
+                break;
         }
-
-        //bzero(buffer, bufsize); // clean the buffer by setting its content to 0
     }
 
-    //closelog();
-    close(logfd);
+    fclose(log_file);
+    unsetenv("log_file");
     close(atoi(argv[4]));
     return 0;
 }

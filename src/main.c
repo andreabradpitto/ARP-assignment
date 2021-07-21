@@ -5,17 +5,17 @@
 #include <sys/types.h>
 #include "config.h"
 
-// This is the main, you have to only execute this command: ./main (you can also run sudo netstat -tulpn for socket troubleshooting)
-// The duty of this piece of code is to load config data and to launch all the needed processes (S, P, G and L)
+// This is the main, you have to only execute this command: "./main". The duty of this
+// piece of code is to load configuration data and to launch all the involved processes (S, P, G and L)
 
 
 int main(int argc, char *argv[])
 {
 	pid_t P, G, S, L; // also "int P, G, S, L;"" is fine
 
-	int pfd1[2]; // file descriptors for pipe 1 (S writes on it, P reads from it)
-	int pfd2[2]; // file descriptors for pipe 2 (G writes on it, P reads from it)
-	int pfd3[2]; // file descriptors for pipe 3 (P writes on it, L reads from it)
+	int pfd1[2]; // file descriptors (a.k.a. fd) for pipe 1 (S writes on it, P reads from it)
+	int pfd2[2]; // file descriptors (a.k.a. fd) for pipe 2 (G writes on it, P reads from it)
+	int pfd3[2]; // file descriptors (a.k.a. fd) for pipe 3 (P writes on it, L reads from it)
 
 	int wait_status = 0;
 
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 	char read3[2];
 	char write3[2];
 
-	// Load the pipe's fd read/write end (3rd arg.) into the char array (1st arg.), while formatting it as stated in 2nd arg.
+	// Load each pipe's fd read/write end (3rd arg.) into the char array (1st arg.), while formatting it as stated in 2nd arg.
 	sprintf(read1, "%d", pfd1[0]);
 	sprintf(write1, "%d", pfd1[1]);
 	sprintf(read2, "%d", pfd2[0]);
@@ -52,12 +52,12 @@ int main(int argc, char *argv[])
 
 	// Preparing to send all pipe ends to the children of this process, by transforming their fd in char
 	// They will be reverted back to integers inside those children
-	argv[0] = read1;  // pipe1: read
-	argv[1] = write1; // pipe1: write
-	argv[2] = read2;  // pipe2: read
-	argv[3] = write2; // pipe2: write
-	argv[4] = read3;  // pipe3: read
-	argv[5] = write3; // pipe3: write
+	argv[0] = read1;	// pipe1: read
+	argv[1] = write1;	// pipe1: write
+	argv[2] = read2;	// pipe2: read
+	argv[3] = write2;	// pipe2: write
+	argv[4] = read3;	// pipe3: read
+	argv[5] = write3;	// pipe3: write
 
 	S = fork();
 

@@ -10,8 +10,8 @@
 #include "config.h"
 
 // This is the process that is used to communicate with the terminal. It receives and handles 3 different commands: start, pause, log.
-// In order to use it, you have to type e.g. "kill -9 1234", where the first number is the signal chosen whilst the second
-// is the PID of the node S. You only interact with S, as the rest of the code handles all the commands issued internally.
+// In order to use it, you have to type e.g. "kill -9 1234", where the first number is the signal chosen, whilst the second
+// is the PID of the node S. You only interact with this process, which in turn communicates with P, and so on.
 
 
 // These 3 flags are stored as global variables because you cannot pass any argument of choice to the signal handlers
@@ -37,7 +37,7 @@ void stop_handler(int signum)
 	}
 }
 
-// This handler issues the printing on terminal of the log file
+// This handler issues the opening of the log file
 void log_handler(int signum)
 {
 	if (signum == SIGUSR1)
@@ -58,9 +58,6 @@ int main(int argc, char *argv[])
 	Spid = getpid();
 	prctl(PR_SET_PDEATHSIG, SIGHUP); // asks the kernel to deliver the SIGHUP signal when parent dies, i.e. also terminates S
 	printf("S: my PID is %d\n", Spid);
-
-	int state = 1; 	  // state = 0: P and G communication stopped ; state = 1: P and G communication resumed/in progress
-	int logprint = 2; // logprint = 2: do not print output on screen; logprint = 3: print output on screen
 
 	// Creation of Input Terminal welcome message, including dynamic Spid injection
 	char welcome0[1] = "";
@@ -92,9 +89,6 @@ int main(int argc, char *argv[])
 
 	signal(SIGCONT, start_handler);	// reacts to "kill -18 Spid"
 	signal(SIGUSR2, stop_handler);	// reacts to "kill -12 Spid"
-									//Con SIGSTOP mi blocca la S e non posso mandare l'avviso agli altri nodi:
-									//Se faccio così (SIGUSR2) blocco tutti tranne S,
-									//il quale comunque non fa nulla fino a nuovo input
 	signal(SIGUSR1, log_handler);	// reacts to "kill -10 Spid"
 
 	while (1)
@@ -102,27 +96,30 @@ int main(int argc, char *argv[])
 		if (start_flag)
 		{
 			printf("\n\nReceived start command by user\n\n");
-			state = 1;
-			write(atoi(argv[1]), &state, sizeof(int));
+			write(atoi(argv[1]), &(int){1}, sizeof(int)); // state = 0: P and G communication stopped
 			start_flag = 0;
 		}
 		if (stop_flag)
 		{
 			printf("\n\nReceived stop command by user\n\n");
-			state = 0;
-			write(atoi(argv[1]), &state, sizeof(int));
+			write(atoi(argv[1]), &(int){0}, sizeof(int)); // state = 1: P and G communication resumed/in progress
 			stop_flag = 0;
 		}
 		if (log_flag)
 		{
-			printf("\n\nReceived log command by user\n\n");
-			logprint = 3;
-			write(atoi(argv[1]), &logprint, sizeof(int));
+			printf("\n\nReceived open log command by user\n\n");
+			write(atoi(argv[1]), &(int){3}, sizeof(int)); // send open log file request
 			log_flag = 0;
-			logprint = 2;
 		}
 	}
 
+	unsetenv("welcome0");
+	unsetenv("welcome1");
+	unsetenv("welcome2");
+	unsetenv("welcome3");
+	unsetenv("command1");
+	unsetenv("command2");
+	unsetenv("command3");
 	close(atoi(argv[1]));
 	return 0;
 }

@@ -28,6 +28,10 @@ Al posto di fancy metti time in microseconds o quello che è (tipo epoch time)
 
 rinomina msg in log_msg e message in log_message?
 
+considera se rimpiazzare i sigusr1 e 2
+
+dire che ho notato che se metto dei warning per dire nodes already runnning o already paused, questi sono errati. in ogni caso il codice funziona correttamente quindi non me ne sono preoccupato molto. Poi a velocità basse funzionava di nuovo, forse questo è risolto.
+
 
 
 Nota Keep:

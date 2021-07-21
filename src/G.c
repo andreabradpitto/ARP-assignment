@@ -11,8 +11,9 @@
 #include <sys/prctl.h> // non-posix?
 #include "config.h"
 
-// This process can be run in 2 modes: debug mode (single machine) or normal mode (communicating with other PCs);
-// in the first case it receives tokens from P and then sends them back to it, in the other scenario it still
+// This process can be run in 2 modes: debug mode (single machine - RUN_MODE 0) or
+// normal mode (communicating with other PCs - RUN_MODE 1). In the first case it receives tokens
+// from P and then sends them back to it, in the other scenario it still
 // receives data from P, but the token is sent to another machine
 
 
@@ -41,7 +42,6 @@ int main(int argc, char *argv[])
 	socklen_t clilen;
 	struct sockaddr_in serv_addr, cli_addr;
 	int n; // read() handle
-	long int time_var = 0;
 	char *pretty_time;
 
 	token token;
@@ -61,8 +61,8 @@ int main(int argc, char *argv[])
 	if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) //the bind() system call binds a socket to an address
 		error("\nError on binding");
 
+	// G process is ready to wait for incoming tokens
 	listen(sockfd, MAX_REQS); // system call that allows this process to listen for connections over the socket
-	//printf("[G node waiting for messages]\n");
 
 	if (!RUN_MODE)
 	{
@@ -82,18 +82,17 @@ int main(int argc, char *argv[])
 				if (n < 0)
 					error("\nError reading from socket");
 
-				//printf("\nG: Token timestamp: %li | Token value: %f", token.timestamp, token.value);
 				pretty_time = ctime(&token.timestamp.tv_sec);
 				pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
 				printf("\nG: Token timestamp (fancy): %s | Token value: %f", pretty_time, token.value);
-				gettimeofday(&token.timestamp, NULL); // giusto metterlo?
+				gettimeofday(&token.timestamp, NULL);
 				write(atoi(argv[3]), &token, sizeof(token));
 			}
 		}
 	}
 	else // this is the code portion relative to the multiple machine case // non penso che io debba implementarlo!
 	{
-		//close(atoi(argv[3])); // tyhis has to be discussed with the guy whose machine is the next of the chain
+		//close(atoi(argv[3])); // this has to be discussed with the guy whose machine is the next of the chain
 		while (1)
 		{
 			portno = NEXT_PORT; //in realtà questo credo sia inutile, se non lo metto rimane 5000 come ho messo io,
