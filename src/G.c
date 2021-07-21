@@ -10,11 +10,10 @@
 #include <signal.h>
 #include "config.h"
 
-// This process can be run in 2 modes: debug mode (single machine - RUN_MODE = 0) or
-// normal mode (communicating with other PCs - RUN_MODE = 1). In the first case it receives tokens
-// from P and then sends them back to it, in the other scenario it still
-// receives data from P, but the token is sent to another machine
-
+// This process can be run in 2 modes: debug mode (i.e. single machine/covid/V2.0 - RUN_MODE = 0) or
+// normal mode (i.e.communicating with other PCs - RUN_MODE = 1). In the first case it receives tokens
+// from P, and then sends them back to it. In the other scenario, it sends data to the P of the next PC
+// in the chain
 
 void error(const char *m) // display a message about the error on stderr and then abort the program
 {
@@ -46,26 +45,26 @@ int main(int argc, char *argv[])
 	token.value = 0;
 	gettimeofday(&token.timestamp, NULL); // get the current time and store it in timestamp
 
-    if (!RUN_MODE)
-    {
+	if (!RUN_MODE)
+	{
 		portno = LOCAL_PORT;
 	}
-    else
-    {
+	else
+	{
 		portno = NEXT_PORT;
-    }
+	}
 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); // create a new socket
 	if (sockfd < 0)
 		error("\nError creating a new socket (G process)");
 	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int)) < 0)
-        error("\nG: setsockopt(SO_REUSEADDR) failed");
+		error("\nG: setsockopt(SO_REUSEADDR) failed");
 
-	bzero((char *) &serv_addr, sizeof(serv_addr));  // the function bzero() sets all values inside a buffer to zero
-	serv_addr.sin_family = AF_INET; 				// this contains the code for the family of the address
+	bzero((char *)&serv_addr, sizeof(serv_addr)); // the function bzero() sets all values inside a buffer to zero
+	serv_addr.sin_family = AF_INET;				  // this contains the code for the family of the address
 	serv_addr.sin_addr.s_addr = INADDR_ANY;
 	serv_addr.sin_port = htons(portno);
-	if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) // the bind() system call binds a socket to an address
+	if (bind(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) // the bind() system call binds a socket to an address
 		error("\nError on binding");
 
 	// G process is now waiting for incoming tokens
@@ -73,7 +72,7 @@ int main(int argc, char *argv[])
 
 	clilen = sizeof(cli_addr);
 	// The accept() system call causes the process to block until a client connects to the server
-	newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, (socklen_t *) &clilen);
+	newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr, (socklen_t *)&clilen);
 	if (newsockfd < 0)
 	{
 		perror("\naccept() system call failed");

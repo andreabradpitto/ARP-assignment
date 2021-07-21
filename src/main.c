@@ -5,9 +5,9 @@
 #include <sys/types.h>
 #include "config.h"
 
-// This is the main, you have to only execute this command: "./main". The duty of this
-// piece of code is to load configuration data and to launch all the involved processes (S, P, G and L)
-
+// This is the main, which launches all the other processes.
+// The duty of this piece of code is to load configuration data and
+// to launch all the involved processes (S, P, G and L)
 
 int main(int argc, char *argv[])
 {
@@ -54,12 +54,12 @@ int main(int argc, char *argv[])
 
 	// Preparing to send all pipe ends to the children of this process, by transforming their fd in char
 	// They will be reverted back to integers inside those children
-	argv[0] = read1;	// pipe1: read
-	argv[1] = write1;	// pipe1: write
-	argv[2] = read2;	// pipe2: read
-	argv[3] = write2;	// pipe2: write
-	argv[4] = read3;	// pipe3: read
-	argv[5] = write3;	// pipe3: write
+	argv[0] = read1;  // pipe1: read
+	argv[1] = write1; // pipe1: write
+	argv[2] = read2;  // pipe2: read
+	argv[3] = write2; // pipe2: write
+	argv[4] = read3;  // pipe3: read
+	argv[5] = write3; // pipe3: write
 
 	S = fork();
 

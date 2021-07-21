@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
-#include <sys/time.h> //questo è il primo degli aggiunti
+#include <sys/time.h> //questo e il primo degli aggiunti
 #include <signal.h>
 #include <syslog.h>
 #include <fcntl.h>
@@ -26,8 +26,8 @@ int main(int argc, char *argv[])
 
 	/*// C program to illustrate fopen()
 
-	#include <stdio.h>
-	#include <stdlib.h>
+	//#include <stdio.h>
+	//#include <stdlib.h>
 
 	int main()
 	{
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 
 	/*// C program to illustrate fopen()
 
-	#include <stdio.h>
+	//#include <stdio.h>
 
 	int main()
 	{

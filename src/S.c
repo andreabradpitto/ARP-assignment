@@ -5,13 +5,14 @@
 #include <errno.h>
 #include <sys/wait.h>
 #include <sys/types.h>
+#include <sys/time.h>
 #include <signal.h>
 #include "config.h"
 
-// This is the process that is used to communicate with the terminal. It receives and handles 3 different commands: start, pause, log.
-// In order to use it, you have to type e.g. "kill -9 1234", where the first number is the signal chosen, whilst the second
-// is the PID of the node S. You only interact with this process, which in turn communicates with P, and so on.
-
+// This is the process that is used to communicate with the others. It is the only one that interfaces with the terminal.
+// It can receive and handle 3 different commands: start, pause, log.
+// In order to use it, you have to type e.g. "kill -18 1234", where the first number is the signal chosen, whilst the second
+// is the PID of the node S itself. This process then communicates with P, spreading user commands through all the children of main
 
 // These 3 flags are stored as global variables because you cannot pass any argument of choice to the signal handlers
 int start_flag = 0;
@@ -85,9 +86,14 @@ int main(int argc, char *argv[])
 							 "echo $welcome2; echo $welcome0; echo $command1; echo $command2; echo $command3; "
 							 "echo $welcome0; echo $welcome3; echo $welcome0; exec bash\"");
 
-	signal(SIGCONT, start_handler);	// reacts to "kill -18 Spid"
+	signal(SIGCONT, start_handler); // reacts to "kill -18 Spid"
 	signal(SIGUSR2, stop_handler);	// reacts to "kill -12 Spid"
 	signal(SIGUSR1, log_handler);	// reacts to "kill -10 Spid"
+
+	// Note on SIGCONT:
+	// As other processes never actually stop (only computation stops),
+	// SIGCONT does not have any effect, but is useful here as a third custom signal
+	// with no undesired side effects
 
 	while (1)
 	{
