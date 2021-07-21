@@ -1,13 +1,12 @@
 # ARP-assignment
+
 This is my repository for the Advanced and Robot Programming Robotics Engineering course
 
 This is the readme for the brach devoted to the **Mentore** Graphical User Interface (**GUI**) development.
 
 ## ❗ Software requirements
 
-- Python (version >= 3.6)
-- PyQt5 (version >= 5.14.0)
-- Owlready2
+- gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
 
 ## ✅ Software installation
 
@@ -31,10 +30,10 @@ To run **Mentore**, open a terminal, move to the folder where this repository is
 python mentore.py
 ```
 
-## 📰 Additional information 
+## 📰 Additional information
   
 For a list of features that are planned in future releases, please check **Mentore**'s Help page [dedicated section](https://github.com/andreabradpitto/Mentore-Group-Project/blob/GUI/guide/help.md#features-that-will-be-supported-in-the-future).
 
 ## 📫 Developer contact
 
-Andrea Pitto - s3942710@studenti.unige.it  
+Andrea Pitto - s3942710@studenti.unige.it
