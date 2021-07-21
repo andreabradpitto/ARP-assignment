@@ -151,11 +151,6 @@ int main(int argc, char *argv[])
                     msg.status = 99; // special code to distinguish data coming from the 2nd pipe (G -> P)
                     msg.value = token.value;
                     msg.timestamp = token.timestamp;
-                    //printf("\nt_received.tv_sec: %li ", t_received.tv_sec);
-                    //printf("t_sent.tv_sec: %li ", t_sent.tv_sec);
-                    //printf("t_received.tv_usec: %li ", t_received.tv_usec);
-                    //printf("t_sent.tv_usec: %li ", t_sent.tv_usec);
-                    //printf("DT: %f", dt);
                     write(atoi(argv[5]), &msg, sizeof(struct message)); // send "data reception" acknowledgment to L
 
                     // This section is related to the communication with G, as the one with L is completed
@@ -197,7 +192,6 @@ int main(int argc, char *argv[])
                         write(atoi(argv[5]), &msg, sizeof(struct message)); // send "pause" command acknowledgment to L
                         break;
                     case 1: // resume token computation
-                        state = 1;
                         msg.status = state;
                         msg.value = 0;
                         gettimeofday(&msg.timestamp, NULL);
