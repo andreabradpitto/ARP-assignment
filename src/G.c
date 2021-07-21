@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 	if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) // the bind() system call binds a socket to an address
 		error("\nError on binding");
 
-	// G process is ready to wait for incoming tokens
+	// G process is now waiting for incoming tokens
 	listen(sockfd, MAX_REQS); // system call that allows this process to listen for connections over the socket
 
 	clilen = sizeof(cli_addr);
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 	newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, (socklen_t *) &clilen);
 	if (newsockfd < 0)
 	{
-		perror("\n'accept()' system call failed");
+		perror("\naccept() system call failed");
 		return -1;
 	}
 	else // connection accepted

@@ -39,9 +39,6 @@ int main(int argc, char *argv[])
         // wait here until some data is available
         read(atoi(argv[4]), &msg, sizeof(struct message));
 
-        //holds a series of text lines in couples:
-        //<timestamp> <from G | from S > <value>
-        //<timestamp> <sent value> (a sample of the wave)
         switch (msg.status)
         {
             case 0: // logging acknowledgment of pause signal

@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
     if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
         error("\nConnection failed");
 
-    // P process sending the first message and starting the cycle
+    // P process sending the first message and starting the communication between G and itself
     gettimeofday(&t_sent, NULL);
     token.timestamp = t_sent;
     n = write(sockfd, &token, sizeof(token));
@@ -111,7 +111,6 @@ int main(int argc, char *argv[])
     
         if (state == 1) // token computation is active
         {
-            //printf("\n\tDentro state = 1");
             retval = select(maxfd + 1, &readfds, NULL, NULL, &select_tv);
 
             if (retval == -1)
@@ -129,13 +128,11 @@ int main(int argc, char *argv[])
                     case 0: // stop token computation
                         msg.status = state;
                         gettimeofday(&msg.timestamp, NULL);
-                        //printf("\nActive - go pause");
                         write(atoi(argv[5]), &msg, sizeof(struct message)); // send "pause" command acknowledgment to L
                         break;
                     case 1: // continue token computation: state is unchanged
                         msg.status = state;
                         gettimeofday(&msg.timestamp, NULL);
-                        //printf("\nNodes are already running, no need to unpause");
                         write(atoi(argv[5]), &msg, sizeof(struct message)); // send "continue" command acknowledgment to L
                         break;
                     case 3: // request log file opening to L
@@ -157,8 +154,9 @@ int main(int argc, char *argv[])
 
                     // Time delay and token computations
                     dt = (t_received.tv_sec - t_sent.tv_sec) + (t_received.tv_usec - t_sent.tv_usec) / (float)1000000;
-                    //token.value = msg.value + dt * (1 - powf(msg.value, 2) / 2) * 2 * M_PI * RF;
+                    //token.value = msg.value + dt * (1 - powf(msg.value, 2) / 2) * 2 * M_PI * RF; // original formula
                     token.value = 2 * M_PI * RF * sin(msg.value + dt * (1 - msg.value)); // using this formula as the original is not working
+
                     gettimeofday(&token.timestamp, NULL);
                     n = write(sockfd, &token, sizeof(token)); // sending the new token to G
                     gettimeofday(&t_sent, NULL);
@@ -168,8 +166,8 @@ int main(int argc, char *argv[])
                     write(atoi(argv[5]), &msg, sizeof(struct message)); // send "token sent" acknowledgment to L
                     if (n < 0)
                         error("\nError writing to socket");
-                    usleep(WAITING_TIME_MICROSECS); // waiting time, in microseconds, applied to process P
-                                                    // before it can check for new incoming tokens
+                    // Waiting time, in microseconds, applied to process P before it can check for new incoming tokens
+                    usleep(WAITING_TIME_MICROSECS);
                 }
             }
             else if (retval == 0)
@@ -178,7 +176,6 @@ int main(int argc, char *argv[])
 
         else // state = 0: token computation is paused
         {
-            //printf("\n\tDentro state = 0");
             retval = select(maxfd + 1, &readfds, NULL, NULL, &select_tv);
 
             if (retval == -1)
@@ -196,13 +193,11 @@ int main(int argc, char *argv[])
                     case 0: // keep computation paused: state is unchanged
                         msg.status = state;
                         gettimeofday(&msg.timestamp, NULL);
-                        //printf("\nProcesses are already stopped, no need to pause");
                         write(atoi(argv[5]), &msg, sizeof(struct message)); // send "pause" command acknowledgment to L
                         break;
                     case 1: // resume token computation
                         msg.status = state;
                         gettimeofday(&msg.timestamp, NULL);
-                        //printf("\nPaused - go active");
                         write(atoi(argv[5]), &msg, sizeof(struct message)); // send "continue" command acknowledgment to L
                         break;
                     case 3: // request log file opening to L

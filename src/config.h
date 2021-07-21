@@ -19,9 +19,6 @@
 
 #define MAX_REQS 5			// maximum number of allowed requests on sockets
 
-//attenzione al caso run_mode = 1, quando do G a un altro tizio, assicurati che sia pronto a ricevere da atoi(argv[3]),
-//quindi su (argv[2]). Vale il contrario per il caso di P
-
 struct message
 {
 	struct timeval timestamp;	// timestamp of the token

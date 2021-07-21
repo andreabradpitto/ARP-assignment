@@ -11,7 +11,7 @@
 
 int main(int argc, char *argv[])
 {
-	pid_t P, G, S, L; // also "int P, G, S, L;"" is fine
+	pid_t P, G, S, L;
 
 	int pfd1[2]; // file descriptors (a.k.a. fd) for pipe 1 (S writes on it, P reads from it)
 	int pfd2[2]; // file descriptors (a.k.a. fd) for pipe 2 (G writes on it, P reads from it)
