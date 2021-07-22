@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     Ppid = getpid();
     printf("P: my PID is %d\n", Ppid);
 
-    int state = 1;
+    int state = 1; // state = 0: paused; state = 1: computing; state = 3: log opened (i.e. paused)
 
     token token;
     token.value = 0;
@@ -35,9 +35,10 @@ int main(int argc, char *argv[])
     struct timeval select_tv; // defines select() patience (timeout)
     int retval = 0;           // variable used to store select() ouput
 
-    float dt = 0;              // time delay between reception and delivery time instants of the token
-    struct timeval t_received; // time at which the token is received
-    struct timeval t_sent;     // time at which the token is sent
+    struct timeval calc_saver_ts;
+    int calc_saver_flag = 0;
+
+    float dt = 0; // time delay between reception and delivery time instants of the token
 
     int n; // write() handle
 
@@ -79,16 +80,14 @@ int main(int argc, char *argv[])
     if (connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
         error("\nConnection failed");
 
-    // P process sending the first message and starting the communication between G and itself
-    gettimeofday(&t_sent, NULL);
-    token.timestamp = t_sent;
-    n = write(sockfd, &token, sizeof(token));
+    // P process sending the first message, and thus starting the communication between G and itself
+    gettimeofday(&token.timestamp, NULL);     // store token sending time
+    n = write(sockfd, &token, sizeof(token)); // sending the new token to G
     if (n < 0)
         error("\nError writing to socket");
-    gettimeofday(&t_sent, NULL);
     log_msg.status = 9; // special code to distinguish log entries relative to tokens sent by P
     log_msg.value = token.value;
-    log_msg.timestamp = t_sent;
+    log_msg.timestamp = token.timestamp;                        // log token sending time
     write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "token sent" acknowledgment to L
     if (!RUN_MODE)
     {
@@ -122,50 +121,51 @@ int main(int argc, char *argv[])
             {
                 if (FD_ISSET(atoi(argv[0]), &readfds)) // read of first pipe (data incoming from S) is ready
                 {
+                    // read() into "state":
+                    // state = 0: stop token computation;
+                    // state = 1: continue token computation (state is unchanged)
+                    // state = 3: request log file opening to L
                     read(atoi(argv[0]), &state, sizeof(int));
-                    switch (state)
-                    {
-                    case 0: // stop token computation
-                        log_msg.status = state;
-                        gettimeofday(&log_msg.timestamp, NULL);
-                        write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "pause" command acknowledgment to L
-                        break;
-                    case 1: // continue token computation: state is unchanged
-                        log_msg.status = state;
-                        gettimeofday(&log_msg.timestamp, NULL);
-                        write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "continue" command acknowledgment to L
-                        break;
-                    case 3: // request log file opening to L
-                        log_msg.status = state;
-                        gettimeofday(&log_msg.timestamp, NULL);
-                        write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "print" command acknowledgment to L
-                        state = 0;                                                  // pause computation upon log file opening
-                        break;
-                    }
+                    gettimeofday(&log_msg.timestamp, NULL);
+                    log_msg.status = state;
+                    write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send pause/continue/log command acknowledgment to L
                 }
                 if (FD_ISSET(atoi(argv[2]), &readfds)) // read of second pipe (data incoming from G) is ready
                 {
                     read(atoi(argv[2]), &token, sizeof(token));
-                    gettimeofday(&t_received, NULL);
+                    if (calc_saver_flag == 1)
+                    {
+                        calc_saver_flag = 0;
+                        log_msg.timestamp = calc_saver_ts;
+                    }
+                    else
+                    {
+                        gettimeofday(&log_msg.timestamp, NULL); // log token reception time
+                    }
                     log_msg.status = 8; // special code to distinguish data coming from the 2nd pipe (G -> P)
                     log_msg.value = token.value;
-                    log_msg.timestamp = token.timestamp;
                     write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "data reception" acknowledgment to L
 
-                    // Time delay and token computations
-                    dt = (t_received.tv_sec - t_sent.tv_sec) + (t_received.tv_usec - t_sent.tv_usec) / (float)1000000;
-                    //token.value = log_msg.value + dt * (1 - powf(log_msg.value, 2) / 2) * 2 * M_PI * RF; // original formula (not working)
-                    token.value = 2 * M_PI * RF * sin(log_msg.value + dt * (1 - log_msg.value)); // using this formula instead
+                    // Time delay computation
+                    // It is the difference (in seconds) between the token reception time and
+                    // the time present inside of the received token, which is the time at which that token had been
+                    // sent by P (or the previous P in the chain)
+                    dt = (log_msg.timestamp.tv_sec - token.timestamp.tv_sec) +
+                         (log_msg.timestamp.tv_usec - token.timestamp.tv_usec) / (float)1000000;
 
-                    gettimeofday(&token.timestamp, NULL);
+                    // Token computation
+                    // using a custom formula as the one provided is not working properly
+                    token.value = sin(2 * M_PI * RF * (log_msg.value + dt * (1 - log_msg.value))); // custom formula
+                    //token.value = log_msg.value + dt * (1 - powf(log_msg.value, 2) / 2) * 2 * M_PI * RF; // original formula (not working)
+
+                    gettimeofday(&token.timestamp, NULL);     // store token sending time
                     n = write(sockfd, &token, sizeof(token)); // sending the new token to G
-                    gettimeofday(&t_sent, NULL);
-                    log_msg.status = 9; // special code to distinguish log entries relative to tokens sent by P
-                    log_msg.value = token.value;
-                    log_msg.timestamp = t_sent;
-                    write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "token sent" acknowledgment to L
                     if (n < 0)
                         error("\nError writing to socket");
+                    log_msg.status = 9; // special code to distinguish log entries relative to tokens sent by P
+                    log_msg.value = token.value;
+                    log_msg.timestamp = token.timestamp;                        // log token sending time
+                    write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "token sent" acknowledgment to L
                     if (!RUN_MODE)
                     {
                         // Waiting time, in microseconds, applied to process P before it can check for new incoming tokens
@@ -173,12 +173,16 @@ int main(int argc, char *argv[])
                     }
                 }
             }
-            else if (retval == 0)
-                printf("\nNo data has been written into pipes in the last 2 seconds");
         }
 
-        else // state = 0: token computation is paused
+        else // state = 0 or 3: token computation is paused
         {
+
+            if (calc_saver_flag == 0)
+            {
+                calc_saver_flag = 1;
+                gettimeofday(&calc_saver_ts, NULL);
+            }
             retval = select(maxfd + 1, &readfds, NULL, NULL, &select_tv);
 
             if (retval == -1)
@@ -190,25 +194,14 @@ int main(int argc, char *argv[])
             {
                 if (FD_ISSET(atoi(argv[0]), &readfds)) // read of first pipe (data incoming from S) is ready
                 {
+                    // read() into "state":
+                    // state = 0: keep computation paused (state is unchanged)
+                    // state = 1: resume token computation
+                    // state = 3: request log file opening to L
                     read(atoi(argv[0]), &state, sizeof(int));
-                    switch (state)
-                    {
-                    case 0: // keep computation paused: state is unchanged
-                        log_msg.status = state;
-                        gettimeofday(&log_msg.timestamp, NULL);
-                        write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "pause" command acknowledgment to L
-                        break;
-                    case 1: // resume token computation
-                        log_msg.status = state;
-                        gettimeofday(&log_msg.timestamp, NULL);
-                        write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "continue" command acknowledgment to L
-                        break;
-                    case 3: // request log file opening to L
-                        log_msg.status = state;
-                        gettimeofday(&log_msg.timestamp, NULL);
-                        write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "print" command acknowledgment to L
-                        break;
-                    }
+                    gettimeofday(&log_msg.timestamp, NULL);
+                    log_msg.status = state;
+                    write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send pause/continue/log command acknowledgment to L
                 }
             }
         }

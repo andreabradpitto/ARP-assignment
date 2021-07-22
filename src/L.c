@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     Lpid = getpid();
     printf("L: my PID is %d\n", Lpid);
 
-    char *pretty_time;
+    char *fancy_time;
     char *logpath = "log.txt";
     setenv("log_file", logpath, 1);
     FILE *log_file = fopen(logpath, "w+");
@@ -38,43 +38,43 @@ int main(int argc, char *argv[])
         switch (log_msg.status)
         {
         case 0: // logging acknowledgment of pause signal
-            pretty_time = ctime(&log_msg.timestamp.tv_sec);
-            pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
+            fancy_time = ctime(&log_msg.timestamp.tv_sec);
+            fancy_time[strcspn(fancy_time, "\n")] = 0; // remove newline from ctime() output
             time_var = log_msg.timestamp.tv_sec * 1000000 + log_msg.timestamp.tv_usec;
             log_file = fopen(logpath, "a");
-            fprintf(log_file, "%li %s %s %s\n", time_var, "|", pretty_time, "| from S | pause | undefined");
+            fprintf(log_file, "%li %s %s %s\n", time_var, "|", fancy_time, "| from S | pause | undefined");
             fclose(log_file);
             break;
         case 1: // logging acknowledgment of resume/continue signal
-            pretty_time = ctime(&log_msg.timestamp.tv_sec);
-            pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
+            fancy_time = ctime(&log_msg.timestamp.tv_sec);
+            fancy_time[strcspn(fancy_time, "\n")] = 0; // remove newline from ctime() output
             time_var = log_msg.timestamp.tv_sec * 1000000 + log_msg.timestamp.tv_usec;
             log_file = fopen(logpath, "a");
-            fprintf(log_file, "%li %s %s %s\n", time_var, "|", pretty_time, "| from S | start | undefined");
+            fprintf(log_file, "%li %s %s %s\n", time_var, "|", fancy_time, "| from S | start | undefined");
             fclose(log_file);
             break;
         case 8: // logging acknowledgment of token value received by P
-            pretty_time = ctime(&log_msg.timestamp.tv_sec);
-            pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
+            fancy_time = ctime(&log_msg.timestamp.tv_sec);
+            fancy_time[strcspn(fancy_time, "\n")] = 0; // remove newline from ctime() output
             time_var = log_msg.timestamp.tv_sec * 1000000 + log_msg.timestamp.tv_usec;
             log_file = fopen(logpath, "a");
-            fprintf(log_file, "%li %s %s %s %9f\n", time_var, "|", pretty_time, "| from G | value |", log_msg.value);
+            fprintf(log_file, "%li %s %s %s %9f\n", time_var, "|", fancy_time, "| from G | value |", log_msg.value);
             fclose(log_file);
             break;
         case 9: // logging acknowledgment of token value sent by P
-            pretty_time = ctime(&log_msg.timestamp.tv_sec);
-            pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
+            fancy_time = ctime(&log_msg.timestamp.tv_sec);
+            fancy_time[strcspn(fancy_time, "\n")] = 0; // remove newline from ctime() output
             time_var = log_msg.timestamp.tv_sec * 1000000 + log_msg.timestamp.tv_usec;
             log_file = fopen(logpath, "a");
-            fprintf(log_file, "%li %s %s %s %9f\n", time_var, "|", pretty_time, "| from P | value |", log_msg.value);
+            fprintf(log_file, "%li %s %s %s %9f\n", time_var, "|", fancy_time, "| from P | value |", log_msg.value);
             fclose(log_file);
             break;
         case 3: // open log file request received
-            pretty_time = ctime(&log_msg.timestamp.tv_sec);
-            pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
+            fancy_time = ctime(&log_msg.timestamp.tv_sec);
+            fancy_time[strcspn(fancy_time, "\n")] = 0; // remove newline from ctime() output
             time_var = log_msg.timestamp.tv_sec * 1000000 + log_msg.timestamp.tv_usec;
             log_file = fopen(logpath, "a");
-            fprintf(log_file, "%li %s %s %s\n", time_var, "|", pretty_time, "| from S | logrq | undefined");
+            fprintf(log_file, "%li %s %s %s\n", time_var, "|", fancy_time, "| from S | logrq | undefined");
             fclose(log_file);
             int exit_status = system("xdg-open $log_file");
             break;

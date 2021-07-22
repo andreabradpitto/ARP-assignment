@@ -108,7 +108,7 @@ The log file gets saved in the main folder of the repository. It gets overwritte
 1626960952632212 | Thu Jul 22 15:35:52 2021 | from G | value | -0.319868
 ```
 
-Where the first number is the the number of microseconds since the [Epoch](https://man7.org/linux/man-pages/man2/time.2.html), the second entry is the same data, but presented in a human-readable way (up to seconds precision), the third is the name of the process from which the data is coming from, the fourth is the type of information (*start*, *pause*, *token*), and the last one is the token value, if relevant (otherwise it is labeled as *undefined*).
+Where the first number is the the number of microseconds since the [Epoch](https://man7.org/linux/man-pages/man2/time.2.html), the second entry is the same data, but presented in a human-readable way (up to seconds precision), the third is the name of the process from which the data is coming from, the fourth is the type of information (*start*, *pause*, *value*), and the last one is the token value itself, if relevant (otherwise it is labeled as *undefined*).
 
 ### 6.4 - Input Terminal & Output Terminal
 
@@ -148,16 +148,19 @@ kill -10 22961
 kill -12 22961
 kill -18 22961
 
-10 is to output a log, 12 to pause, 18 to resume. To end, press Ctrl + C in the Output Terminal
+10 is to open the log file, 12 to pause, 18 to resume. To end, press Ctrl + C in the Output Terminal
 ```
 
-The dynamic part is the "22961", which gets updated every time the code is run.
+The dynamic part is the "22961", which gets updated every time the code is run. Be careful not to input a wrong [signal value](https://dsa.cs.tsinghua.edu.cn/oj/static/unix_signal.html), as it may break the correct program execution. If that happens, it may be needed to manually kill processes *P*, *G*, and *L*.
+
+Please notice that asking for the log file to open at run-time automatically pauses token computation, so that the user can check its entries without being bothered by "document has changed" warnings and alike.
 
 ## 📊 7 - Results
 
 After several tests, I came to the conclusion that the token function reported by the professor ([Assignment Specifications V1.0](doc/Assignment%20Specifications%20V1.0.pdf) and [Assignment Specifications V2.0](doc/Assignment%20Specifications%20V2.0.pdf)) does not work.
 It should produce a [sine wave](https://en.wikipedia.org/wiki/Sine) but, even with the default parameters, it does not even come close to that.
-After several tweaks to the function itself, I ended up using ... TODO
+After several tweaks to the function itself, I ended up using TODO
+
 Results TODO
 
 ## 📫 8 - Author

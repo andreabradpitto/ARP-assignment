@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 	strncat(command1, Spid_array, (sizeof(command1) - strlen(command1)));
 	strncat(command2, Spid_array, (sizeof(command2) - strlen(command2)));
 	strncat(command3, Spid_array, (sizeof(command3) - strlen(command3)));
-	char welcome3[96] = "10 is to output a log, 12 to pause, 18 to resume. To end, press Ctrl+C in the Output Terminal";
+	char welcome3[99] = "10 is to open the log file, 12 to pause, 18 to resume. To end, press Ctrl+C in the Output Terminal";
 	setenv("welcome0", welcome0, 1);
 	setenv("welcome1", welcome1, 1);
 	setenv("welcome2", welcome2, 1);
@@ -94,21 +94,21 @@ int main(int argc, char *argv[])
 	{
 		if (start_flag)
 		{
-			printf("\n\nReceived start command by user\n\n");
 			write(atoi(argv[1]), &(int){1}, sizeof(int)); // state = 0: P and G communication stopped
 			start_flag = 0;
+			printf("\n\t\t\tReceived start command by user\n");
 		}
 		if (stop_flag)
 		{
-			printf("\n\nReceived stop command by user\n\n");
 			write(atoi(argv[1]), &(int){0}, sizeof(int)); // state = 1: P and G communication resumed/in progress
 			stop_flag = 0;
+			printf("\n\t\t\tReceived stop command by user\n");
 		}
 		if (log_flag)
 		{
-			printf("\n\nReceived open log command by user\n\n");
-			write(atoi(argv[1]), &(int){3}, sizeof(int)); // send open log file request
+			write(atoi(argv[1]), &(int){3}, sizeof(int)); // state = 3: send open log file request
 			log_flag = 0;
+			printf("\n\t\t\tReceived open log command by user\n");
 		}
 	}
 

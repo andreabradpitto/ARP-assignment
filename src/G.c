@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 	socklen_t clilen;
 	struct sockaddr_in serv_addr, cli_addr;
 	int n; // read() handle
-	char *pretty_time;
+	char *fancy_time;
 
 	token token;
 	token.value = 0;
@@ -80,10 +80,9 @@ int main(int argc, char *argv[])
 			if (n < 0)
 				error("\nError reading from socket");
 
-			pretty_time = ctime(&token.timestamp.tv_sec);
-			pretty_time[strcspn(pretty_time, "\n")] = 0; // remove newline from ctime() output
-			printf("\nG: Token timestamp (fancy): %s | Token value: %9f", pretty_time, token.value);
-			gettimeofday(&token.timestamp, NULL);
+			fancy_time = ctime(&token.timestamp.tv_sec);
+			fancy_time[strcspn(fancy_time, "\n")] = 0; // remove newline from ctime() output
+			printf("\nG: Token timestamp (fancy): %s | Token value: %9f", fancy_time, token.value);
 			write(atoi(argv[3]), &token, sizeof(token));
 		}
 	}
