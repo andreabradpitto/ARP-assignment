@@ -92,6 +92,16 @@ from P, and then sends them back to it. In the other scenario, it sends data to 
 - [L](src/L.c): This process is the one responsible of logging. It registers every command issued by the user
 and every token processed by P (received/sent). When prompted, it opens the current log file via the user's preferred application
 
+The config file TODO
+
+The log file gets saved in the main folder of the repository. It gets overwritten at each new run, if present, otherwise it gets created. A single entry of the log file looks like this:
+
+```text
+1626960952632212 | Thu Jul 22 15:35:52 2021 | from G | value | -0.319868
+```
+
+Where the first number is the the number of microseconds since the [Epoch](https://man7.org/linux/man-pages/man2/time.2.html), the second entry is the same data, but presented in a human-readable way (up to seconds precision), the third is the name of the process from which the data is coming from, the fourth is the type of information (*start*, *pause*, *token*), and the last one is the token value, if relevant (otherwise it is labeled as *undefined*).
+
 Upon execution, the code launches a second terminal, that will serve as the **Input Terminal**. The one in which *main* has been launched
 is referred to as the **Output Terminal**.  
 The **Output Terminal** shows all the run-time prints, and welcomes the user with this message:
