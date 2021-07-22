@@ -23,10 +23,9 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
+#define RUN_MODE 0					// set to 0 to go debug mode (= covid/V2.0 mode), 1 for multiple machine mode [default: 0]
 #define RF 1						// sine wave frequency [default: 1.0]
 #define WAITING_TIME_MICROSECS 1000 // waiting time, in microseconds, applied by process P before sending the updated token [default: 1000]
-#define RUN_MODE 0					// set to 0 to go debug mode (= covid/V2.0 mode), 1 for multiple machine mode [default: 0] \
-									// RUN_MODE 1 may require to adjust pipe ends in main.c
 #define NEXT_IP "192.168.1.106"		// IP address of the next machine in the chain ("hostname -I" to get your IP)
 #define NEXT_PORT 5000				// chosen remote port for the communication
 #define LOCAL_IP "localhost"		// localhost name (equivalent to 127.0.0.1 and to machine's own name, i.e. Linux's "Hostname")

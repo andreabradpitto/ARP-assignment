@@ -1,12 +1,5 @@
-Leggi pdf prima di consegnare e anche la nota di Keep. Consegna su Aulaweb e scrivi mail (con link a Github)
-
-Magari spiega in readme che il config è come header per le restrizioni covid
-
 Dato più semplice per il caso multi-machine (char array with just a float inside...)?
 
-Cose da vedere ora: fifo/named pipes, casino dei timestamps (forse almeno una tra t_sent e t_received sono superflue).
-Passa valori aggiuntivi tramite altri argv in main?
+Cose da vedere ora: fifo/named pipes.. Passa valori aggiuntivi tramite altri argv in main?
 
-Scrivi che usi una tua formula visto che la sua non va. Non ho perso tempo dietro ai limiti che non aveva senso
-
-Fai code format
+Fai code format, leggi pdf e Keep. Consegna su Aulaweb e scrivi mail (con link a a Github)

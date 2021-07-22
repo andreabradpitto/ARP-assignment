@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
 
                     // Token computation
                     // using a custom formula as the one provided is not working properly
-                    token.value = sin(2000 * M_PI * RF * (log_msg.value + dt * (1 - log_msg.value))); // custom formula
+                    token.value = sin(2 * M_PI * RF * (log_msg.value + dt * (1 - log_msg.value))); // custom formula
                     //token.value = log_msg.value + dt * (1 - powf(log_msg.value, 2) / 2) * 2 * M_PI * RF; // original formula (not working)
 
                     gettimeofday(&token.timestamp, NULL);     // store token sending time

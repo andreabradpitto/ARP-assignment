@@ -43,7 +43,7 @@ recent version, but I decided to still include the original specifications file 
 - [gcc](https://gcc.gnu.org/)
 - At least 1 MB of free disk space
 
-The space required is intended for the repository contents + the compiled code. Please beware that running the code for an extended time span may produce much greater log file sizes.
+The space required is intended for the repository contents + the compiled code. Please beware that running the code for an extended time span may produce much greater log file sizes (roughly 7 MB per minute).
 
 ## ✅ 4 - Installation
 
@@ -98,7 +98,19 @@ and every token processed by P (received/sent). When prompted, it opens the curr
 
 ### 6.2 - Configuration file
 
-The config file TODO
+The [config file](src/config.h) contains the list of all the needed **POSIX** libraries and definitions, and also serves as a tool to adapt the code for the multi-machine case on the fly. Simply edit:
+
+```c
+#define RUN_MODE 0                  // set to 0 to go debug mode (= covid/V2.0 mode), 1 for multiple machine mode [default: 0]
+#define RF 1                        // sine wave frequency [default: 1.0]
+#define WAITING_TIME_MICROSECS 1000 // waiting time, in microseconds, applied by process P before sending the updated token [default: 1000]
+#define NEXT_IP "192.168.1.106"     // IP address of the next machine in the chain ("hostname -I" to get your IP)
+#define NEXT_PORT 5000              // chosen remote port for the communication
+#define LOCAL_IP "localhost"        // localhost name (equivalent to 127.0.0.1 and to machine's own name, i.e. Linux's "Hostname")
+#define LOCAL_PORT 5000             // chosen local port for the communication
+```
+
+and re-compile the source code, as shown in [Installation](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#-4---installation).
 
 ### 6.3 - Log file
 
@@ -159,9 +171,9 @@ Please notice that asking for the log file to open at run-time automatically pau
 
 After several tests, I came to the conclusion that the token function reported by the professor ([Assignment Specifications V1.0](doc/Assignment%20Specifications%20V1.0.pdf) and [Assignment Specifications V2.0](doc/Assignment%20Specifications%20V2.0.pdf)) does not work.
 It should produce a [sine wave](https://en.wikipedia.org/wiki/Sine) but, even with the default parameters, it does not even come close to that.
-After several tweaks to the function itself, I ended up using TODO
+After several tweaks to the function itself, I ended up using one I defined myself. This formula, albeit less fancy than the original, works as intended, while still including all the parameters that were mentioned in the provided one.
 
-Results TODO
+Results were satisfying: my code works in both run modes, and does not seem to feature any relevant bug.
 
 ## 📫 8 - Author
 
