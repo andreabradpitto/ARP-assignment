@@ -95,26 +95,32 @@ and every token processed by P (received/sent). When prompted, it opens the curr
 
 Upon execution, the code launches a second terminal, that will serve as the **Input Terminal**. The one in which *main* has been launched
 is referred to as the **Output Terminal**.  
-The **Output Terminal** shows all the run-time prints, and welcomes the user with this message:  
-  
-*[This is the Output Terminal, which shows the processes' outputs. Use the Input Terminal to send signals to the processes. Press Ctrl+C to end]*
-  
+The **Output Terminal** shows all the run-time prints, and welcomes the user with this message:
+
+```console
+[This is the Output Terminal, which shows the processes' outputs. Use the Input Terminal to send signals to the processes. Press Ctrl+C to end]
+```
+
 It also shows the [PID](https://en.wikipedia.org/wiki/Process_identifier) of *main*, *S*, *P*, *G* and *L*.
   
 **The Input Terminal** welcomes the user with these lines instead:
+
+```console
+[This is the Input Terminal, through which you can send signals to the running processes. Please also che the Output Terminal to inspect outputs]
+```
+
+It then also prints the list of available commands, while also conveniently reporting the correct PID to use. For instance, the Input Terminal goes on reporting something like this:
+
+```console
+Available commands:
   
-*[This is the Input Terminal, through which you can send signals to the running processes. Please also che the Output Terminal to inspect outputs]*
+kill -10 22961
+kill -12 22961
+kill -18 22961
   
-It then also prints the list of available commands, while also conveniently reporting the correct PID to use. For instance, the Input Terminal goes on reporting something like this:  
-  
-*Available commands:*
-  
-*kill -10 22961*
-*kill -12 22961*
-*kill -18 22961*
-  
-*10 is to output a log, 12 to pause, 18 to resume. To end, press Ctrl + C in the Output Terminal*
-  
+10 is to output a log, 12 to pause, 18 to resume. To end, press Ctrl + C in the Output Terminal
+```  
+
 The dynamic part is the "22961", which gets updated every time the code is run.
 
 ## 📊 7 - Results
