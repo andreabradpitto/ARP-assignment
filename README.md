@@ -101,7 +101,17 @@ The **Output Terminal** shows all the run-time prints, and welcomes the user wit
 [This is the Output Terminal, which shows the processes' outputs. Use the Input Terminal to send signals to the processes. Press Ctrl+C to end]
 ```
 
-It also shows the [PID](https://en.wikipedia.org/wiki/Process_identifier) of *main*, *S*, *P*, *G* and *L*.
+It also shows the [PID](https://en.wikipedia.org/wiki/Process_identifier) of *main*, *S*, *P*, *G* and *L*. For example:
+
+```console
+main: PID is 22960
+G: my PID is 22962
+S: my PID is 22961
+L: my PID is 22964
+P: my PID is 22963
+```
+
+All the PIDs are different for each new run.
   
 **The Input Terminal** welcomes the user with these lines instead:
 
