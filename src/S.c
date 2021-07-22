@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 	strncat(command1, Spid_array, (sizeof(command1) - strlen(command1)));
 	strncat(command2, Spid_array, (sizeof(command2) - strlen(command2)));
 	strncat(command3, Spid_array, (sizeof(command3) - strlen(command3)));
-	char welcome3[96] = "10 is to output a log, 12 to pause, 18 to resume. To end, press Ctrl + C in the Output Terminal";
+	char welcome3[96] = "10 is to output a log, 12 to pause, 18 to resume. To end, press Ctrl+C in the Output Terminal";
 	setenv("welcome0", welcome0, 1);
 	setenv("welcome1", welcome1, 1);
 	setenv("welcome2", welcome2, 1);
