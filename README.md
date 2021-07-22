@@ -70,6 +70,8 @@ The main process will take care of launching all the other processes. You can st
 
 This assignment has been coded in [Ubuntu 20.04.2 LTS](https://releases.ubuntu.com/20.04/) (64-bit), and tested with an [Intel® Core™ i7-8565U CPU @ 1.80GHz × 8](https://ark.intel.com/content/www/us/en/ark/products/149091/intel-core-i7-8565u-processor-8m-cache-up-to-4-60-ghz.html). The code has been compiled via gcc, version 9.3.0 [(Ubuntu 9.3.0-17ubuntu1~20.04)](https://packages.ubuntu.com/focal/gcc-9).
 
+---
+
 Process list and brief description:
 
 - [main](src/main.c): This is the main, which launches all the other processes. The duty of this piece of code
@@ -92,7 +94,11 @@ from P, and then sends them back to it. In the other scenario, it sends data to 
 - [L](src/L.c): This process is the one responsible of logging. It registers every command issued by the user
 and every token processed by P (received/sent). When prompted, it opens the current log file via the user's preferred application
 
+---
+
 The config file TODO
+
+---
 
 The log file gets saved in the main folder of the repository. It gets overwritten at each new run, if present, otherwise it gets created. A single entry of the log file looks like this:
 
@@ -101,6 +107,8 @@ The log file gets saved in the main folder of the repository. It gets overwritte
 ```
 
 Where the first number is the the number of microseconds since the [Epoch](https://man7.org/linux/man-pages/man2/time.2.html), the second entry is the same data, but presented in a human-readable way (up to seconds precision), the third is the name of the process from which the data is coming from, the fourth is the type of information (*start*, *pause*, *token*), and the last one is the token value, if relevant (otherwise it is labeled as *undefined*).
+
+---
 
 Upon execution, the code launches a second terminal, that will serve as the **Input Terminal**. The one in which *main* has been launched
 is referred to as the **Output Terminal**.  
