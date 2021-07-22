@@ -1,6 +1,6 @@
 # [ARP-assignment V2.0](https://github.com/andreabradpitto/ARP-assignment)
 
-## 📑 0 - Contents list
+## 📑 Contents list
 
 1. [Introduction](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#-1---introduction)
 2. [Repository structure](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#-2---repository-structure)
