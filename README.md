@@ -25,8 +25,7 @@ recent version, but I decided to still include the original specifications file 
 
 - [src](src) folder: contains the source code of the assignment
 
-- [makefile](makefile): file used to automatically build or delete executables and log files.
-  See [Make](https://en.wikipedia.org/wiki/Make_(software)) for further information
+- [makefile](makefile): file used to automatically build or delete executables and log files. See [Make](https://en.wikipedia.org/wiki/Make_(software)) for further information
 
 - [.gitignore](.gitignore): hidden file that specifies which files and folder are not relevant for [Git](https://git-scm.com/)
 
@@ -69,7 +68,7 @@ The main process will take care of launching all the other processes. You can st
 
 ## ℹ️ 6 - Additional information
 
-This assignment has been coded in [Ubuntu 20.04.2 LTS](https://releases.ubuntu.com/20.04/) (64-bit), and tested with an [Intel® Core™ i7-8565U CPU @ 1.80GHz × 8](https://ark.intel.com/content/www/us/en/ark/products/149091/intel-core-i7-8565u-processor-8m-cache-up-to-4-60-ghz.html). The code has been compiled via gcc, version 9.3.0 [(Ubuntu 9.3.0-17ubuntu1~20.04)](https://packages.ubuntu.com/focal/gcc-9).  
+This assignment has been coded in [Ubuntu 20.04.2 LTS](https://releases.ubuntu.com/20.04/) (64-bit), and tested with an [Intel® Core™ i7-8565U CPU @ 1.80GHz × 8](https://ark.intel.com/content/www/us/en/ark/products/149091/intel-core-i7-8565u-processor-8m-cache-up-to-4-60-ghz.html). The code has been compiled via gcc, version 9.3.0 [(Ubuntu 9.3.0-17ubuntu1~20.04)](https://packages.ubuntu.com/focal/gcc-9).
 
 Process list and brief description:
 
@@ -94,7 +93,7 @@ from P, and then sends them back to it. In the other scenario, it sends data to 
 and every token processed by P (received/sent). When prompted, it opens the current log file via the user's preferred application
 
 Upon execution, the code launches a second terminal, that will serve as the **Input Terminal**. The one in which *main* has been launched
-is referred to as the **Output Terminal**.  
+is referred to as the **Output Terminal**.
 The **Output Terminal** shows all the run-time prints, and welcomes the user with this message:
 
 ```console
@@ -112,7 +111,7 @@ P: my PID is 22963
 ```
 
 All the PIDs are different for each new run.
-  
+
 **The Input Terminal** welcomes the user with these lines instead:
 
 ```console
@@ -123,13 +122,13 @@ It then also prints the list of available commands, while also conveniently repo
 
 ```console
 Available commands:
-  
+
 kill -10 22961
 kill -12 22961
 kill -18 22961
-  
+
 10 is to output a log, 12 to pause, 18 to resume. To end, press Ctrl + C in the Output Terminal
-```  
+```
 
 The dynamic part is the "22961", which gets updated every time the code is run.
 
