@@ -2,14 +2,14 @@
 
 ## 📑 0 - Contents list
 
-1. [Introduction]()
-2. [Repository structure]()
-3. [Software requirements]()
-4. [Installation]()
-5. [Execution]()
-6. [Additional information]()
-7. [Results]()
-8. [Author]()
+1. [Introduction](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#-1---introduction)
+2. [Repository structure](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#-2---repository-structure)
+3. [Software requirements](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#-3---software-requirements)
+4. [Installation](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#-4---installation)
+5. [Execution](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#%EF%B8%8F-5---execution)
+6. [Additional information](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#%E2%84%B9%EF%B8%8F-6---additional-information)
+7. [Results](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#-7---results)
+8. [Author](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#-8---author)
 
 ## 📛 1 - Introduction
 
@@ -32,7 +32,7 @@ recent version, but I decided to still include the original specifications file 
 
 - [LICENSE](LICENSE): a plain text file containing the license terms
 
-- [README.md](README.md) : this file
+- [README.md](README.md): this file
 
 ## ❗ 3 - Software requirements
 
