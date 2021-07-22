@@ -25,9 +25,9 @@ recent version, but I decided to still include the original specifications file 
 
 ## 📂 2 - Repository structure
 
-- [doc](doc) folder: contains the 2 versions of the assignment specifications
+- [doc](doc): folder containing the 2 versions of the assignment specifications
 
-- [src](src) folder: contains the source code of the assignment
+- [src](src): folder containing the source code of the assignment
 
 - [makefile](makefile): file used to automatically build or delete executables and log files. See [Make](https://en.wikipedia.org/wiki/Make_(software)) for further information
 
@@ -144,6 +144,7 @@ P: my PID is 22963
 ```
 
 All the PIDs are different for each new run.
+Please notice that if the token exchange rate between *P* and *G* is too high, it may be hard to catch the welcome messages of the **Output Terminal**.
 
 **The Input Terminal** welcomes the user with these lines instead:
 
