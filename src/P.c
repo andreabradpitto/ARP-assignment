@@ -2,23 +2,12 @@
 // Andrea Pitto - S3942710
 // 10 - 07 - 2020
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <time.h>
-#include <errno.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <sys/time.h>
-#include <signal.h>
-#include <math.h>
-#include "config.h"
-
 // This process is the computational core. It is also the nevralgic waypoint of communications:
 // all other nodes involved are, in a way or another, bond to P. This process uses different constants
 // based on RUN_MODE. A fake delay is added to the computation when RUN_MODE = 0. RUN_MODE = 1 scenario
 // has P expecting data from the G process of the previous PC in the chain
+
+#include "config.h"
 
 void error(const char *m) // display a message about the error on stderr and then abort the program
 {

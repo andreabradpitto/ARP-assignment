@@ -2,22 +2,12 @@
 // Andrea Pitto - S3942710
 // 10 - 07 - 2020
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <time.h>
-#include <errno.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <sys/time.h>
-#include <signal.h>
-#include "config.h"
-
 // This process can be run in 2 modes: debug mode (i.e. single machine/covid/V2.0 - RUN_MODE = 0) or
 // normal mode (i.e.communicating with other PCs - RUN_MODE = 1). In the first case it receives tokens
 // from P, and then sends them back to it. In the other scenario, it sends data to the P of the next PC
 // in the chain
+
+#include "config.h"
 
 void error(const char *m) // display a message about the error on stderr and then abort the program
 {

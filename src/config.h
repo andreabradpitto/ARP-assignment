@@ -7,6 +7,22 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+// Inclusion of POSIX libraries
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+#include <time.h>
+#include <errno.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <sys/time.h>
+#include <signal.h>
+#include <math.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+
 #define RF 1						// sine wave frequency [default: 1.0]
 #define WAITING_TIME_MICROSECS 1000 // waiting time, in microseconds, applied by process P before sending the updated token [default: 1000]
 #define RUN_MODE 0					// set to 0 to go debug mode (= covid/V2.0 mode), 1 for multiple machine mode [default: 0] \

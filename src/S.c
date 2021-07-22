@@ -2,21 +2,12 @@
 // Andrea Pitto - S3942710
 // 10 - 07 - 2020
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <errno.h>
-#include <sys/wait.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <signal.h>
-#include "config.h"
-
 // This is the process that is used to communicate with the others. It is the only one that interfaces with the terminal.
 // It can receive and handle 3 different commands: start, pause, log.
 // In order to use it, you have to type e.g. "kill -18 1234", where the first number is the signal chosen, whilst the second
 // is the PID of the node S itself. This process then communicates with P, spreading user commands through all the children of main
+
+#include "config.h"
 
 // These 3 flags are stored as global variables because you cannot pass any argument of choice to the signal handlers
 int start_flag = 0;

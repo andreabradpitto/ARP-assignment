@@ -2,20 +2,11 @@
 // Andrea Pitto - S3942710
 // 10 - 07 - 2020
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <time.h>
-#include <errno.h>
-#include <sys/time.h>
-#include <signal.h>
-#include <sys/types.h>
-#include "config.h"
-
 // This process is the one responsible of logging. It registers every command issued by the user
 // and every token processed by P (received/sent). When prompted, it opens the current log file
 // via the user's preferred application
+
+#include "config.h"
 
 int main(int argc, char *argv[])
 {

@@ -2,15 +2,10 @@
 // Andrea Pitto - S3942710
 // 10 - 07 - 2020
 
-#include <stdio.h>
-#include <unistd.h>
-#include <errno.h>
-#include <sys/wait.h>
-#include <sys/types.h>
-#include "config.h"
-
 // This is the main, which launches all the other processes. The duty of this piece of code
 // is to load configuration data and to launch all the involved processes (S, P, G and L)
+
+#include "config.h"
 
 int main(int argc, char *argv[])
 {
