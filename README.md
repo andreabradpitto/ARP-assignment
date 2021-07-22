@@ -110,7 +110,10 @@ The dynamic part is the "22961", which gets updated every time the code is run.
 
 ## 📊 7 - Results
 
-Everything's perfect. La funzione non funziona! TODO
+After several tests, I came to the conclusion that the token function reported by the professor ([Assignment Specifications V1.0](doc/Assignment%20Specifications%20V1.0.pdf) and [Assignment Specifications V2.0](doc/Assignment%20Specifications%20V2.0.pdf)) does not work.
+It should produce a [sine wave](https://en.wikipedia.org/wiki/Sine) but, even with the default parameters, it does not even come close to that.
+After several tweaks to the function itself, I ended up using ... TODO
+Results TODO
 
 ## 📫 8 - Author
 
