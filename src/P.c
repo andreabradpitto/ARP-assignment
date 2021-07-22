@@ -116,20 +116,14 @@ int main(int argc, char *argv[])
 
             else if (retval > 0)
             {
-                if (FD_ISSET(atoi(argv[0]), &readfds)) // read of first pipe (data incoming from S) is ready
-                {
-                    // read() into "state":
-                    // state = 0: stop token computation;
-                    // state = 1: continue token computation (state is unchanged)
-                    // state = 3: request log file opening to L
-                    read(atoi(argv[0]), &state, sizeof(int));
-                    gettimeofday(&log_msg.timestamp, NULL);
-                    log_msg.status = state;
-                    write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send pause/continue/log command acknowledgment to L
-                }
                 if (FD_ISSET(atoi(argv[2]), &readfds)) // read of second pipe (data incoming from G) is ready
                 {
                     read(atoi(argv[2]), &token, sizeof(token));
+                    if (!RUN_MODE)
+                    {
+                        // Waiting time, in microseconds, applied to process P before it can check for new incoming tokens
+                        usleep(WAITING_TIME_MICROSECS);
+                    }
                     gettimeofday(&log_msg.timestamp, NULL); // log token reception time
                     log_msg.status = 8;                     // special code to distinguish data coming from the 2nd pipe (G -> P)
                     log_msg.value = token.value;
@@ -140,11 +134,11 @@ int main(int argc, char *argv[])
                     // the time present inside of the received token, which is the time at which that token had been
                     // sent by P (or the previous P in the chain)
                     dt = (log_msg.timestamp.tv_sec - token.timestamp.tv_sec) +
-                         (log_msg.timestamp.tv_usec - token.timestamp.tv_usec) / (float)1000000;
+                         (log_msg.timestamp.tv_usec - token.timestamp.tv_usec) / (float)1000000000;
 
                     // Token computation
                     // using a custom formula as the one provided is not working properly
-                    token.value = sin(2 * M_PI * RF * (log_msg.value + dt * (1 - log_msg.value))); // custom formula
+                    token.value = sin(2000 * M_PI * RF * (log_msg.value + dt * (1 - log_msg.value))); // custom formula
                     //token.value = log_msg.value + dt * (1 - powf(log_msg.value, 2) / 2) * 2 * M_PI * RF; // original formula (not working)
 
                     gettimeofday(&token.timestamp, NULL);     // store token sending time
@@ -155,11 +149,18 @@ int main(int argc, char *argv[])
                     log_msg.value = token.value;
                     log_msg.timestamp = token.timestamp;                        // log token sending time
                     write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "token sent" acknowledgment to L
-                    if (!RUN_MODE)
-                    {
-                        // Waiting time, in microseconds, applied to process P before it can check for new incoming tokens
-                        usleep(WAITING_TIME_MICROSECS);
-                    }
+                }
+
+                if (FD_ISSET(atoi(argv[0]), &readfds)) // read of first pipe (data incoming from S) is ready
+                {
+                    // read() into "state":
+                    // state = 0: stop token computation;
+                    // state = 1: continue token computation (state is unchanged)
+                    // state = 3: request log file opening to L
+                    read(atoi(argv[0]), &state, sizeof(int));
+                    gettimeofday(&log_msg.timestamp, NULL);
+                    log_msg.status = state;
+                    write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send pause/continue/log command acknowledgment to L
                 }
             }
         }
