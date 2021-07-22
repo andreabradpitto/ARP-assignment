@@ -35,9 +35,6 @@ int main(int argc, char *argv[])
     struct timeval select_tv; // defines select() patience (timeout)
     int retval = 0;           // variable used to store select() ouput
 
-    struct timeval calc_saver_ts;
-    int calc_saver_flag = 0;
-
     float dt = 0; // time delay between reception and delivery time instants of the token
 
     int n; // write() handle
@@ -133,16 +130,8 @@ int main(int argc, char *argv[])
                 if (FD_ISSET(atoi(argv[2]), &readfds)) // read of second pipe (data incoming from G) is ready
                 {
                     read(atoi(argv[2]), &token, sizeof(token));
-                    if (calc_saver_flag == 1)
-                    {
-                        calc_saver_flag = 0;
-                        log_msg.timestamp = calc_saver_ts;
-                    }
-                    else
-                    {
-                        gettimeofday(&log_msg.timestamp, NULL); // log token reception time
-                    }
-                    log_msg.status = 8; // special code to distinguish data coming from the 2nd pipe (G -> P)
+                    gettimeofday(&log_msg.timestamp, NULL); // log token reception time
+                    log_msg.status = 8;                     // special code to distinguish data coming from the 2nd pipe (G -> P)
                     log_msg.value = token.value;
                     write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "data reception" acknowledgment to L
 
@@ -177,12 +166,6 @@ int main(int argc, char *argv[])
 
         else // state = 0 or 3: token computation is paused
         {
-
-            if (calc_saver_flag == 0)
-            {
-                calc_saver_flag = 1;
-                gettimeofday(&calc_saver_ts, NULL);
-            }
             retval = select(maxfd + 1, &readfds, NULL, NULL, &select_tv);
 
             if (retval == -1)
