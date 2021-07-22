@@ -143,7 +143,7 @@ L: my PID is 22964
 P: my PID is 22963
 ```
 
-All the PIDs are different for each new run.
+All the PIDs are different for each new run.  
 Please notice that if the token exchange rate between *P* and *G* is too high, it may be hard to catch the welcome messages of the **Output Terminal**.
 
 **The Input Terminal** welcomes the user with these lines instead:
