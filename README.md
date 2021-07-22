@@ -111,8 +111,6 @@ Where the first number is the the number of microseconds since the [Epoch](https
 Upon execution, the code launches a second terminal, that will serve as the **Input Terminal**. The one in which *main* has been launched
 is referred to as the **Output Terminal**.
 
----
-
 The **Output Terminal** shows all the run-time prints, and welcomes the user with this message:
 
 ```console
@@ -130,8 +128,6 @@ P: my PID is 22963
 ```
 
 All the PIDs are different for each new run.
-
----
 
 **The Input Terminal** welcomes the user with these lines instead:
 
@@ -152,8 +148,6 @@ kill -18 22961
 ```
 
 The dynamic part is the "22961", which gets updated every time the code is run.
-
----
 
 ## 📊 7 - Results
 
