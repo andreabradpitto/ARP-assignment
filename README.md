@@ -93,7 +93,7 @@ from P, and then sends them back to it. In the other scenario, it sends data to 
 and every token processed by P (received/sent). When prompted, it opens the current log file via the user's preferred application
 
 Upon execution, the code launches a second terminal, that will serve as the **Input Terminal**. The one in which *main* has been launched
-is referred to as the **Output Terminal**.
+is referred to as the **Output Terminal**.  
 The **Output Terminal** shows all the run-time prints, and welcomes the user with this message:
 
 ```console
