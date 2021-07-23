@@ -9,7 +9,7 @@
 
 #include "def.h"
 
-struct configuration configLoader(char *, struct configuration); // configuration loader function declaration
+void configLoader(char *, struct configuration *); // configuration loader function declaration
 
 int main(int argc, char *argv[])
 {
@@ -30,15 +30,16 @@ int main(int argc, char *argv[])
     struct log_message log_msg;
 
     struct timeval select_tv; // define patience (timeout) for select()
-    int retval = 0;           // variable used to store select() ouput
+    int retval = 0;           // variable used to store the output of select()
 
     float dt = 0; // time delay between reception and delivery time instants of the token
 
     int n; // write() handle
 
     struct configuration config;
+	struct configuration *configPtr = &config;
     char *configpath = "config"; // specify config file path
-    config = configLoader(configpath, config);
+    configLoader(configpath, configPtr);
 
     int sockfd; // socket file descriptor
     int portno; // stores the port number on which the server accepts connections
@@ -200,7 +201,7 @@ int main(int argc, char *argv[])
 }
 
 // Load the values inside the config file and store them into constants
-struct configuration configLoader(char *path, struct configuration conf)
+void configLoader(char *path, struct configuration *conf)
 {
     FILE *config_file = fopen(path, "r"); // open the config file in read mode
     int line_out;
@@ -215,7 +216,7 @@ struct configuration configLoader(char *path, struct configuration conf)
     // Read 1st line of the config file (run_mode)
     if ((line_out = getline(&line, &len, config_file)) != -1)
     {
-        conf.run_mode = atoi(line);
+        conf->run_mode = atoi(line);
     }
     else
         perror("Error reading 1st line of config file");
@@ -223,7 +224,7 @@ struct configuration configLoader(char *path, struct configuration conf)
     // Read 2nd line of the config file (rf)
     if ((line_out = getline(&line, &len, config_file)) != -1)
     {
-        conf.rf = atof(line);
+        conf->rf = atof(line);
     }
     else
         perror("Error reading 2nd line of config file");
@@ -231,7 +232,7 @@ struct configuration configLoader(char *path, struct configuration conf)
     // Read 3rd line of the config file (waiting_time_microsecs)
     if ((line_out = getline(&line, &len, config_file)) != -1)
     {
-        conf.waiting_time_microsecs = atoi(line);
+        conf->waiting_time_microsecs = atoi(line);
     }
     else
         perror("Error reading 3rd line of config file");
@@ -239,7 +240,7 @@ struct configuration configLoader(char *path, struct configuration conf)
     // Read 4th line of the config file (next_ip)
     if ((line_out = getline(&line, &len, config_file)) != -1)
     {
-        conf.next_ip = line;
+        conf->next_ip = line;
     }
     else
         perror("Error reading 4th line of config file");
@@ -247,7 +248,7 @@ struct configuration configLoader(char *path, struct configuration conf)
     // Read 5th line of the config file (next_port)
     if ((line_out = getline(&line, &len, config_file)) != -1)
     {
-        conf.next_port = atoi(line);
+        conf->next_port = atoi(line);
     }
     else
         perror("Error reading 5th line of config file");
@@ -255,7 +256,7 @@ struct configuration configLoader(char *path, struct configuration conf)
     // Read 6th line of the config file (fifo1)
     if ((line_out = getline(&line, &len, config_file)) != -1)
     {
-        conf.fifo1 = line;
+        conf->fifo1 = line;
     }
     else
         perror("Error reading 6th line of config file");
@@ -263,13 +264,11 @@ struct configuration configLoader(char *path, struct configuration conf)
     // Read 7th line of the config file (fifo2)
     if ((line_out = getline(&line, &len, config_file)) != -1)
     {
-        conf.fifo2 = line;
+        conf->fifo2 = line;
     }
     else
         perror("Error reading 7th line of config file");
 
     // Close the config file
     fclose(config_file);
-
-    return conf;
 }

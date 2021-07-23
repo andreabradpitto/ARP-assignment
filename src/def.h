@@ -57,9 +57,9 @@ struct configuration
 	char *fifo2;				// name of the second fifo (i.e. named pipe) [default: named2]
 };
 
-void error(const char *m) // display a message about the error on stderr and then abort the program
+void error(const char *msg) // display a message about the error on stderr and then abort the program
 {
-	perror(m);
+	perror(msg);
 	exit(0);
 }
 
