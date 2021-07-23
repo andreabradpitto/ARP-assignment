@@ -161,7 +161,7 @@ kill -18 22961
 
 The dynamic part is the "22961", which gets updated every time the code is run.
 
-**Warning**: be careful not to input a wrong [signal value](https://dsa.cs.tsinghua.edu.cn/oj/static/unix_signal.html), as it may break the correct program execution. If that happens, it may be needed to manually kill processes *P*, *G*, and *L*.
+**Warning**: be careful not to input a different [signal value](https://dsa.cs.tsinghua.edu.cn/oj/static/unix_signal.html) (other than `10`, `12`, and `18`), as it may break the correct program execution. If that happens, it may be needed to manually kill processes *P*, *G*, and *L*.
 
 Please notice that asking for the log file to open at run-time automatically pauses token computation, so that the user can check its entries without being bothered by "document has changed" warnings and alike.
 
