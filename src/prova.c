@@ -14,7 +14,7 @@
 #include <syslog.h>
 #include <fcntl.h>
 #include <math.h>
-#include "config.h"
+#include "def.h"
 
 int main(int argc, char *argv[])
 {
@@ -167,4 +167,15 @@ int main(int argc, char *argv[])
 		printf("%c\n", prova[i]);
 
 	printf("\n\n");
+
+	char lunghezza[2];
+	char l2[40];
+	int numerone = 1234567890;
+	float numerotto = 1.234567890;
+	sprintf(lunghezza, "%d", numerone);
+	printf("%s", lunghezza);
+	sprintf(l2, "%f", numerotto);
+	printf("%s", l2);
+	float cat = atof(l2);
+	printf("\n%f\n", cat);
 }

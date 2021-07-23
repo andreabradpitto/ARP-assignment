@@ -46,6 +46,9 @@ int main(int argc, char *argv[])
 	}
 	else
 	{
+		close(atoi(argv[3]));
+        mkfifo(config.fifo2, S_IWUSR | S_IRUSR); // forse solo write
+        // devo creare una variabile che sostiuisce argv(3) e named pipe
 		portno = config.next_port;
 	}
 

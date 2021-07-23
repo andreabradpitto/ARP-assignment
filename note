@@ -1,11 +1,8 @@
 Dato più semplice per il caso multi-machine (char array with just a float inside...)?
+I did not have to deal with other members so I just kep my richer data format and not a more standard char array with just a float inside
 
-Chiama init.h il file config.h
+Devo chiudere un lato della unnamed pipe 2 sia in G che in P
 
-devo chiudere un lato della unnamed pipe 2
-
-File prova2: if vanno bene? con else intendo... prova line4 con 16 o meno. perrror in init.h
-
-Cose da vedere ora: fifo/named pipes.. Passa valori aggiuntivi tramite altri argv in main?
+sudo apt-get install mingw-w64  x86_64-w64-mingw32-gcc -o test.exe test.c
 
 Fai code format, leggi pdf e Keep. Consegna su Aulaweb e scrivi mail (con link a a Github)

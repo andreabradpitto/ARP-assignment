@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+	// Creating char arrays for the unnamed pipes (size 2: int value + string terminator)
 	char read1[2];
 	char write1[2];
 	char read2[2];

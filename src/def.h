@@ -22,6 +22,7 @@
 #include <math.h>
 #include <sys/wait.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 
 #define LOCAL_IP "localhost" // localhost name (equivalent to 127.0.0.1 and to machine's own name, i.e. Linux's "Hostname")
 #define LOCAL_PORT 5000		 // chosen local port for the communication

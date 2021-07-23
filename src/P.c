@@ -62,6 +62,9 @@ int main(int argc, char *argv[])
     }
     else
     {
+        close(atoi(argv[2]));
+        mkfifo(config.fifo1, S_IWUSR | S_IRUSR); // forse solo read
+        // devo creare una variabile che sostiuisce argv(2) e named pipe
         server = gethostbyname(config.next_ip);
         portno = config.next_port;
     }
