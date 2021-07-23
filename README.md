@@ -45,7 +45,7 @@ recent version, but I decided to still include the original specifications file 
 - [gcc](https://gcc.gnu.org/)
 - At least 1 MB of free disk space
 
-The space required is intended for the repository contents + the compiled code. Please beware that running the code for an extended time span may produce much greater log file sizes (roughly 7 MB per minute).
+The space required is intended for the repository contents + the compiled code. Please beware that running the code for an extended time span may produce much greater log file sizes (~ 7 MB per minute).
 
 ## ✅ Installation
 
@@ -105,7 +105,7 @@ struct configuration
 };
 ```
 
-and re-compile the source code, as shown in [Installation](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#-4---installation).
+**Warning**: failing to open the config file may require to manually kill processes *S* and *L*.
 
 ### Log file
 
@@ -144,7 +144,7 @@ Please notice that if the token exchange rate between *P* and *G* is too high, i
 **The Input Terminal** welcomes the user with these lines instead:
 
 ```console
-[This is the Input Terminal, through which you can send signals to the running processes. Please also che the Output Terminal to inspect outputs]
+[This is the Input Terminal, through which you can send signals to the running processes. Please also check the Output Terminal to inspect outputs]
 ```
 
 It then also prints the list of available commands, while also conveniently reporting the correct PID to use. For instance, the Input Terminal goes on reporting something like this:
@@ -159,7 +159,9 @@ kill -18 22961
 10 is to open the log file, 12 to pause, 18 to resume. To end, press Ctrl + C in the Output Terminal
 ```
 
-The dynamic part is the "22961", which gets updated every time the code is run. Be careful not to input a wrong [signal value](https://dsa.cs.tsinghua.edu.cn/oj/static/unix_signal.html), as it may break the correct program execution. If that happens, it may be needed to manually kill processes *P*, *G*, and *L*.
+The dynamic part is the "22961", which gets updated every time the code is run.
+
+**Warning**: be careful not to input a wrong [signal value](https://dsa.cs.tsinghua.edu.cn/oj/static/unix_signal.html), as it may break the correct program execution. If that happens, it may be needed to manually kill processes *P*, *G*, and *L*.
 
 Please notice that asking for the log file to open at run-time automatically pauses token computation, so that the user can check its entries without being bothered by "document has changed" warnings and alike.
 

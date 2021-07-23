@@ -55,8 +55,8 @@ int main(int argc, char *argv[])
 
 	// Creation of Input Terminal welcome message, including dynamic Spid injection
 	char welcome0[1] = "";
-	char welcome1[146] = "[This is the Input Terminal, through which you can send signals to the running processes. "
-						 "Please also che the Output Terminal to inspect outputs]";
+	char welcome1[148] = "[This is the Input Terminal, through which you can send signals to the running processes. "
+						 "Please also check the Output Terminal to inspect outputs]";
 	char welcome2[20] = "Available commands:";
 	char command1[30] = "kill -10 ";
 	char command2[30] = "kill -12 ";
