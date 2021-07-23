@@ -6,7 +6,7 @@
 // and every token processed by P (received/sent). When prompted, it opens the current log file
 // via the user's preferred application
 
-#include "config.h"
+#include "def.h"
 
 int main(int argc, char *argv[])
 {
@@ -21,10 +21,10 @@ int main(int argc, char *argv[])
     printf("L: my PID is %d\n", Lpid);
 
     char *fancy_time;
-    char *logpath = "log.txt";
+    char *logpath = "log.txt"; // specify log file path
     setenv("log_file", logpath, 1);
+    // Open the log file file in write mode (overwrite log file if already existing, create new one otherwise)
     FILE *log_file = fopen(logpath, "w+");
-
     long int time_var = 0;
 
     struct log_message log_msg;
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    fclose(log_file);
+    fclose(log_file); // close the log file
     unsetenv("log_file");
     close(atoi(argv[4]));
     return 0;

@@ -1,5 +1,9 @@
 Dato più semplice per il caso multi-machine (char array with just a float inside...)?
 
+Chiama init.h il file config.h
+
+File prova2: if vanno bene? con else intendo... prova line4 con 16 o meno. perrror in init.h
+
 Cose da vedere ora: fifo/named pipes.. Passa valori aggiuntivi tramite altri argv in main?
 
 Fai code format, leggi pdf e Keep. Consegna su Aulaweb e scrivi mail (con link a a Github)

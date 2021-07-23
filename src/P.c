@@ -4,16 +4,12 @@
 
 // This process is the computational core. It is also the nevralgic waypoint of communications:
 // all other nodes involved are, in a way or another, bond to P. This process uses different constants
-// based on RUN_MODE. A fake delay is added to the computation when RUN_MODE = 0. RUN_MODE = 1 scenario
+// based on run_mode. A fake delay is added to the computation when run_mode = 0. run_mode = 1 scenario
 // has P expecting data from the G process of the previous PC in the chain
 
-#include "config.h"
+#include "def.h"
 
-void error(const char *m) // display a message about the error on stderr and then abort the program
-{
-    perror(m);
-    exit(0);
-}
+struct configuration configLoader(char *, struct configuration); // configuration loader function declaration
 
 int main(int argc, char *argv[])
 {
@@ -30,14 +26,19 @@ int main(int argc, char *argv[])
     token token;
     token.value = 0;
     gettimeofday(&token.timestamp, NULL); // get the current time and store it in timestamp
+
     struct log_message log_msg;
 
-    struct timeval select_tv; // defines select() patience (timeout)
+    struct timeval select_tv; // define patience (timeout) for select()
     int retval = 0;           // variable used to store select() ouput
 
     float dt = 0; // time delay between reception and delivery time instants of the token
 
     int n; // write() handle
+
+    struct configuration config;
+    char *configpath = "config"; // specify config file path
+    config = configLoader(configpath, config);
 
     int sockfd; // socket file descriptor
     int portno; // stores the port number on which the server accepts connections
@@ -53,15 +54,15 @@ int main(int argc, char *argv[])
         error("\nP: setsockopt(SO_REUSEADDR) failed");
     }
 
-    if (!RUN_MODE)
+    if (!config.run_mode)
     {
         server = gethostbyname(LOCAL_IP);
         portno = LOCAL_PORT;
     }
     else
     {
-        server = gethostbyname(NEXT_IP);
-        portno = NEXT_PORT;
+        server = gethostbyname(config.next_ip);
+        portno = config.next_port;
     }
 
     if (server == NULL)
@@ -86,10 +87,10 @@ int main(int argc, char *argv[])
     log_msg.value = token.value;
     log_msg.timestamp = token.timestamp;                        // log token sending time
     write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "token sent" acknowledgment to L
-    if (!RUN_MODE)
+    if (!config.run_mode)
     {
         // Waiting time, in microseconds, applied to process P before it can check for new incoming tokens
-        usleep(WAITING_TIME_MICROSECS);
+        usleep(config.waiting_time_microsecs);
     }
 
     // Set of involved pipe ends from which P needs to read through the select
@@ -119,10 +120,10 @@ int main(int argc, char *argv[])
                 if (FD_ISSET(atoi(argv[2]), &readfds)) // read of second pipe (data incoming from G) is ready
                 {
                     read(atoi(argv[2]), &token, sizeof(token));
-                    if (!RUN_MODE)
+                    if (!config.run_mode)
                     {
                         // Waiting time, in microseconds, applied to process P before it can check for new incoming tokens
-                        usleep(WAITING_TIME_MICROSECS);
+                        usleep(config.waiting_time_microsecs);
                     }
                     gettimeofday(&log_msg.timestamp, NULL); // log token reception time
                     log_msg.status = 8;                     // special code to distinguish data coming from the 2nd pipe (G -> P)
@@ -138,8 +139,8 @@ int main(int argc, char *argv[])
 
                     // Token computation
                     // using a custom formula as the one provided is not working properly
-                    token.value = sin(2 * M_PI * RF * (log_msg.value + dt * (1 - log_msg.value))); // custom formula
-                    //token.value = log_msg.value + dt * (1 - powf(log_msg.value, 2) / 2) * 2 * M_PI * RF; // original formula (not working)
+                    token.value = sin(2 * M_PI * config.rf * (log_msg.value + dt * (1 - log_msg.value))); // custom formula
+                    //token.value = log_msg.value + dt * (1 - powf(log_msg.value, 2) / 2) * 2 * M_PI * config.rf; // original formula (not working)
 
                     gettimeofday(&token.timestamp, NULL);     // store token sending time
                     n = write(sockfd, &token, sizeof(token)); // sending the new token to G
@@ -196,4 +197,79 @@ int main(int argc, char *argv[])
     close(atoi(argv[5]));
     close(sockfd);
     return 0;
+}
+
+// Load the values inside the config file and store them into constants
+struct configuration configLoader(char *path, struct configuration conf)
+{
+    FILE *config_file = fopen(path, "r"); // open the config file in read mode
+    int line_out;
+    char *line = NULL;
+    size_t len;
+
+    if (config_file == NULL)
+    {
+        perror("Could not open config file");
+    }
+
+    // Read 1st line of the config file (run_mode)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf.run_mode = atoi(line);
+    }
+    else
+        perror("Error reading 1st line of config file");
+
+    // Read 2nd line of the config file (rf)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf.rf = atof(line);
+    }
+    else
+        perror("Error reading 2nd line of config file");
+
+    // Read 3rd line of the config file (waiting_time_microsecs)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf.waiting_time_microsecs = atoi(line);
+    }
+    else
+        perror("Error reading 3rd line of config file");
+
+    // Read 4th line of the config file (next_ip)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf.next_ip = line;
+    }
+    else
+        perror("Error reading 4th line of config file");
+
+    // Read 5th line of the config file (next_port)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf.next_port = atoi(line);
+    }
+    else
+        perror("Error reading 5th line of config file");
+
+    // Read 6th line of the config file (fifo1)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf.fifo1 = line;
+    }
+    else
+        perror("Error reading 6th line of config file");
+
+    // Read 7th line of the config file (fifo2)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf.fifo2 = line;
+    }
+    else
+        perror("Error reading 7th line of config file");
+
+    // Close the config file
+    fclose(config_file);
+
+    return conf;
 }

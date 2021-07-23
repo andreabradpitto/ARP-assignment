@@ -7,7 +7,7 @@
 // In order to use it, you have to type e.g. "kill -18 1234", where the first number is the signal chosen, whilst the second
 // is the PID of the node S itself. This process then communicates with P, spreading user commands through all the children of main
 
-#include "config.h"
+#include "def.h"
 
 // These 3 flags are stored as global variables because you cannot pass any argument of choice to the signal handlers
 int start_flag = 0;

@@ -3,9 +3,9 @@
 // 10 - 07 - 2020
 
 // This is the main, which launches all the other processes. The duty of this piece of code
-// is to load configuration data and to launch all the involved processes (S, P, G and L)
+// is to load the 3 unnamed pipes and to launch all the involved processes (S, P, G and L)
 
-#include "config.h"
+#include "def.h"
 
 int main(int argc, char *argv[])
 {

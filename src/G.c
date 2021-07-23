@@ -2,18 +2,14 @@
 // Andrea Pitto - S3942710
 // 10 - 07 - 2020
 
-// This process can be run in 2 modes: debug mode (i.e. single machine/covid/V2.0 - RUN_MODE = 0) or
-// normal mode (i.e.communicating with other PCs - RUN_MODE = 1). In the first case it receives tokens
+// This process can be run in 2 modes: debug mode (i.e. single machine/covid/V2.0 - run_mode = 0) or
+// normal mode (i.e.communicating with other PCs - run_mode = 1). In the first case it receives tokens
 // from P, and then sends them back to it. In the other scenario, it sends data to the P of the next PC
 // in the chain
 
-#include "config.h"
+#include "def.h"
 
-void error(const char *m) // display a message about the error on stderr and then abort the program
-{
-	perror(m);
-	exit(1);
-}
+struct configuration configLoader(char *, struct configuration); // configuration loader function declaration
 
 int main(int argc, char *argv[])
 {
@@ -27,6 +23,14 @@ int main(int argc, char *argv[])
 	Gpid = getpid();
 	printf("G: my PID is %d\n", Gpid);
 
+	token token;
+	token.value = 0;
+	gettimeofday(&token.timestamp, NULL); // get the current time and store it in timestamp
+
+    struct configuration config;
+    char *configpath = "config"; // specify config file path
+    config = configLoader(configpath, config);
+
 	int sockfd; // socket file descriptor
 	int newsockfd;
 	int portno; // port of the server for the client connection
@@ -35,17 +39,13 @@ int main(int argc, char *argv[])
 	int n; // read() handle
 	char *fancy_time;
 
-	token token;
-	token.value = 0;
-	gettimeofday(&token.timestamp, NULL); // get the current time and store it in timestamp
-
-	if (!RUN_MODE)
+	if (!config.run_mode)
 	{
 		portno = LOCAL_PORT;
 	}
 	else
 	{
-		portno = NEXT_PORT;
+		portno = config.next_port;
 	}
 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); // create a new socket
@@ -90,4 +90,79 @@ int main(int argc, char *argv[])
 	close(atoi(argv[3]));
 	close(sockfd);
 	return 0;
+}
+
+// Load the values inside the config file and store them into constants
+struct configuration configLoader(char *path, struct configuration conf)
+{
+    FILE *config_file = fopen(path, "r"); // open the config file in read mode
+    int line_out;
+    char *line = NULL;
+    size_t len;
+
+    if (config_file == NULL)
+    {
+        perror("Could not open config file");
+    }
+
+    // Read 1st line of the config file (run_mode)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf.run_mode = atoi(line);
+    }
+    else
+        perror("Error reading 1st line of config file");
+
+    // Read 2nd line of the config file (rf)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf.rf = atof(line);
+    }
+    else
+        perror("Error reading 2nd line of config file");
+
+    // Read 3rd line of the config file (waiting_time_microsecs)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf.waiting_time_microsecs = atoi(line);
+    }
+    else
+        perror("Error reading 3rd line of config file");
+
+    // Read 4th line of the config file (next_ip)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf.next_ip = line;
+    }
+    else
+        perror("Error reading 4th line of config file");
+
+    // Read 5th line of the config file (next_port)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf.next_port = atoi(line);
+    }
+    else
+        perror("Error reading 5th line of config file");
+
+    // Read 6th line of the config file (fifo1)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf.fifo1 = line;
+    }
+    else
+        perror("Error reading 6th line of config file");
+
+    // Read 7th line of the config file (fifo2)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf.fifo2 = line;
+    }
+    else
+        perror("Error reading 7th line of config file");
+
+    // Close the config file
+    fclose(config_file);
+
+    return conf;
 }

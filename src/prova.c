@@ -16,11 +16,6 @@
 #include <math.h>
 #include "config.h"
 
-// This is the main, you have to only execute this command: ./main (you can also run sudo netstat -tulpn for socket troubleshooting)
-// The duty of this piece of code is to load config data and to launch all the needed processes (S, P, G and L)
-
-// potrei aggiungere degli sleep(1) all'inzio di ogni processo per aspettare siano tutti pronti...
-
 int main(int argc, char *argv[])
 {
 
@@ -83,12 +78,11 @@ int main(int argc, char *argv[])
 		return 0;
 	}*/
 
-
 	int logfd;
 	char *logpath = "log_prova.txt";
 	//logfd = open(logpath, O_CREAT | O_WRONLY);
-	FILE* file;
-	file = fopen(logpath,"w+");
+	FILE *file;
+	file = fopen(logpath, "w+");
 	//char stringa[15] = "ciao";
 	char stringa[100];
 	long int time_var = 33222111234567890;
@@ -111,25 +105,26 @@ int main(int argc, char *argv[])
 	//write(file, &stringa2, strlen(stringa2));
 	fclose(file);
 
-    // Test read.
-	FILE* file2;
-    file2 = fopen(logpath, "r");
+	// Test read.
+	FILE *file2;
+	file2 = fopen(logpath, "r");
 	char output_stringa[1000];
-    //int new_numero;
+	//int new_numero;
 	int display;
-    /*if (file2 != -1) {
+	/*if (file2 != -1) {
         //read(fd2, &new_numero, sizeof(new_numero));
         //printf("new_val = %d\n", new_numero);
         read(file2, &output_stringa, sizeof(output_stringa));
         printf("\noutput_stringa = %s\n", output_stringa);
         fclose(file2);
 	}*/
-	while (1) {
-        display = fgetc(file2);
-        if (feof(file2)) // end of file indicator
-            break;
-        printf("%c", display);
-    }
+	while (1)
+	{
+		display = fgetc(file2);
+		if (feof(file2)) // end of file indicator
+			break;
+		printf("%c", display);
+	}
 	fclose(file2);
 
 	//int res = 100 - 10 / 2 * 4;
@@ -148,7 +143,7 @@ int main(int argc, char *argv[])
 	tempo = time(NULL);
 	printf("\n%li", tempo);
 	sleep(1);
-	time_t* tempoPtr = &tempo;
+	time_t *tempoPtr = &tempo;
 	time(tempoPtr);
 	//*tempoPtr = time(NULL);
 	printf("\n%li", *tempoPtr);
@@ -164,9 +159,12 @@ int main(int argc, char *argv[])
 	//time_t *pointer = &(token_timestamp->tv_sec);
 	//printf("%li", *pointer);
 	gettimeofday(&token_timestamp, NULL);
-	printf("%li", token_timestamp.tv_sec);
+	printf("%li\n", token_timestamp.tv_sec);
 
-
+	char *prova = "ciao";
+	prova = "miaodaaS";
+	for (int i = 0; i < sizeof(prova); i++)
+		printf("%c\n", prova[i]);
 
 	printf("\n\n");
 }
