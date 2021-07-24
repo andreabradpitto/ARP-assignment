@@ -1,10 +1,4 @@
-Dato più semplice per il caso multi-machine (char array with just a float inside...)?
-I did not have to deal with other members so I just kep my richer data format and not a more standard char array with just a float inside
-
-Devo chiudere un lato della unnamed pipe 2 sia in G che in P
-
-fai elimnare named pipes dal main
-correggi i sizeof con snprintf
+fai elimnare named pipes dal main. Non so, perche unsetenv sembra andare, magari va anche quello. prova a vedere...
 
 sudo apt-get install mingw-w64  x86_64-w64-mingw32-gcc -o test.exe test.c
 
