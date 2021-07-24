@@ -109,9 +109,9 @@ struct configuration
 
 ### Run modes
 
-The code can be run in 2 different modes, as suggested by `configuration.run_mode`. The first one, labeledd as *Single machine* mode or *debug* mode, is the the one in which the *G* process is kept on the same machine as the others: in this case, it is possible to execute this code right out of the box. This is the default mode since the release of [Assignment Specifications V2.0](doc/Assignment%20Specifications%20V2.0.pdf).
+The code can be run in 2 different modes, as suggested by `configuration.run_mode`. The first one, labeledd as *Single machine* mode or *debug* mode, is the the one in which the *G* process is kept on the same machine as the others: in this case, it is possible to execute this code right out of the box. This is the default mode since the release of [Assignment Specifications V2.0](doc/Assignment%20Specifications%20V2.0.pdf). The *Single machine* mode features a richer integration between the processes *P* and *G*.
 
-The other run mode, called *multi-machine* mode, requires more than 1 PC to be tested. In this case, one has to send a copy of *G* and *def.h* to the next PC in the chain (also be sure to align *config* entries, or to send that too). In return they should be sent a copy of the previous G process in the chain, along with required headers/config files.
+The other run mode, called *multi-machine* mode, requires more than 1 PC to be tested. In this case, one has to send a copy of *G* and *def.h* to the next PC in the chain (also be sure to align *config* entries, or to send that too). In return they should be sent a copy of the previous G process in the chain, along with required headers/config files. This version features a simpler token (i.e. a `float` value inside a `char array`) in order to ease the interface with other chain members' codes. Following this trend, also *G* changes its behavior by not also printing anything on terminal, but only sending the received token value to the next machine in the chain.
 
 ### Log file
 

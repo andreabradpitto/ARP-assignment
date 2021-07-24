@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 	signal(SIGUSR2, stop_handler);	// reacts to "kill -12 Spid"
 	signal(SIGUSR1, log_handler);	// reacts to "kill -10 Spid"
 
-	// Note on SIGCONT:
+	// Comment on SIGCONT:
 	// As other processes never actually stop (only token computation is halted),
 	// the SIGCONT signal does not have any effect, but is useful here as
 	// a third custom signal which also does not produce undesired side effects
