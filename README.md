@@ -96,16 +96,22 @@ The [config file](config) contains the list of all the parameters needed to twea
 struct configuration
 {
     int run_mode;               // set to 0 to go debug mode (= covid/V2.0 mode), 1 for multiple machine mode [default: 0]
-    float rf;                   // sine wave frequency [default: 1.0]
+    double rf;                  // sine wave frequency [default: 1.0]
     int waiting_time_microsecs; // waiting time, in microseconds, applied by process P before sending the updated token [default: 1000]
     char *next_ip;              // IP address of the next machine in the chain ("hostname -I" to get your current IP) [default: 192.168.1.106]
     int next_port;              // chosen remote port for the communication [default: 5000]
-    char *fifo1;                // name of the first fifo (i.e. named pipe) [default: named1]
-    char *fifo2;                // name of the second fifo (i.e. named pipe) [default: named2]
+    char *fifo1;                // name of the first fifo (i.e. named pipe) [default: npipe1]
+    char *fifo2;                // name of the second fifo (i.e. named pipe) [default: npipe2]
 };
 ```
 
 **Warning**: failing to open the config file may require to manually kill processes *S* and *L*.
+
+### Run modes
+
+The code can be run in 2 different modes, as suggested by `configuration.run_mode`. The first one, labeledd as *Single machine* mode or *debug* mode, is the the one in which the *G* process is kept on the same machine as the others: in this case, it is possible to execute this code right out of the box. This is the default mode since the release of [Assignment Specifications V2.0](doc/Assignment%20Specifications%20V2.0.pdf).
+
+The other run mode, called *multi-machine* mode, requires more than 1 PC to be tested. In this case, one has to send a copy of *G* and *def.h* to the next PC in the chain (also be sure to align *config* entries, or to send that too). In return they should be sent a copy of the previous G process in the chain, along with required headers/config files.
 
 ### Log file
 

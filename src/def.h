@@ -15,14 +15,15 @@
 #include <time.h>
 #include <errno.h>
 #include <netdb.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <sys/time.h>
 #include <signal.h>
+#include <fcntl.h>
 #include <math.h>
+#include <sys/socket.h>
+#include <sys/time.h>
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <netinet/in.h>
 
 #define LOCAL_IP "localhost" // localhost name (equivalent to 127.0.0.1 and to machine's own name, i.e. Linux's "Hostname")
 #define LOCAL_PORT 5000		 // chosen local port for the communication
@@ -49,13 +50,13 @@ typedef struct token_struct
 
 struct configuration
 {
-	int run_mode;				// set to 0 to go debug mode (= covid/V2.0 mode), 1 for multiple machine mode [default: 0]
-	float rf;					// sine wave frequency [default: 1.0]
-	int waiting_time_microsecs; // waiting time, in microseconds, applied by process P before sending the updated token [default: 1000]
-	char *next_ip;				// IP address of the next machine in the chain ("hostname -I" to get your current IP) [default: 192.168.1.106]
-	int next_port;				// chosen remote port for the communication [default: 5000]
-	char *fifo1;				// name of the first fifo (i.e. named pipe) [default: named1]
-	char *fifo2;				// name of the second fifo (i.e. named pipe) [default: named2]
+    int run_mode;               // set to 0 to go debug mode (= covid/V2.0 mode), 1 for multiple machine mode [default: 0]
+    double rf;                  // sine wave frequency [default: 1.0]
+    int waiting_time_microsecs; // waiting time, in microseconds, applied by process P before sending the updated token [default: 1000]
+    char *next_ip;              // IP address of the next machine in the chain ("hostname -I" to get your current IP) [default: 192.168.1.106]
+    int next_port;              // chosen remote port for the communication [default: 5000]
+    char *fifo1;                // name of the first fifo (i.e. named pipe) [default: npipe1]
+    char *fifo2;                // name of the second fifo (i.e. named pipe) [default: npipe2]
 };
 
 void error(const char *msg) // display a message about the error on stderr and then abort the program

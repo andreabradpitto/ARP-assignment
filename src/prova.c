@@ -169,13 +169,16 @@ int main(int argc, char *argv[])
 	printf("\n\n");
 
 	char lunghezza[2];
-	char l2[40];
+	//char l2[10] = "-1.123456";
+	char l2[9];
 	int numerone = 1234567890;
-	float numerotto = 1.234567890;
+	float numerotto = 1.23456789000;
 	sprintf(lunghezza, "%d", numerone);
 	printf("%s", lunghezza);
 	sprintf(l2, "%f", numerotto);
 	printf("%s", l2);
 	float cat = atof(l2);
 	printf("\n%f\n", cat);
+
+	printf("\nfloat = %li; double = %li\n", sizeof(float), sizeof(double));
 }
