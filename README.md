@@ -75,15 +75,15 @@ This assignment has been coded in [Ubuntu 20.04.2 LTS](https://releases.ubuntu.c
 
 ### Process list and brief description
 
-- [main](src/main.c): This is the main, which launches all the other processes. The duty of this piece of code is to load the 3 unnamed pipes and to launch all the involved processes (S, P, G and L)
+- [*main*](src/main.c): This is the main process, which launches all the other processes. The duty of this piece of code is to load the 3 unnamed pipes and to launch all the involved processes (*S*, *P*, *G* and *L*)
 
-- [S](src/S.c): This is the process that is used to communicate with the others. It is the only one that interfaces with the terminal. It can receive and handle 3 different commands: start, pause, log. In order to use it, you have to type e.g. "kill -18 22961", where the first number is the signal chosen, whilst the second is the PID of the node S itself. This process then communicates with P, spreading user commands through all the children of main
+- [*S*](src/S.c): This is the process that is used to communicate with the others. It is the only one that interfaces with the terminal. It can receive and handle 3 different commands: *start*, *pause*, *log*. In order to use it, you have to type e.g. `kill -18 22961`, where the first number is the signal chosen, whilst the second is the PID of the node *S* itself. This process then communicates with *P*, spreading user commands through all the children of main
 
-- [P](src/P.c): This process is the computational core. It is also the nevralgic waypoint of communications: all other nodes involved are, in a way or another, bond to P. This process uses different constants based on run_mode. A fake delay is added to the computation when run_mode = 0. run_mode = 1 scenario has P expecting data from the G process of the previous PC in the chain
+- [*P*](src/P.c): This process is the computational core. It is also the nevralgic waypoint of communications: all other nodes involved are, in a way or another, bond to *P*. This process uses different constants based on run_mode. A fake delay is added to the computation when `config.run_mode = 0`. `config.run_mode = 1` scenario has *P* expecting data from the G process of the previous PC in the chain
 
-- [G](src/G.c): This process can be run in 2 modes: debug mode (i.e. single machine/covid/V2.0 - run_mode = 0) or normal mode (i.e.communicating with other PCs - run_mode = 1). In the first case it receives tokens from P, and then sends them back to it. In the other scenario, it sends data to the P of the next PC in the chain
+- [*G*](src/G.c): This process can be run in 2 modes: *Debug* mode (i.e. *Single machine* - `config.run_mode = 0`) or *Multi-machine* mode (i.e.communicating with other PCs - `config.run_mode = 1`). In the first case it receives tokens from *P*, and then sends them back to it. In the other scenario, it sends data to the *P* of the next PC in the chain
 
-- [L](src/L.c): This process is the one responsible of logging. It registers every command issued by the user and every token processed by P (received/sent). When prompted, it opens the current log file via the user's preferred application
+- [*L*](src/L.c): This process is the one responsible of logging. It registers every command issued by the user and every token processed by *P* (received/sent). When prompted, it opens the current log file via the user's preferred application
 
 ### Configuration file
 
@@ -102,11 +102,11 @@ struct configuration
 };
 ```
 
-**Warning**: failing to open the config file may require to manually kill processes *S* and *L*.
+**Warning**: failing to open the config file may require to manually `kill` processes *S* and *L*.
 
 ### Run modes
 
-The code can be run in 2 different modes, as suggested by `configuration.run_mode`. The first one, labeledd as *Single machine* mode or *debug* mode, is the the one in which the *G* process is kept on the same machine as the others: in this case, it is possible to execute this code right out of the box. This is the default mode since the release of [Assignment Specifications V2.0](doc/Assignment%20Specifications%20V2.0.pdf). The *Single machine* mode features a richer integration between the processes *P* and *G*.
+The code can be run in 2 different modes, as suggested by `configuration.run_mode`. The first one, labeledd as *Single machine* mode or *Debug* mode, is the the one in which the *G* process is kept on the same machine as the others: in this case, it is possible to execute this code right out of the box. This is the default mode since the release of [Assignment Specifications V2.0](doc/Assignment%20Specifications%20V2.0.pdf). The *Single machine* mode features a richer integration between the processes *P* and *G*.
 
 The other run mode, called *Multi-machine* mode, requires more than 1 PC to be tested. In this case, one has to send a copy of *G* and *def.h* to the next PC in the chain (also be sure to align *config* entries, or to send that too). In return they should be sent a copy of the previous G process in the chain, along with required headers/config files. This version features a simpler token (i.e. just a `float` value inside a `char` array) in order to ease the interface with other chain members' codes. Following this trend, *G* changes its behavior too, by not printing anything on terminal, while now only sending the received token value to the next machine in the chain.  
 There are 5 mandatory elements that need to be adjusted in this scenario: the `config.run_mode` parameter itself, IP and port number of the next PC, and the 2 [named pipes](https://en.wikipedia.org/wiki/Named_pipe)' names, which are used to find a common mean of communication between foreign P-G processes without relying on [sockets](https://en.wikipedia.org/wiki/Network_socket).
@@ -165,7 +165,7 @@ kill -18 22961
 
 The dynamic part is the "22961", which gets updated every time the code is run.
 
-**Warning**: be careful not to input a different [signal value](https://dsa.cs.tsinghua.edu.cn/oj/static/unix_signal.html) (other than `10`, `12`, and `18`), as it may break the correct program execution. If that happens, it may be needed to manually kill processes *P*, *G*, and *L*.
+**Warning**: be careful not to input a different [signal value](https://dsa.cs.tsinghua.edu.cn/oj/static/unix_signal.html) (other than `10`, `12`, and `18`), as it may break the correct program execution. If that happens, it may be needed to manually `kill` processes *P*, *G*, and *L*.
 
 Please notice that asking for the log file to open at run-time automatically pauses token computation, so that the user can check its entries without being bothered by "document has changed" warnings and alike.
 
