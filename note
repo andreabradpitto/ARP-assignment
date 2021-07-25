@@ -1,13 +1,3 @@
-fai elimnare named pipes dal main. Non so, perche unsetenv sembra andare, magari va anche quello. prova a vedere...
-
 sudo apt-get install mingw-w64  x86_64-w64-mingw32-gcc -o test.exe test.c
 
 Fai code format, leggi pdf e Keep. Consegna su Aulaweb e scrivi mail (con link a a Github) dicendo che non ho avuto assistenza
-
-1 - guarda file scadenze laurea ottobre. Guarda se sta cosa degli env per killare tutto va. I caso rimvuovi i 2 warning dal readme!
-
-2 - prova, in p5 mi pare, la questione degli error/warning per gli overflow, così sai da quanto sono i dati (tipo float e int).
-Posso anche mettere un buffer gigante dappertutto e ciao.
-
-3 - per il float fai di nuovo il test dei 6 digit e cerca online come mai ti ritorna 6 di precision, forse dipende da qualche funzione del codice.
-L'int dovrebbe essere a posto, magari fai altre prove.

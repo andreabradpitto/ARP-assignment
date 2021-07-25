@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
 
     else // config.run_mode = 1
     {
-        char token[sizeof(double) + 1];
+        char token[10]; // size 9 should be also fine
         float token_value = 0;
         sprintf(token, "%f", token_value);
 

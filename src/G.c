@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
 
 	else // config.run_mode = 1
 	{
-		char token[sizeof(double) + 1];
+		char token[10]; // size 9 should be also fine
 
 		close(atoi(argv[3]));
 

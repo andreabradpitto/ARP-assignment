@@ -34,12 +34,12 @@ int main(int argc, char *argv[])
 	}
 
 	// Creating char arrays for the unnamed pipes
-	char read1[sizeof(int) + 1];
-	char write1[sizeof(int) + 1];
-	char read2[sizeof(int) + 1];
-	char write2[sizeof(int) + 1];
-	char read3[sizeof(int) + 1];
-	char write3[sizeof(int) + 1];
+	char read1[3]; // size 2 should be also fine
+	char write1[3];
+	char read2[3];
+	char write2[3];
+	char read3[3];
+	char write3[3];
 
 	// Load each pipe's fd read/write end (3rd arg.) into the char array (1st arg.), while formatting it as stated in 2nd arg.
 	sprintf(read1, "%d", pfd1[0]);
