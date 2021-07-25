@@ -1,3 +1,0 @@
-sudo apt-get install mingw-w64  x86_64-w64-mingw32-gcc -o test.exe test.c
-
-Fai code format, leggi pdf e Keep. Consegna su Aulaweb e scrivi mail (con link a a Github) dicendo che non ho avuto assistenza
