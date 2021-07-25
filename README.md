@@ -17,7 +17,7 @@
 
 ## 📛 Introduction
 
-This is my repository for the assignment of Advanced and Robot Programming (ARP) Robotics Engineering course.  
+This is my repository for the assignment of Advanced and Robot Programming (ARP) Robotics Engineering course, attended at the [University of Genoa](https://unige.it/it/).  
 There are 2 versions of the assignment specifications: [V1.0](doc/Assignment%20Specifications%20V1.0.pdf) and
 [V2.0](doc/Assignment%20Specifications%20V2.0.pdf). This is because of the COVID-19 outbreak, which made the
 first version unfeasible for health and safety reasons. My implementation is relative to the second and most
