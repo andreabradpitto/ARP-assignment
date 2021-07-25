@@ -42,7 +42,7 @@ recent version, but I decided to still include the original specifications file 
 ## ❗ Software requirements
 
 - A [**POSIX**](https://en.wikipedia.org/wiki/POSIX)-compliant machine
-- [gcc](https://gcc.gnu.org/) compiler
+- [GCC](https://gcc.gnu.org/) compiler collection
 - At least 1 MB of free disk space
 
 The space required is intended for the repository contents + the compiled code. Please beware that running the code for an extended time span may produce much greater log file sizes (~ 7 MB per minute for the default [parameters](https://github.com/andreabradpitto/ARP-assignment#configuration-file)).
