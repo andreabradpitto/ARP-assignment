@@ -42,10 +42,10 @@ recent version, but I decided to still include the original specifications file 
 ## ❗ Software requirements
 
 - A [**POSIX**](https://en.wikipedia.org/wiki/POSIX)-compliant machine
-- [gcc](https://gcc.gnu.org/)
+- [gcc](https://gcc.gnu.org/) compiler
 - At least 1 MB of free disk space
 
-The space required is intended for the repository contents + the compiled code. Please beware that running the code for an extended time span may produce much greater log file sizes (~ 7 MB per minute).
+The space required is intended for the repository contents + the compiled code. Please beware that running the code for an extended time span may produce much greater log file sizes (~ 7 MB per minute for the default [parameters](https://github.com/andreabradpitto/ARP-assignment#configuration-file)).
 
 ## ✅ Installation
 
@@ -80,7 +80,7 @@ This assignment has been coded in [Ubuntu 20.04.2 LTS](https://releases.ubuntu.c
 
 - [main](src/main.c): This is the main, which launches all the other processes. The duty of this piece of code is to load the 3 unnamed pipes and to launch all the involved processes (S, P, G and L)
 
-- [S](src/S.c): This is the process that is used to communicate with the others. It is the only one that interfaces with the terminal. It can receive and handle 3 different commands: start, pause, log. In order to use it, you have to type e.g. "kill -18 1234", where the first number is the signal chosen, whilst the second is the PID of the node S itself. This process then communicates with P, spreading user commands through all the children of main
+- [S](src/S.c): This is the process that is used to communicate with the others. It is the only one that interfaces with the terminal. It can receive and handle 3 different commands: start, pause, log. In order to use it, you have to type e.g. "kill -18 22961", where the first number is the signal chosen, whilst the second is the PID of the node S itself. This process then communicates with P, spreading user commands through all the children of main
 
 - [P](src/P.c): This process is the computational core. It is also the nevralgic waypoint of communications: all other nodes involved are, in a way or another, bond to P. This process uses different constants based on run_mode. A fake delay is added to the computation when run_mode = 0. run_mode = 1 scenario has P expecting data from the G process of the previous PC in the chain
 
@@ -111,7 +111,7 @@ struct configuration
 
 The code can be run in 2 different modes, as suggested by `configuration.run_mode`. The first one, labeledd as *Single machine* mode or *debug* mode, is the the one in which the *G* process is kept on the same machine as the others: in this case, it is possible to execute this code right out of the box. This is the default mode since the release of [Assignment Specifications V2.0](doc/Assignment%20Specifications%20V2.0.pdf). The *Single machine* mode features a richer integration between the processes *P* and *G*.
 
-The other run mode, called *multi-machine* mode, requires more than 1 PC to be tested. In this case, one has to send a copy of *G* and *def.h* to the next PC in the chain (also be sure to align *config* entries, or to send that too). In return they should be sent a copy of the previous G process in the chain, along with required headers/config files. This version features a simpler token (i.e. just a `float` value inside a `char` array) in order to ease the interface with other chain members' codes. Following this trend, also *G* changes its behavior by not also printing anything on terminal, but only sending the received token value to the next machine in the chain.
+The other run mode, called *Multi-machine* mode, requires more than 1 PC to be tested. In this case, one has to send a copy of *G* and *def.h* to the next PC in the chain (also be sure to align *config* entries, or to send that too). In return they should be sent a copy of the previous G process in the chain, along with required headers/config files. This version features a simpler token (i.e. just a `float` value inside a `char` array) in order to ease the interface with other chain members' codes. Following this trend, also *G* changes its behavior by not also printing anything on terminal, but only sending the received token value to the next machine in the chain.
 
 ### Log file
 
@@ -173,7 +173,7 @@ Please notice that asking for the log file to open at run-time automatically pau
 
 ## 📊 Results
 
-After several tests, I came to the conclusion that the token function reported by the professor ([Assignment Specifications V1.0](doc/Assignment%20Specifications%20V1.0.pdf) and [Assignment Specifications V2.0](doc/Assignment%20Specifications%20V2.0.pdf)) does not work.
+After several tests, I came to the conclusion that the token function reported by the professor does not work (this is true for both [Assignment Specifications V1.0](doc/Assignment%20Specifications%20V1.0.pdf) and [Assignment Specifications V2.0](doc/Assignment%20Specifications%20V2.0.pdf)).
 It should produce a [sine wave](https://en.wikipedia.org/wiki/Sine) but, even with the default parameters, it does not even come close to that.
 After several tweaks to the function itself, I ended up using one I defined myself. This formula, albeit less fancy than the original, works as intended, while still including all the parameters that were mentioned in the provided one.
 
