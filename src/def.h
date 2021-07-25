@@ -50,7 +50,7 @@ typedef struct token_struct
 
 struct configuration
 {
-	int run_mode;				// set to 0 to go debug mode (= covid/V2.0 mode), 1 for multiple machine mode [default: 0]
+	int run_mode;				// set to 0 to go in Debug mode (= Single-machine mode), to 1 for Multi-machine mode [default: 0]
 	double rf;					// sine wave frequency [default: 1.0]
 	int waiting_time_microsecs; // waiting time, in microseconds, applied by process P before sending the updated token [default: 1000]
 	char *next_ip;				// IP address of the next machine in the chain ("hostname -I" to get your current IP) [default: 192.168.1.106]
