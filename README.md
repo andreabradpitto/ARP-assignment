@@ -75,13 +75,13 @@ This assignment has been coded in [Ubuntu 20.04.2 LTS](https://releases.ubuntu.c
 
 ### Process list and brief description
 
-- [*main*](src/main.c): This is the main process, which launches all the other processes. The duty of this piece of code is to load the 3 unnamed pipes and to launch all the involved processes (*S*, *P*, *G* and *L*)
+- [*main*](src/main.c): This is the main process, which launches all the other software. The duty of this piece of code is to load the 3 unnamed pipes and to launch all the involved processes (*S*, *P*, *G* and *L*)
 
-- [*S*](src/S.c): This is the process that is used to communicate with the others. It is the only one that interfaces with the terminal. It can receive and handle 3 different commands: *start*, *pause*, *log*. In order to use it, you have to type e.g. `kill -18 22961`, where the first number is the signal chosen, whilst the second is the PID of the node *S* itself. This process then communicates with *P*, spreading user commands through all the children of main
+- [*S*](src/S.c): This is the process that is used to communicate with the others. It is the only one that interfaces with the terminal. It can receive and handle 3 different commands: *start*, *pause*, *log*. In order to use it, you have to type e.g. `kill -18 22961`, where the first number is the signal chosen, whilst the second is the PID of the node *S* itself. This process then communicates with *P*, spreading user commands through all the children of *main*
 
-- [*P*](src/P.c): This process is the computational core. It is also the nevralgic waypoint of communications: all other nodes involved are, in a way or another, bond to *P*. This process uses different constants based on run_mode. A fake delay is added to the computation when `config.run_mode = 0`. `config.run_mode = 1` scenario has *P* expecting data from the G process of the previous PC in the chain
+- [*P*](src/P.c): This process is the computational core. It is also the nevralgic waypoint of communications: all other nodes involved are, in a way or another, bond to *P*. This process uses different constants based on `config.run_mode`. A fake delay is added to the computation when `config.run_mode = 0`. `config.run_mode = 1` scenario has *P* expecting data from the G process of the previous PC in the chain
 
-- [*G*](src/G.c): This process can be run in 2 modes: *Debug* mode (i.e. *Single machine* - `config.run_mode = 0`) or *Multi-machine* mode (i.e.communicating with other PCs - `config.run_mode = 1`). In the first case it receives tokens from *P*, and then sends them back to it. In the other scenario, it sends data to the *P* of the next PC in the chain
+- [*G*](src/G.c): This process can be run in 2 modes: *Debug* mode (i.e. *Single machine* - `config.run_mode = 0`) or *Multi-machine* mode (i.e.communicating with other PCs - `config.run_mode = 1`). In the first case it receives tokens from *P*, and then sends them back to it. In the other scenario, it sends data to the P of the next PC in the chain
 
 - [*L*](src/L.c): This process is the one responsible of logging. It registers every command issued by the user and every token processed by *P* (received/sent). When prompted, it opens the current log file via the user's preferred application
 

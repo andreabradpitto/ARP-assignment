@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
 		}
 		if (log_flag)
 		{
-			write(atoi(argv[1]), &(int){3}, sizeof(int)); // state = 3: send open log file request
+			write(atoi(argv[1]), &(int){3}, sizeof(int)); // state = 3: send open log file request (and pause computations)
 			log_flag = 0;
 			printf("\n\t\t\tReceived open log command by user\n");
 		}

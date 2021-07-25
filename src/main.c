@@ -2,7 +2,7 @@
 // Andrea Pitto - S3942710
 // 10 - 07 - 2020
 
-// This is the main, which launches all the other processes. The duty of this piece of code
+// This is the main process, which launches all the other software. The duty of this piece of code
 // is to load the 3 unnamed pipes and to launch all the involved processes (S, P, G and L)
 
 #include "def.h"

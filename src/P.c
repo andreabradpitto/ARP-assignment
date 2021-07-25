@@ -4,8 +4,8 @@
 
 // This process is the computational core. It is also the nevralgic waypoint of communications:
 // all other nodes involved are, in a way or another, bond to P. This process uses different constants
-// based on run_mode. A fake delay is added to the computation when run_mode = 0. run_mode = 1 scenario
-// has P expecting data from the G process of the previous PC in the chain
+// based on config.run_mode. A fake delay is added to the computation when config.run_mode = 0.
+//config.run_mode = 1 scenario has P expecting data from the G process of the previous PC in the chain
 
 #include "def.h"
 
