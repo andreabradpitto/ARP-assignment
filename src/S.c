@@ -17,28 +17,19 @@ int log_flag = 0;
 // This handler is devoted to resuming token computation, as well as all other tasks in all the nodes
 void start_handler(int signum)
 {
-	if (signum == SIGCONT)
-	{
-		start_flag = 1;
-	}
+	start_flag = 1;
 }
 
 // This handler is devoted to manage pause the execution of the nodes
 void stop_handler(int signum)
 {
-	if (signum == SIGUSR2)
-	{
-		stop_flag = 1;
-	}
+	stop_flag = 1;
 }
 
 // This handler issues the opening of the log file
 void log_handler(int signum)
 {
-	if (signum == SIGUSR1)
-	{
-		log_flag = 1;
-	}
+	log_flag = 1;
 }
 
 int main(int argc, char *argv[])

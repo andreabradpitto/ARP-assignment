@@ -7,6 +7,28 @@
 
 #include "def.h"
 
+/*void interrupt_handler(int signum)
+{
+	//kill(atoi(getenv("Spid")), SIGKILL);
+	//kill(atoi(getenv("Gpid")), SIGKILL);
+	//kill(atoi(getenv("Ppid")), SIGKILL);
+	//kill(atoi(getenv("Lpid")), SIGKILL);
+	unsetenv("Spid");
+	unsetenv("Gpid");
+	unsetenv("Ppid");
+	unsetenv("Lpid");
+	unsetenv("welcome0");
+	unsetenv("welcome1");
+	unsetenv("welcome2");
+	unsetenv("welcome3");
+	unsetenv("command1");
+	unsetenv("command2");
+	unsetenv("command3");
+	unsetenv("log_file");
+
+	_exit(0);
+}*/
+
 int main(int argc, char *argv[])
 {
 	pid_t P, G, S, L;
@@ -49,7 +71,7 @@ int main(int argc, char *argv[])
 	sprintf(read3, "%d", pfd3[0]);
 	sprintf(write3, "%d", pfd3[1]);
 
-	// Preparing to send all pipe ends to the children of this process, by transforming their fd in char
+	// Preparing to send all pipe ends to the children of this process, by transforming their fd in char.
 	// They will be reverted back to integers inside those children
 	argv[0] = read1;  // pipe1: read
 	argv[1] = write1; // pipe1: write
@@ -57,6 +79,8 @@ int main(int argc, char *argv[])
 	argv[3] = write2; // pipe2: write
 	argv[4] = read3;  // pipe3: read
 	argv[5] = write3; // pipe3: write
+
+	//signal(SIGINT, interrupt_handler); // reacts to "Ctrl+C"
 
 	S = fork();
 
