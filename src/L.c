@@ -18,9 +18,6 @@ int main(int argc, char *argv[])
 
     pid_t Lpid;
     Lpid = getpid();
-    char pid_buf[sizeof(int) + 1];
-    sprintf(pid_buf, "%d", (int)Lpid);
-    setenv("Lpid", pid_buf, 1);
     printf("L: my PID is %d\n", Lpid);
 
     char *fancy_time;
@@ -85,7 +82,6 @@ int main(int argc, char *argv[])
     }
 
     fclose(log_file); // close the log file
-    unsetenv("Lpid");
     unsetenv("log_file");
     close(atoi(argv[4]));
     return 0;
