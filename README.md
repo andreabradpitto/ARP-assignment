@@ -18,11 +18,7 @@
 
 ## 📛 Introduction
 
-This is my repository for the assignment of Advanced and Robot Programming (ARP) Robotics Engineering course, attended at the [University of Genoa](https://unige.it/en).  
-There are 2 versions of the assignment specifications: [V1.0](doc/Assignment%20Specifications%20V1.0.pdf) and
-[V2.0](doc/Assignment%20Specifications%20V2.0.pdf). This is because of the COVID-19 outbreak, which made the
-first version unfeasible for health and safety reasons. My implementation is relative to the second and most
-recent version, but I decided to still include the original specifications file for the sake of completeness.
+This is my repository for the assignment of Advanced and Robot Programming (ARP) Robotics Engineering course, attended at the [University of Genoa](https://unige.it/en). There are 2 versions of the assignment specifications: [V1.0](doc/Assignment%20Specifications%20V1.0.pdf) and [V2.0](doc/Assignment%20Specifications%20V2.0.pdf). This is because of the COVID-19 outbreak, which made the first version unfeasible for health and safety reasons. My implementation is relative to the second and most recent version, but I decided to still include the original specifications file for the sake of completeness.
 
 ## 📂 Repository structure
 
@@ -46,7 +42,7 @@ recent version, but I decided to still include the original specifications file 
 - [GCC](https://gcc.gnu.org/) compiler collection
 - At least 1 MB of free disk space
 
-The space required is intended for the repository contents + the compiled code. Please beware that running the code for an extended time span may produce much greater log file sizes (~ 7 MB per minute for the default [parameters](https://github.com/andreabradpitto/ARP-assignment#configuration-file)).
+The space required is intended for the repository contents + the compiled code. Please beware that running the code for an extended time span may produce much greater log file sizes (~ 7 MB per minute with the default [parameters](https://github.com/andreabradpitto/ARP-assignment#configuration-file)).
 
 ## ✅ Installation
 
