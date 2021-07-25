@@ -2,22 +2,23 @@
 
 ## 📑 Contents list
 
-1. [Introduction](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#-1---introduction)
-2. [Repository structure](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#-2---repository-structure)
-3. [Software requirements](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#-3---software-requirements)
-4. [Installation](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#-4---installation)
-5. [Execution](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#%EF%B8%8F-5---execution)
-6. [Additional information](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#%E2%84%B9%EF%B8%8F-6---additional-information)
-    1. [Process list and brief description](https://github.com/andreabradpitto/ARP-assignment#61---process-list-and-brief-description)
-    2. [Configuration file](https://github.com/andreabradpitto/ARP-assignment#62---configuration-file)
-    3. [Log file](https://github.com/andreabradpitto/ARP-assignment#63---log-file)
-    4. [Input Terminal & Output Terminal](https://github.com/andreabradpitto/ARP-assignment#64---input-terminal--output-terminal)
-7. [Results](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#-7---results)
-8. [Author](https://github.com/andreabradpitto/ARP-assignment/blob/main/README.md#-8---author)
+1. [Introduction](https://github.com/andreabradpitto/ARP-assignment#-introduction)
+2. [Repository structure](https://github.com/andreabradpitto/ARP-assignment#-repository-structure)
+3. [Software requirements](https://github.com/andreabradpitto/ARP-assignment#-software-requirements)
+4. [Installation](https://github.com/andreabradpitto/ARP-assignment#-installation)
+5. [Execution](https://github.com/andreabradpitto/ARP-assignment#%EF%B8%8F-execution)
+6. [Additional information](https://github.com/andreabradpitto/ARP-assignment#%E2%84%B9%EF%B8%8F-additional-information)
+    1. [Process list and brief description](https://github.com/andreabradpitto/ARP-assignment#process-list-and-brief-description)
+    2. [Configuration file](https://github.com/andreabradpitto/ARP-assignment#configuration-file)
+    3. [Run modes](https://github.com/andreabradpitto/ARP-assignment#run-modes)
+    4. [Log file](https://github.com/andreabradpitto/ARP-assignment#log-file)
+    5. [Input Terminal & Output Terminal](https://github.com/andreabradpitto/ARP-assignment#input-terminal--output-terminal)
+7. [Results](https://github.com/andreabradpitto/ARP-assignment#-results)
+8. [Author](https://github.com/andreabradpitto/ARP-assignment#-author)
 
 ## 📛 Introduction
 
-This is my repository for the assignment of Advanced and Robot Programming (ARP) Robotics Engineering course, attended at the [University of Genoa](https://unige.it/it/).  
+This is my repository for the assignment of Advanced and Robot Programming (ARP) Robotics Engineering course, attended at the [University of Genoa](https://unige.it/en).  
 There are 2 versions of the assignment specifications: [V1.0](doc/Assignment%20Specifications%20V1.0.pdf) and
 [V2.0](doc/Assignment%20Specifications%20V2.0.pdf). This is because of the COVID-19 outbreak, which made the
 first version unfeasible for health and safety reasons. My implementation is relative to the second and most
