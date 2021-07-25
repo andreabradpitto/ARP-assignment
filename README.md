@@ -67,7 +67,7 @@ To run the code, open a terminal, move to the folder where this repository is lo
 ./main
 ```
 
-The main process will take care of launching all the other processes. You can stop everything by pressing Ctrl+C in the terminal where *main* has been launched. Notice that Ctrl+C is actually just the `SIGINT` **POSIX** signal.
+The main process will take care of launching all the other processes, as well as an additional terminal (more on this [later](https://github.com/andreabradpitto/ARP-assignment#input-terminal--output-terminal)). You can stop everything by pressing Ctrl+C in the terminal where *main* has been launched. Notice that Ctrl+C is actually just the `SIGINT` **POSIX** signal.
 
 ## ℹ️ Additional information
 
