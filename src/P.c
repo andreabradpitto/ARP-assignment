@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
                              (log_msg.timestamp.tv_usec - token.timestamp.tv_usec) / (float)1000000;
 
                         // Token computation
-                        // using a custom formula as the one provided is not working properly
+                        // Using a custom formula as the one provided is not working properly
                         token.value = sin(2 * M_PI * config.rf * (log_msg.value + dt * (1 - log_msg.value))); // custom formula
                         //token.value = log_msg.value + dt * (1 - powf(log_msg.value, 2) / 2) * 2 * M_PI * config.rf; // original formula
 
