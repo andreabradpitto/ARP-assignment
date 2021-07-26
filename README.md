@@ -79,7 +79,7 @@ This assignment has been coded in [Ubuntu 20.04.2 LTS](https://releases.ubuntu.c
 
 - [*S*](src/S.c): This is the process that is used to communicate with the others. It is the only one that interfaces with the terminal. It can receive and handle 3 different commands: *start*, *pause*, *log*. In order to use it, you have to type e.g. `kill -18 22961`, where the first number is the signal chosen, whilst the second is the PID of the node *S* itself. This process then communicates with *P*, spreading user commands through all the children of *main*
 
-- [*P*](src/P.c): This process is the computational core. It is also the nevralgic waypoint of communications: all other nodes involved are, in a way or another, bond to *P*. This process uses different constants based on `config.run_mode`. A fake delay is added to the computation when `config.run_mode = 0`. `config.run_mode = 1` scenario has *P* expecting data from the G process of the previous PC in the chain
+- [*P*](src/P.c): This process is the computational core. It is also the nevralgic waypoint of communications: all other nodes involved are, in a way or another, bond to *P*. This process uses different constants based on `config.run_mode`. An arbitrary delay is added to the computation when `config.run_mode = 0`. `config.run_mode = 1` scenario has *P* expecting data from the G process of the previous PC in the chain
 
 - [*G*](src/G.c): This process can be run in 2 modes: *Debug* mode (i.e. *Single machine* - `config.run_mode = 0`) or *Multi-machine* mode (i.e.communicating with other PCs - `config.run_mode = 1`). In the first case it receives tokens from *P*, and then sends them back to it. In the other scenario, it sends data to the P of the next PC in the chain
 
@@ -108,7 +108,7 @@ struct configuration
 
 The code can be run in 2 different modes, as suggested by `configuration.run_mode`. The first one, labeledd as *Single machine* mode or *Debug* mode, is the the one in which the *G* process is kept on the same machine as the others: in this case, it is possible to execute this code right out of the box. This is the default mode since the release of [Assignment Specifications V2.0](doc/Assignment%20Specifications%20V2.0.pdf). The *Single machine* mode features a richer integration between the processes *P* and *G*.
 
-The other run mode, called *Multi-machine* mode, requires more than 1 PC to be tested. In this case, one has to send a copy of *G* and *def.h* to the next PC in the chain (also be sure to align *config* entries, or to send that too). In return they should be sent a copy of the previous G process in the chain, along with required headers/config files. This version features a simpler token (i.e. just a `float` value inside a `char` array) in order to ease the interface with other chain members' codes. Following this trend, *G* changes its behavior too, by not printing anything on terminal, while now only sending the received token value to the next machine in the chain.  
+The other run mode, called *Multi-machine* mode, requires more than 1 PC to be tested. In this case, one has to send a copy of *G* and *def.h* to the next PC in the chain (also be sure to align *config* entries, or to send that too). In return they should be sent a copy of the previous G process in the chain, along with required headers/config files. This version features a simpler token (i.e. just a `float` value inside a `char` array) in order to ease the interface with other chain members' codes.  
 There are 5 mandatory elements that need to be adjusted in this scenario: the `config.run_mode` parameter itself, IP and port number of the next PC, and the 2 [named pipes](https://en.wikipedia.org/wiki/Named_pipe)' names, which are used to find a common mean of communication between foreign P-G processes without relying on [sockets](https://en.wikipedia.org/wiki/Network_socket).
 
 ### Log file
@@ -142,8 +142,7 @@ L: my PID is 22964
 P: my PID is 22963
 ```
 
-All the PIDs are different for each new run.  
-Please notice that if the token exchange rate between *P* and *G* is too high, it may be hard to catch the welcome messages of the **Output Terminal**.
+All the PIDs are different for each new run.
 
 **The Input Terminal** welcomes the user with these lines instead:
 
@@ -176,7 +175,7 @@ It should produce a [sine wave](https://en.wikipedia.org/wiki/Sine) but, even wi
 After several tweaks to the function itself, I ended up using one I defined myself. This formula, albeit less fancy than the original, works as intended, while still including all the parameters that were present in the provided one.
 
 For the above mentioned reasons, I could not test the maximum `config.rf` value as expected by the goals of the assignment specifications. Of course, also the optional part (i.e. check whether token values constituted a sinusoidal or not) lost any sense, so I skipped that too.  
-The only thing I could test was the waiting time, and I can confirm that my minumum waiting time is 0 (i.e. no waiting time), as even with that value the code behaves as expected. I proved this by adding an incremental value to the function, so that I could then easily check in the [log file](https://github.com/andreabradpitto/ARP-assignment#log-file) that no message had been skipped
+The only thing I could test was the waiting time, and I can confirm that my minumum waiting time is 0 (i.e. no waiting time), as even with that value the code behaves as expected. I proved this by adding a recursion element to my function (i.e. I added `10 * token.value` to the new token computation), so that I could then easily check in the [log file](https://github.com/andreabradpitto/ARP-assignment#log-file) that no message had been skipped.
 
 Given these premises, results were satisfying nonetheless: my code works in both run modes, and does not seem to feature any relevant bug. The only known issues are highlighted by the **warnings** in this file, but they are mostly problems generated by users' errors, which are not handled seamlessly.
 

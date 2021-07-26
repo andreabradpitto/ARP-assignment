@@ -40,7 +40,6 @@ int main(int argc, char *argv[])
 		token token;
 		token.value = 0;
 		gettimeofday(&token.timestamp, NULL); // get the current time and store it in timestamp
-		char *fancy_time;
 
 		portno = LOCAL_PORT;
 
@@ -76,9 +75,6 @@ int main(int argc, char *argv[])
 				if (n < 0)
 					error("\nError reading from socket");
 
-				fancy_time = ctime(&token.timestamp.tv_sec);
-				fancy_time[strcspn(fancy_time, "\n")] = 0; // remove newline from ctime() output
-				printf("\nG: Token timestamp (fancy): %s | Token value: %9f", fancy_time, token.value);
 				write(atoi(argv[3]), &token, sizeof(token));
 			}
 		}

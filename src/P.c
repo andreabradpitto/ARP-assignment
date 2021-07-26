@@ -32,6 +32,8 @@ int main(int argc, char *argv[])
 
     int n; // write() handle
 
+    char *fancy_time;
+
     struct configuration config;
     struct configuration *configPtr = &config;
     char *configpath = "config"; // specify config file path
@@ -74,6 +76,7 @@ int main(int argc, char *argv[])
             error("\nConnection failed");
 
         // P process sending the first message, and thus starting the communication between G and itself
+        printf("\n");
         gettimeofday(&token.timestamp, NULL);     // store token sending time
         n = write(sockfd, &token, sizeof(token)); // sending the new token to G
         if (n < 0)
@@ -82,6 +85,11 @@ int main(int argc, char *argv[])
         log_msg.value = token.value;
         log_msg.timestamp = token.timestamp;                        // log token sending time
         write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "token sent" acknowledgment to L
+
+        fancy_time = ctime(&token.timestamp.tv_sec);
+        fancy_time[strcspn(fancy_time, "\n")] = 0; // remove newline from ctime() output
+        printf("P: Token timestamp (fancy): %s | Token value: %9f\r", fancy_time, token.value);
+        fflush(stdout);
 
         // Waiting time, in microseconds, applied to process P before it can check for new incoming tokens
         usleep(config.waiting_time_microsecs);
@@ -142,6 +150,11 @@ int main(int argc, char *argv[])
                         log_msg.value = token.value;
                         log_msg.timestamp = token.timestamp;                        // log token sending time
                         write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "token sent" acknowledgment to L
+
+                        fancy_time = ctime(&token.timestamp.tv_sec);
+                        fancy_time[strcspn(fancy_time, "\n")] = 0; // remove newline from ctime() output
+                        printf("P: Token timestamp (fancy): %s | Token value: %9f\r", fancy_time, token.value);
+                        fflush(stdout);
                     }
 
                     if (FD_ISSET(atoi(argv[0]), &readfds)) // read of first pipe (data incoming from S) is ready
@@ -226,6 +239,11 @@ int main(int argc, char *argv[])
         log_msg.timestamp = sent_ts;                                // log token sending time
         write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "token sent" acknowledgment to L
 
+        fancy_time = ctime(&sent_ts.tv_sec);
+        fancy_time[strcspn(fancy_time, "\n")] = 0; // remove newline from ctime() output
+        printf("P: Token timestamp (fancy): %s | Token value: %9f\r", fancy_time, token_value);
+        fflush(stdout);
+
         // Set of involved pipe ends from which P needs to read through the select
         fd_set readfds;
         int maxfd = atoi(argv[0]) > fifo1fd ? atoi(argv[0]) : fifo1fd; // compute highest fd for the 1st arg. of select()
@@ -280,6 +298,11 @@ int main(int argc, char *argv[])
                         log_msg.value = token_value;
                         log_msg.timestamp = sent_ts;                                // log token sending time
                         write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "token sent" acknowledgment to L
+
+                        fancy_time = ctime(&sent_ts.tv_sec);
+                        fancy_time[strcspn(fancy_time, "\n")] = 0; // remove newline from ctime() output
+                        printf("P: Token timestamp (fancy): %s | Token value: %9f\r", fancy_time, token_value);
+                        fflush(stdout);
                     }
 
                     if (FD_ISSET(atoi(argv[0]), &readfds)) // read of first pipe (data incoming from S) is ready

@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
 		// Welcome the user with useful information
 		printf("\n[This is the Output Terminal, which shows the processes' outputs. "
 			   "Use the Input Terminal to send signals to the processes. "
-			   "Press Ctrl + C to end]\n\n");
+			   "Press Ctrl+C to end]\n\n");
 
 		printf("main: PID is %d\n", getpid());
 

@@ -87,19 +87,19 @@ int main(int argc, char *argv[])
 		{
 			write(atoi(argv[1]), &(int){1}, sizeof(int)); // state = 0: P and G communication stopped
 			start_flag = 0;
-			printf("\n\t\t\tReceived start command by user\n");
+			printf("\n\n\t\t\tReceived start command by user\n\n");
 		}
 		if (stop_flag)
 		{
 			write(atoi(argv[1]), &(int){0}, sizeof(int)); // state = 1: P and G communication resumed/in progress
 			stop_flag = 0;
-			printf("\n\t\t\tReceived stop command by user\n");
+			printf("\n\n\t\t\tReceived stop command by user\n\n");
 		}
 		if (log_flag)
 		{
 			write(atoi(argv[1]), &(int){3}, sizeof(int)); // state = 3: send open log file request (and pause computations)
 			log_flag = 0;
-			printf("\n\t\t\tReceived open log command by user\n");
+			printf("\n\n\t\tReceived open log command by user (computation paused)\n\n");
 		}
 	}
 
