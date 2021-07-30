@@ -76,7 +76,6 @@ int main(int argc, char *argv[])
             error("\nConnection failed");
 
         // P process sending the first message, and thus starting the communication between G and itself
-        printf("\n");
         gettimeofday(&token.timestamp, NULL);     // store token sending time
         n = write(sockfd, &token, sizeof(token)); // sending the new token to G
         if (n < 0)
@@ -88,7 +87,7 @@ int main(int argc, char *argv[])
 
         fancy_time = ctime(&token.timestamp.tv_sec);
         fancy_time[strcspn(fancy_time, "\n")] = 0; // remove newline from ctime() output
-        printf("P: Token timestamp (fancy): %s | Token value: %9f\r", fancy_time, token.value);
+        printf("\nP: Token timestamp (fancy): %s | Token value: %9f\r", fancy_time, token.value);
         fflush(stdout);
 
         // Waiting time, in microseconds, applied to process P before it can check for new incoming tokens
@@ -241,7 +240,7 @@ int main(int argc, char *argv[])
 
         fancy_time = ctime(&sent_ts.tv_sec);
         fancy_time[strcspn(fancy_time, "\n")] = 0; // remove newline from ctime() output
-        printf("P: Token timestamp (fancy): %s | Token value: %9f\r", fancy_time, token_value);
+        printf("\nP: Token timestamp (fancy): %s | Token value: %9f\r", fancy_time, token_value);
         fflush(stdout);
 
         // Set of involved pipe ends from which P needs to read through the select
@@ -361,7 +360,10 @@ void configLoader(char *path, struct configuration *conf)
     FILE *config_file = fopen(path, "r"); // open the config file in read mode
     int line_out;
     char *line = NULL;
-    size_t len;
+    char *ip_line = NULL;
+    char *fifo1_line = NULL;
+    char *fifo2_line = NULL;
+    size_t len = 0;
 
     if (config_file == NULL)
     {
@@ -393,9 +395,10 @@ void configLoader(char *path, struct configuration *conf)
         perror("Error reading 3rd line of config file");
 
     // Read 4th line of the config file (next_ip)
-    if ((line_out = getline(&line, &len, config_file)) != -1)
+    if ((line_out = getline(&ip_line, &len, config_file)) != -1)
     {
-        conf->next_ip = line;
+        ip_line[strlen(ip_line) - 1]  = '\0';
+        conf->next_ip = ip_line;
     }
     else
         perror("Error reading 4th line of config file");
@@ -409,17 +412,19 @@ void configLoader(char *path, struct configuration *conf)
         perror("Error reading 5th line of config file");
 
     // Read 6th line of the config file (fifo1)
-    if ((line_out = getline(&line, &len, config_file)) != -1)
+    if ((line_out = getline(&fifo1_line, &len, config_file)) != -1)
     {
-        conf->fifo1 = line;
+        fifo1_line[strlen(fifo1_line) - 1]  = '\0';
+        conf->fifo1 = fifo1_line;
     }
     else
         perror("Error reading 6th line of config file");
 
     // Read 7th line of the config file (fifo2)
-    if ((line_out = getline(&line, &len, config_file)) != -1)
+    if ((line_out = getline(&fifo2_line, &len, config_file)) != -1)
     {
-        conf->fifo2 = line;
+        fifo2_line[strlen(fifo2_line) - 1]  = '\0';
+        conf->fifo2 = fifo2_line;
     }
     else
         perror("Error reading 7th line of config file");
