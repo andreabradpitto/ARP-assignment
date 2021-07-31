@@ -1,0 +1,15 @@
+aggiorna readme con descrizione dei risultati
+
+come decidono quale P manda i messaggi per primo? è ok così?
+il problema è chi manda il primo messaggio nella catena, ci vuole un altro parametro in config per decidere chi manda per primo, oppure un if con dei wait per vedere se un messaggio è stato ricevuto, ma così è un po' un casino mi sa
+
+correggi il readme: 4 mandatory o 5, dipende se aggiungo altro valore per decidere chi parte
+
+guarda differenze tra le parti di codice run mode 1 e 0
+
+test coi printf per capire dove si bloccano i codici
+
+Fai test con codice socket di prova di Zaccaria per vedere se quello va (carica il codice nella repository)
+
+Metti in note (cosi ci vai da firefox poi);
+sudo apt update -y && sudo apt upgrade -y && sudo apt install gcc -y && sudo apt install make -y && sudo apt install git -y && cd Documents && git clone https://github.com/andreabradpitto/ARP-assignment && cd ARP-assignment && make
