@@ -81,7 +81,7 @@ This assignment has been coded in [Ubuntu 20.04.2 LTS](https://releases.ubuntu.c
 
 - [*P*](src/P.c): This process is the computational core. It is also the nevralgic waypoint of communications: all other nodes involved are, in a way or another, bond to *P*. This process uses different constants based on `config.run_mode`. An arbitrary delay is added to the computation when `config.run_mode = 0`. `config.run_mode = 1` scenario has *P* expecting data from the G process of the previous PC in the chain
 
-- [*G*](src/G.c): This process can be run in 2 modes: *Debug* mode (i.e. *Single machine* - `config.run_mode = 0`) or *Multi-machine* mode (i.e.communicating with other PCs - `config.run_mode = 1`). In the first case it receives tokens from *P*, and then sends them back to it. In the other scenario, it sends data to the P of the next PC in the chain
+- [*G*](src/G.c): This process can be run in 2 modes: *Debug* mode (i.e. *Single-machine* - `config.run_mode = 0`) or *Multi-machine* mode (i.e.communicating with other PCs - `config.run_mode = 1`). In the first case it receives tokens from *P*, and then sends them back to it. In the other scenario, it sends data to the P of the next PC in the chain
 
 - [*L*](src/L.c): This process is the one responsible of logging. It registers every command issued by the user and every token processed by *P* (received/sent). When prompted, it opens the current log file via the user's preferred application
 
@@ -93,7 +93,7 @@ In addition to several function, value and struct defintions, the [config file](
 struct configuration
 {
     int run_mode;               // set to 0 to go in Debug mode (= Single-machine mode), to 1 for Multi-machine mode [default: 0]
-    int chain_starter;           // in Multi-machine mode, set to 1 to flag this machine as the one starting the P-G communication [default: 0]
+    int chain_starter;          // in Multi-machine mode, set to 1 to flag this machine as the one starting the P-G communication [default: 0]
     double rf;                  // sine wave frequency [default: 1.0]
     int waiting_time_microsecs; // waiting time, in microseconds, applied by process P before sending the updated token [default: 1000]
     char *next_ip;              // IP address of the next machine in the chain ("hostname -I" to get your current IP) [default: 192.168.1.12]
@@ -106,12 +106,12 @@ struct configuration
 
 ### Run modes
 
-The code can be run in 2 different modes, as suggested by `configuration.run_mode`. The first one, labelled *Single machine* mode or *Debug* mode, is the the one in which the *G* process is kept on the same machine as the others: in this case, it is possible to execute this code right out of the box. This is the default mode since the release of [Assignment Specifications V2.0](doc/Assignment%20Specifications%20V2.0.pdf). The *Single machine* mode features a richer integration between the processes *P* and *G*.
+The code can be run in 2 different modes, as suggested by `run_mode`. The first one, labelled *Single-machine* mode or *Debug* mode, is the the one in which the *G* process is kept on the same machine as the others: in this case, it is possible to execute this code right out of the box. This is the default mode since the release of [Assignment Specifications V2.0](doc/Assignment%20Specifications%20V2.0.pdf). The *Single-machine* mode features a richer integration between the processes *P* and *G*.
 
 The other run mode, called *Multi-machine* mode, requires more than 1 PC to be tested. In this case, one has to send a copy of *G* and *def.h* (or simply the compiled version of that process) to the next PC in the chain. In addition, be sure to align *config* entries, or to send that file too.  
 In return they should be sent a copy of the previous G process in the chain, along with required headers/config files.  
 This version features a simpler token (i.e. just a `float` value inside a `char` array) in order to ease the interface with other chain members' codes.  
-There are 5 mandatory elements that need to be adjusted in this scenario: the `config.run_mode` parameter itself, a flag to state whether the PC is the one starting the chain or not, IP and port number of the next PC, and the [named pipe](https://en.wikipedia.org/wiki/Named_pipe)'s name, which is used to find a common mean of communication between foreign P-G processes without relying on [sockets](https://en.wikipedia.org/wiki/Network_socket).
+There are 5 mandatory elements that need to be adjusted in this scenario: the `run_mode` parameter itself, a flag to state whether the PC is the one starting the chain or not, IP and port number of the next PC, and the [named pipe](https://en.wikipedia.org/wiki/Named_pipe)'s name, which is used to find a common mean of communication between foreign P-G processes without relying on [sockets](https://en.wikipedia.org/wiki/Network_socket). In order to make this mode work, `chain_starter` should be set to 1 only if that machine is the one actually starting token communications.
 
 ### Log file
 
@@ -176,7 +176,7 @@ After several tests, I came to the conclusion that the token function reported b
 It should produce a [sine wave](https://en.wikipedia.org/wiki/Sine) but, even with the default parameters, it does not even come close to that.
 After several tweaks to the function itself, I ended up using one I defined myself. This formula, albeit less fancy than the original, works as intended, while still including all the parameters that were present in the provided one.
 
-For the above mentioned reasons, I could not test the maximum `config.rf` value as expected by the goals of the assignment specifications. Of course, also the optional part (i.e. check whether token values constituted a sinusoidal or not) lost any sense, so I skipped that too.  
+For the above mentioned reasons, I could not test the maximum `rf` value as expected by the goals of the assignment specifications. Of course, also the optional part (i.e. check whether token values constituted a sinusoidal or not) lost any sense, so I skipped that too.  
 The only thing I could test was the waiting time, and I can confirm that my minumum waiting time is 0 (i.e. no waiting time), as even with that value the code behaves as expected. I proved this by adding a recursion element to my function (i.e. I added `10 * token.value` to the new token computation), so that I could then easily check in the [log file](https://github.com/andreabradpitto/ARP-assignment#log-file) that no message had been skipped.
 
 Given these premises, results were satisfying nonetheless: my code works in both run modes, and does not seem to feature any relevant bug. The only known issues are highlighted by the **warnings** in this file, but they are mostly problems generated by users' errors, which are not handled seamlessly.

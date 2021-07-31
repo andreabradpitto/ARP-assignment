@@ -210,6 +210,9 @@ int main(int argc, char *argv[])
         mkfifo(config.fifo, 0644); // create a named pipe (grant full access to Owner, read only permission to Group and Other)
         int fifofd = open(config.fifo, O_RDONLY);
 
+        printf("\nMulti-machine mode: once all computers are ready, press Enter\n");
+        getchar();
+
         server = gethostbyname(config.next_ip);
         portno = config.next_port;
 
@@ -291,7 +294,7 @@ int main(int argc, char *argv[])
 
                         sprintf(token, "%f", token_value);
                         gettimeofday(&sent_ts, NULL);                   // store token sending time
-                        n = write(sockfd, &token_value, sizeof(token)); // sending the new token to G
+                        n = write(sockfd, &token, sizeof(token)); // sending the new token to G
                         if (n < 0)
                             error("\nError writing to socket");
                         log_msg.status = 9; // special code to distinguish log entries relative to tokens sent by P

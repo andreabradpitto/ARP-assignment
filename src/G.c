@@ -2,7 +2,7 @@
 // Andrea Pitto - S3942710
 // 10 - 07 - 2020
 
-// This process can be run in 2 modes: Debug mode (i.e. Single machine - config.run_mode = 0) or
+// This process can be run in 2 modes: Debug mode (i.e. Single-machine - config.run_mode = 0) or
 // Multi-machine mode (i.e.communicating with other PCs - config.run_mode = 1).
 // In the first case it receives tokens from P, and then sends them back to it.
 // In the other scenario, it sends data to the P of the next PC in the chain

@@ -12,4 +12,4 @@ test coi printf per capire dove si bloccano i codici
 Fai test con codice socket di prova di Zaccaria per vedere se quello va (carica il codice nella repository)
 
 Metti in note (cosi ci vai da firefox poi);
-sudo apt update -y && sudo apt upgrade -y && sudo apt install gcc -y && sudo apt install make -y && sudo apt install git -y && cd Documents && git clone https://github.com/andreabradpitto/ARP-assignment && cd ARP-assignment && make
+sudo apt update -y && sudo apt upgrade -y && sudo apt install gcc -y && sudo apt install make -y && sudo apt install git -y && cd Documenti && git clone https://github.com/andreabradpitto/ARP-assignment && cd ARP-assignment && make
