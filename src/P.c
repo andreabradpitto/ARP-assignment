@@ -209,8 +209,8 @@ int main(int argc, char *argv[])
 
         close(atoi(argv[2]));
 
-        mkfifo(config.fifo1, 0644); // create a named pipe (grant full access to Owner, read only permission to Group and Other)
-        int fifo1fd = open(config.fifo1, O_RDONLY);
+        mkfifo(config.fifo, 0644); // create a named pipe (grant full access to Owner, read only permission to Group and Other)
+        int fifofd = open(config.fifo, O_RDONLY);
 
         server = gethostbyname(config.next_ip);
         portno = config.next_port;
@@ -245,7 +245,7 @@ int main(int argc, char *argv[])
 
         // Set of involved pipe ends from which P needs to read through the select
         fd_set readfds;
-        int maxfd = atoi(argv[0]) > fifo1fd ? atoi(argv[0]) : fifo1fd; // compute highest fd for the 1st arg. of select()
+        int maxfd = atoi(argv[0]) > fifofd ? atoi(argv[0]) : fifofd; // compute highest fd for the 1st arg. of select()
 
         while (1)
         {
@@ -254,7 +254,7 @@ int main(int argc, char *argv[])
 
             FD_ZERO(&readfds);               // initialization of the set
             FD_SET(atoi(argv[0]), &readfds); // addition of the desired pipe ends to the set (read from S)
-            FD_SET(fifo1fd, &readfds);       // addition of the desired pipe ends to the set (read from previous G)
+            FD_SET(fifofd, &readfds);       // addition of the desired pipe ends to the set (read from previous G)
 
             if (state == 1) // token computation is active
             {
@@ -267,9 +267,9 @@ int main(int argc, char *argv[])
 
                 else if (retval > 0)
                 {
-                    if (FD_ISSET(fifo1fd, &readfds)) // read of second pipe (data incoming from G) is ready
+                    if (FD_ISSET(fifofd, &readfds)) // read of second pipe (data incoming from G) is ready
                     {
-                        read(fifo1fd, &token, sizeof(token));
+                        read(fifofd, &token, sizeof(token));
 
                         gettimeofday(&log_msg.timestamp, NULL); // log token reception time
                         log_msg.status = 8;                     // special code to distinguish data coming from the 2nd pipe (G -> P)
@@ -344,8 +344,8 @@ int main(int argc, char *argv[])
             }
         }
 
-        close(fifo1fd);
-        unlink(config.fifo1);
+        close(fifofd);
+        unlink(config.fifo);
     }
 
     close(atoi(argv[0]));
@@ -360,9 +360,6 @@ void configLoader(char *path, struct configuration *conf)
     FILE *config_file = fopen(path, "r"); // open the config file in read mode
     int line_out;
     char *line = NULL;
-    char *ip_line = NULL;
-    char *fifo1_line = NULL;
-    char *fifo2_line = NULL;
     size_t len = 0;
 
     if (config_file == NULL)
@@ -395,10 +392,13 @@ void configLoader(char *path, struct configuration *conf)
         perror("Error reading 3rd line of config file");
 
     // Read 4th line of the config file (next_ip)
-    if ((line_out = getline(&ip_line, &len, config_file)) != -1)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
     {
-        ip_line[strlen(ip_line) - 1]  = '\0';
-        conf->next_ip = ip_line;
+        if (line_out > 0 && line[line_out - 1] == '\n')
+        {
+            line[line_out - 1] = '\0';
+        }
+        conf->next_ip = strdup(line);
     }
     else
         perror("Error reading 4th line of config file");
@@ -411,24 +411,19 @@ void configLoader(char *path, struct configuration *conf)
     else
         perror("Error reading 5th line of config file");
 
-    // Read 6th line of the config file (fifo1)
-    if ((line_out = getline(&fifo1_line, &len, config_file)) != -1)
+    // Read 6th line of the config file (fifo)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
     {
-        fifo1_line[strlen(fifo1_line) - 1]  = '\0';
-        conf->fifo1 = fifo1_line;
+        if (line_out > 0 && line[line_out - 1] == '\n')
+        {
+            line[line_out - 1] = '\0';
+        }
+        conf->fifo = strdup(line);
     }
     else
         perror("Error reading 6th line of config file");
 
-    // Read 7th line of the config file (fifo2)
-    if ((line_out = getline(&fifo2_line, &len, config_file)) != -1)
-    {
-        fifo2_line[strlen(fifo2_line) - 1]  = '\0';
-        conf->fifo2 = fifo2_line;
-    }
-    else
-        perror("Error reading 7th line of config file");
-
     // Close the config file
+    free(line);
     fclose(config_file);
 }

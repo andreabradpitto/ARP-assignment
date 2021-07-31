@@ -97,8 +97,7 @@ struct configuration
     int waiting_time_microsecs; // waiting time, in microseconds, applied by process P before sending the updated token [default: 1000]
     char *next_ip;              // IP address of the next machine in the chain ("hostname -I" to get your current IP) [default: 192.168.1.12]
     int next_port;              // chosen remote port for the communication [default: 5000]
-    char *fifo1;                // name of the first fifo (i.e. named pipe) [default: npipe1]
-    char *fifo2;                // name of the second fifo (i.e. named pipe) [default: npipe2]
+    char *fifo;                 // name of the fifo (i.e. named pipe) [default: npipe]
 };
 ```
 
@@ -111,7 +110,7 @@ The code can be run in 2 different modes, as suggested by `configuration.run_mod
 The other run mode, called *Multi-machine* mode, requires more than 1 PC to be tested. In this case, one has to send a copy of *G* and *def.h* (or simply the compiled version of that process) to the next PC in the chain. In addition, be sure to align *config* entries, or to send that file too.  
 In return they should be sent a copy of the previous G process in the chain, along with required headers/config files.  
 This version features a simpler token (i.e. just a `float` value inside a `char` array) in order to ease the interface with other chain members' codes.  
-There are 5 mandatory elements that need to be adjusted in this scenario: the `config.run_mode` parameter itself, IP and port number of the next PC, and the 2 [named pipes](https://en.wikipedia.org/wiki/Named_pipe)' names, which are used to find a common mean of communication between foreign P-G processes without relying on [sockets](https://en.wikipedia.org/wiki/Network_socket).
+There are 4 mandatory elements that need to be adjusted in this scenario: the `config.run_mode` parameter itself, IP and port number of the next PC, and the [named pipe](https://en.wikipedia.org/wiki/Named_pipe)'s name, which is used to find a common mean of communication between foreign P-G processes without relying on [sockets](https://en.wikipedia.org/wiki/Network_socket).
 
 ### Log file
 
