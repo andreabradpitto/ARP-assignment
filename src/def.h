@@ -51,6 +51,7 @@ typedef struct token_struct
 struct configuration
 {
 	int run_mode;				// set to 0 to go in Debug mode (= Single-machine mode), to 1 for Multi-machine mode [default: 0]
+	int chain_starter;			// in Multi-machine mode, set to 1 to flag this machine as the one starting the P-G communication [default: 0]
 	double rf;					// sine wave frequency [default: 1.0]
 	int waiting_time_microsecs; // waiting time, in microseconds, applied by process P before sending the updated token [default: 1000]
 	char *next_ip;				// IP address of the next machine in the chain ("hostname -I" to get your current IP) [default: 192.168.1.12]
@@ -62,6 +63,88 @@ void error(const char *msg) // display a message about the error on stderr and t
 {
 	perror(msg);
 	exit(0);
+}
+
+// Load the values inside the config file and store them into constants
+void configLoader(char *path, struct configuration *conf)
+{
+    FILE *config_file = fopen(path, "r"); // open the config file in read mode
+    int line_out;
+    char *line = NULL;
+    size_t len = 0;
+
+    if (config_file == NULL)
+    {
+        perror("Could not open config file");
+    }
+
+    // Read 1st line of the config file (run_mode)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf->run_mode = atoi(line);
+    }
+    else
+        perror("Error reading 1st line of config file");
+
+    // Read 2nd line of the config file (chain_starter)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf->chain_starter = atoi(line);
+    }
+    else
+        perror("Error reading 2nd line of config file");
+
+    // Read 3rd line of the config file (rf)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf->rf = atof(line);
+    }
+    else
+        perror("Error reading 3rd line of config file");
+
+    // Read 4th line of the config file (waiting_time_microsecs)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf->waiting_time_microsecs = atoi(line);
+    }
+    else
+        perror("Error reading 4th line of config file");
+
+    // Read 5th line of the config file (next_ip)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        if (line_out > 0 && line[line_out - 1] == '\n')
+        {
+            line[line_out - 1] = '\0';
+        }
+        conf->next_ip = strdup(line);
+    }
+    else
+        perror("Error reading 5th line of config file");
+
+    // Read 6th line of the config file (next_port)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        conf->next_port = atoi(line);
+    }
+    else
+        perror("Error reading 6th line of config file");
+
+    // Read 7th line of the config file (fifo)
+    if ((line_out = getline(&line, &len, config_file)) != -1)
+    {
+        if (line_out > 0 && line[line_out - 1] == '\n')
+        {
+            line[line_out - 1] = '\0';
+        }
+        conf->fifo = strdup(line);
+    }
+    else
+        perror("Error reading 7th line of config file");
+
+    // Close the config file
+    free(line);
+    fclose(config_file);
 }
 
 #endif

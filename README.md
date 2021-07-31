@@ -87,12 +87,13 @@ This assignment has been coded in [Ubuntu 20.04.2 LTS](https://releases.ubuntu.c
 
 ### Configuration file
 
-The [config file](config) contains the list of all the parameters needed to tweak the code on the fly. All these elements are then saved in the `configuration` struct, which is declared in [def.h](src/def.h):
+In addition to several function, value and struct defintions, the [config file](config) also contains the list of all the parameters needed to tweak the code on the fly. All these elements are then saved in the `configuration` struct, which is declared in [def.h](src/def.h):
 
 ```c
 struct configuration
 {
     int run_mode;               // set to 0 to go in Debug mode (= Single-machine mode), to 1 for Multi-machine mode [default: 0]
+    int chain_starter;           // in Multi-machine mode, set to 1 to flag this machine as the one starting the P-G communication [default: 0]
     double rf;                  // sine wave frequency [default: 1.0]
     int waiting_time_microsecs; // waiting time, in microseconds, applied by process P before sending the updated token [default: 1000]
     char *next_ip;              // IP address of the next machine in the chain ("hostname -I" to get your current IP) [default: 192.168.1.12]
@@ -110,7 +111,7 @@ The code can be run in 2 different modes, as suggested by `configuration.run_mod
 The other run mode, called *Multi-machine* mode, requires more than 1 PC to be tested. In this case, one has to send a copy of *G* and *def.h* (or simply the compiled version of that process) to the next PC in the chain. In addition, be sure to align *config* entries, or to send that file too.  
 In return they should be sent a copy of the previous G process in the chain, along with required headers/config files.  
 This version features a simpler token (i.e. just a `float` value inside a `char` array) in order to ease the interface with other chain members' codes.  
-There are 4 mandatory elements that need to be adjusted in this scenario: the `config.run_mode` parameter itself, IP and port number of the next PC, and the [named pipe](https://en.wikipedia.org/wiki/Named_pipe)'s name, which is used to find a common mean of communication between foreign P-G processes without relying on [sockets](https://en.wikipedia.org/wiki/Network_socket).
+There are 5 mandatory elements that need to be adjusted in this scenario: the `config.run_mode` parameter itself, a flag to state whether the PC is the one starting the chain or not, IP and port number of the next PC, and the [named pipe](https://en.wikipedia.org/wiki/Named_pipe)'s name, which is used to find a common mean of communication between foreign P-G processes without relying on [sockets](https://en.wikipedia.org/wiki/Network_socket).
 
 ### Log file
 
