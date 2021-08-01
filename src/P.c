@@ -199,9 +199,9 @@ int main(int argc, char *argv[])
 
     else // config.run_mode = 1
     {
-        char token[10]; // size 9 should be also fine
-        float token_value = 0;
-        sprintf(token, "%f", token_value);
+        token token;
+        token.value = 0;
+        gettimeofday(&token.timestamp, NULL); // get the current time and store it in timestamp
 
         struct timeval sent_ts; // timestamp for reception time
 
@@ -231,20 +231,20 @@ int main(int argc, char *argv[])
 
         if (config.chain_starter)
         {
-            // P process sending the first message, and thus starting the communication between G and itself
-            gettimeofday(&sent_ts, NULL);             // store token sending time
-            n = write(sockfd, &token, sizeof(token)); // sending the new token to G
-            if (n < 0)
-                error("\nError writing to socket");
-            log_msg.status = 9; // special code to distinguish log entries relative to tokens sent by P
-            log_msg.value = token_value;
-            log_msg.timestamp = sent_ts;                                // log token sending time
-            write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "token sent" acknowledgment to L
+        // P process sending the first message, and thus starting the communication between G and itself
+        gettimeofday(&token.timestamp, NULL);     // store token sending time
+        n = write(sockfd, &token, sizeof(token)); // sending the new token to G
+        if (n < 0)
+            error("\nError writing to socket");
+        log_msg.status = 9; // special code to distinguish log entries relative to tokens sent by P
+        log_msg.value = token.value;
+        log_msg.timestamp = token.timestamp;                        // log token sending time
+        write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "token sent" acknowledgment to L
 
-            fancy_time = ctime(&sent_ts.tv_sec);
-            fancy_time[strcspn(fancy_time, "\n")] = 0; // remove newline from ctime() output
-            printf("\nP: Token timestamp (fancy): %s | Token value: %9f\r", fancy_time, token_value);
-            fflush(stdout);
+        fancy_time = ctime(&token.timestamp.tv_sec);
+        fancy_time[strcspn(fancy_time, "\n")] = 0; // remove newline from ctime() output
+        printf("\nP: Token timestamp (fancy): %s | Token value: %9f\r", fancy_time, token.value);
+        fflush(stdout);
         }
 
         // Set of involved pipe ends from which P needs to read through the select
@@ -277,35 +277,34 @@ int main(int argc, char *argv[])
 
                         gettimeofday(&log_msg.timestamp, NULL); // log token reception time
                         log_msg.status = 8;                     // special code to distinguish data coming from the 2nd pipe (G -> P)
-                        log_msg.value = atof(token);
+                        log_msg.value = token.value;
                         write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "data reception" acknowledgment to L
 
                         // Time delay computation
                         // It is the difference (in seconds) between the token reception time and
                         // the time present inside of the received token, which is the time at which that token had been
                         // sent by P (or the previous P in the chain)
-                        dt = (log_msg.timestamp.tv_sec - sent_ts.tv_sec) +
-                             (log_msg.timestamp.tv_usec - sent_ts.tv_usec) / (float)1000000;
+                        dt = (log_msg.timestamp.tv_sec - token.timestamp.tv_sec) +
+                             (log_msg.timestamp.tv_usec - token.timestamp.tv_usec) / (float)1000000;
 
                         // Token computation
-                        // using a custom formula as the one provided is not working properly
-                        token_value = log_msg.value + 1;
-                        //token_value = sin(2 * M_PI * config.rf * (log_msg.value + dt * (1 - log_msg.value))); // custom formula
-                        //token_value = log_msg.value + dt * (1 - powf(log_msg.value, 2) / 2) * 2 * M_PI * config.rf; // original formula
+                        // Using a custom formula as the one provided is not working properly
+                        token.value = token.value + 1;
+                        //token.value = sin(2 * M_PI * config.rf * (log_msg.value + dt * (1 - log_msg.value))); // custom formula
+                        //token.value = log_msg.value + dt * (1 - powf(log_msg.value, 2) / 2) * 2 * M_PI * config.rf; // original formula
 
-                        sprintf(token, "%f", token_value);
-                        gettimeofday(&sent_ts, NULL);             // store token sending time
+                        gettimeofday(&token.timestamp, NULL);     // store token sending time
                         n = write(sockfd, &token, sizeof(token)); // sending the new token to G
                         if (n < 0)
                             error("\nError writing to socket");
                         log_msg.status = 9; // special code to distinguish log entries relative to tokens sent by P
-                        log_msg.value = token_value;
-                        log_msg.timestamp = sent_ts;                                // log token sending time
+                        log_msg.value = token.value;
+                        log_msg.timestamp = token.timestamp;                        // log token sending time
                         write(atoi(argv[5]), &log_msg, sizeof(struct log_message)); // send "token sent" acknowledgment to L
 
-                        fancy_time = ctime(&sent_ts.tv_sec);
+                        fancy_time = ctime(&token.timestamp.tv_sec);
                         fancy_time[strcspn(fancy_time, "\n")] = 0; // remove newline from ctime() output
-                        printf("P: Token timestamp (fancy): %s | Token value: %9f\r", fancy_time, token_value);
+                        printf("P: Token timestamp (fancy): %s | Token value: %9f\r", fancy_time, token.value);
                         fflush(stdout);
                     }
 

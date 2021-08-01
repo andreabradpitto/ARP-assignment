@@ -82,7 +82,10 @@ int main(int argc, char *argv[])
 
 	else // config.run_mode = 1
 	{
-		char token[10]; // size 9 should be also fine
+		token token;
+		token.value = 0;
+		gettimeofday(&token.timestamp, NULL); // get the current time and store it in timestamp
+
 
 		close(atoi(argv[3]));
 
