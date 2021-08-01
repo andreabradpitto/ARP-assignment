@@ -34,9 +34,8 @@ int main(int argc, char *argv[])
         // If main is dead, end the process
         if (getppid() != Parpid)
         {
-            fclose(log_file); // close the log file
-            unsetenv("log_file");
             close(atoi(argv[4]));
+            unsetenv("log_file");
             return 0;
         }
 
@@ -89,9 +88,4 @@ int main(int argc, char *argv[])
             break;
         }
     }
-
-    fclose(log_file); // close the log file
-    unsetenv("log_file");
-    close(atoi(argv[4]));
-    return 0;
 }

@@ -359,13 +359,5 @@ int main(int argc, char *argv[])
                 }
             }
         }
-
-        close(fifofd);
-        unlink(config.fifo);
     }
-
-    close(atoi(argv[0]));
-    close(atoi(argv[5]));
-    close(sockfd);
-    return 0;
 }

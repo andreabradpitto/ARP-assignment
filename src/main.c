@@ -160,6 +160,13 @@ int main(int argc, char *argv[])
 			}
 		}
 
+		close(pfd1[0]);
+		close(pfd1[1]);
+		close(pfd2[0]);
+		close(pfd2[1]);
+		close(pfd3[0]);
+		close(pfd3[1]);
+
 		// Welcome the user with useful information
 		printf("\n[This is the Output Terminal, which shows the processes' outputs. "
 			   "Use the Input Terminal to send signals to the processes. "
@@ -172,12 +179,6 @@ int main(int argc, char *argv[])
 		unsetenv("Gpid");
 		unsetenv("Ppid");
 		unsetenv("Lpid");
-		close(pfd1[0]);
-		close(pfd1[1]);
-		close(pfd2[0]);
-		close(pfd2[1]);
-		close(pfd3[0]);
-		close(pfd3[1]);
 		return 0;
 	}
 }

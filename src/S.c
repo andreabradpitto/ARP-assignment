@@ -117,14 +117,4 @@ int main(int argc, char *argv[])
 			printf("\n\n\t\tReceived open log command by user (computation paused)\n\n");
 		}
 	}
-
-	unsetenv("welcome0");
-	unsetenv("welcome1");
-	unsetenv("welcome2");
-	unsetenv("welcome3");
-	unsetenv("command1");
-	unsetenv("command2");
-	unsetenv("command3");
-	close(atoi(argv[1]));
-	return 0;
 }

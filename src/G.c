@@ -135,11 +135,5 @@ int main(int argc, char *argv[])
 				write(fifofd, &token, sizeof(token));
 			}
 		}
-
-		close(fifofd);
-		unlink(config.fifo);
 	}
-
-	close(sockfd);
-	return 0;
 }
