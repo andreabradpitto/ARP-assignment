@@ -75,8 +75,8 @@ int main(int argc, char *argv[])
 	signal(SIGINT, interrupt_handler); // reacts to "Ctrl+C"
 
 	S = fork();
-    sprintf(pid_buf, "%d", (int)S);
-    setenv("Spid", pid_buf, 1);
+	sprintf(pid_buf, "%d", (int)S);
+	setenv("Spid", pid_buf, 1);
 
 	if (S < 0) // error condition on fork
 	{
@@ -168,6 +168,10 @@ int main(int argc, char *argv[])
 		printf("main: PID is %d\n", getpid());
 
 		wait(&wait_status); // waits for any child to die before proceeding; equivalent to: waitpid(-1, &wait_status, 0);
+		unsetenv("Spid");
+		unsetenv("Gpid");
+		unsetenv("Ppid");
+		unsetenv("Lpid");
 		close(pfd1[0]);
 		close(pfd1[1]);
 		close(pfd2[0]);

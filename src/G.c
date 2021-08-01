@@ -17,9 +17,9 @@ int main(int argc, char *argv[])
 	close(atoi(argv[4]));
 	close(atoi(argv[5]));
 
-	pid_t Gpid;
-	Gpid = getpid();
+	pid_t Gpid = getpid();
 	printf("G: my PID is %d\n", Gpid);
+	pid_t Parpid = getppid(); // get process ID of parent (i.e. main)
 
 	struct configuration config;
 	struct configuration *configPtr = &config;
@@ -119,6 +119,15 @@ int main(int argc, char *argv[])
 		{
 			while (1)
 			{
+				// If main is dead, end the process
+				if (getppid() != Parpid)
+				{
+					close(fifofd);
+					unlink(config.fifo);
+					close(sockfd);
+					return 0;
+				}
+
 				n = read(newsockfd, &token, sizeof(token));
 				if (n < 0)
 					error("\nError reading from socket");

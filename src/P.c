@@ -15,9 +15,9 @@ int main(int argc, char *argv[])
     close(atoi(argv[3]));
     close(atoi(argv[4]));
 
-    pid_t Ppid;
-    Ppid = getpid();
+    pid_t Ppid = getpid();
     printf("P: my PID is %d\n", Ppid);
+    pid_t Parpid = getppid(); // get process ID of parent (i.e. main)
 
     int state = 1; // state = 0: paused; state = 1: computing; state = 3: log opened (i.e. paused)
 
@@ -253,6 +253,17 @@ int main(int argc, char *argv[])
 
         while (1)
         {
+            // If main is dead, end the process
+            if (getppid() != Parpid)
+            {
+                close(atoi(argv[0]));
+                close(atoi(argv[5]));
+                close(sockfd);
+                close(fifofd);
+                unlink(config.fifo);
+                return 0;
+            }
+
             select_tv.tv_sec = 2;  // amount of seconds the select listens for incoming data from either pipe 1 and 2
             select_tv.tv_usec = 0; // same as the previous line, but with microseconds
 

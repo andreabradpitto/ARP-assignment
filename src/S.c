@@ -40,9 +40,9 @@ int main(int argc, char *argv[])
 	close(atoi(argv[4]));
 	close(atoi(argv[5]));
 
-	pid_t Spid;
-	Spid = getpid();
+	pid_t Spid = getpid();
 	printf("S: my PID is %d\n", Spid);
+	pid_t Parpid = getppid(); // get process ID of parent (i.e. main)
 
 	// Creation of Input Terminal welcome message, including dynamic Spid injection
 	char welcome0[1] = "";
@@ -58,6 +58,7 @@ int main(int argc, char *argv[])
 	strncat(command2, Spid_array, (sizeof(command2) - strlen(command2)));
 	strncat(command3, Spid_array, (sizeof(command3) - strlen(command3)));
 	char welcome3[99] = "10 is to open the log file, 12 to pause, 18 to resume. To end, press Ctrl+C in the Output Terminal";
+	// Set Input Terminal variables as environmental ones (which can be accessed, by the creator process only, via getenv())
 	setenv("welcome0", welcome0, 1);
 	setenv("welcome1", welcome1, 1);
 	setenv("welcome2", welcome2, 1);
@@ -83,6 +84,20 @@ int main(int argc, char *argv[])
 
 	while (1)
 	{
+		// If main is dead, end the process
+		if (getppid() != Parpid)
+		{
+			unsetenv("welcome0");
+			unsetenv("welcome1");
+			unsetenv("welcome2");
+			unsetenv("welcome3");
+			unsetenv("command1");
+			unsetenv("command2");
+			unsetenv("command3");
+			close(atoi(argv[1]));
+			return 0;
+		}
+
 		if (start_flag)
 		{
 			write(atoi(argv[1]), &(int){1}, sizeof(int)); // state = 0: P and G communication stopped

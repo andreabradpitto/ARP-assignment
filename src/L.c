@@ -16,9 +16,9 @@ int main(int argc, char *argv[])
     close(atoi(argv[3]));
     close(atoi(argv[5]));
 
-    pid_t Lpid;
-    Lpid = getpid();
+    pid_t Lpid = getpid();
     printf("L: my PID is %d\n", Lpid);
+    pid_t Parpid = getppid(); // get process ID of parent (i.e. main)
 
     char *fancy_time;
     char *logpath = "log.txt"; // specify log file path
@@ -31,6 +31,15 @@ int main(int argc, char *argv[])
 
     while (1)
     {
+        // If main is dead, end the process
+        if (getppid() != Parpid)
+        {
+            fclose(log_file); // close the log file
+            unsetenv("log_file");
+            close(atoi(argv[4]));
+            return 0;
+        }
+
         // read() is a blocking function by default (i.e. when, like here, O_NONBLOCK is not set):
         // wait here until some data is available
         read(atoi(argv[4]), &log_msg, sizeof(struct log_message));
