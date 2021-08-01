@@ -26,7 +26,7 @@
 #include <netinet/in.h>
 
 #define LOCAL_IP "localhost" // localhost name (equivalent to 127.0.0.1 and to machine's own name, i.e. Linux's "hostname")
-#define LOCAL_PORT 5000		 // chosen local port for the communication
+#define LOCAL_PORT 5000      // chosen local port for the communication
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846 // pi value definition
@@ -36,34 +36,34 @@
 
 struct log_message
 {
-	struct timeval timestamp; // timestamp of the message
-	int status;				  // status = 0: pause; status = 1: computing; status = 3: open log file;
-							  // status = 8 new token data value from G; status = 9 new token data value from P
-	float value;			  // if status == 8 || satus == 9 this stores token.value, irrelevant otherwise
+    struct timeval timestamp; // timestamp of the message
+    int status;               // status = 0: pause; status = 1: computing; status = 3: open log file;
+                              // status = 8 new token data value from G; status = 9 new token data value from P
+    float value;              // if status == 8 || satus == 9 this stores token.value, irrelevant otherwise
 };
 
 typedef struct token_struct
 {
-	struct timeval timestamp; // timestamp of the token
-	float value;			  // actual token value
-} token;					  // struct alias
+    struct timeval timestamp; // timestamp of the token
+    float value;              // actual token value
+} token;                      // struct alias
 
 struct configuration
 {
-	int run_mode;				// set to 0 to go in Debug mode (= Single-machine mode), to 1 for Multi-machine mode [default: 0]
+    int run_mode;               // set to 0 to go in Debug mode (= Single-machine mode), to 1 for Multi-machine mode [default: 0]
     int chain_starter;          // in Multi-machine mode, set to 1 to flag this machine as the one starting the P-G communication.
                                 // Only a single PC in the chain should have this set to 1 [default: 0]
- 	double rf;					// sine wave frequency [default: 1.0]
-	int waiting_time_microsecs; // waiting time, in microseconds, applied by process P before sending the updated token [default: 1000]
-	char *next_ip;				// IP address of the next machine in the chain ("hostname -I" to get your current IP) [default: 192.168.1.12]
-	int next_port;				// chosen remote port for the communication [default: 5000]
-	char *fifo;					// name of the fifo (i.e. named pipe) [default: npipe]
+    double rf;                  // sine wave frequency [default: 1.0]
+    int waiting_time_microsecs; // waiting time, in microseconds, applied by process P before sending the updated token [default: 1000]
+    char *next_ip;              // IP address of the next machine in the chain ("hostname -I" to get your current IP) [default: 192.168.1.12]
+    int next_port;              // chosen remote port for the communication [default: 5000]
+    char *fifo;                 // name of the fifo (i.e. named pipe) [default: npipe]
 };
 
 void error(const char *msg) // display a message about the error on stderr and then abort the program
 {
-	perror(msg);
-	exit(0);
+    perror(msg);
+    exit(0);
 }
 
 // Load the values inside the config file and store them into constants
