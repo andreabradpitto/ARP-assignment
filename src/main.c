@@ -117,43 +117,43 @@ int main(int argc, char *argv[])
 		}
 		else if (G > 0)
 		{
-			L = fork();
-			sprintf(pid_buf, "%d", (int)L);
-			setenv("Lpid", pid_buf, 1);
+			P = fork();
+			sprintf(pid_buf, "%d", (int)P);
+			setenv("Ppid", pid_buf, 1);
 
-			if (L < 0) //error condition on fork
+			if (P < 0) //error condition on fork
 			{
-				perror("\nFork L");
+				perror("\nFork P");
 				return -1;
 			}
 
-			if (L == 0) // L process
+			if (P == 0) // P process
 			{
-				char *node_name = "./L";
-				if (execvp(node_name, argv) < 0) //error handling for L process
+				char *node_name = "./P";
+				if (execvp(node_name, argv) < 0) //error handling for P process
 				{
-					perror("\nExec failed for L");
+					perror("\nExec failed for P");
 					return -1;
 				}
 			}
 			else if (P > 0)
 			{
-				P = fork();
-				sprintf(pid_buf, "%d", (int)P);
-				setenv("Ppid", pid_buf, 1);
+				L = fork();
+				sprintf(pid_buf, "%d", (int)L);
+				setenv("Lpid", pid_buf, 1);
 
-				if (P < 0) // error condition on fork
+				if (L < 0) // error condition on fork
 				{
-					perror("\nFork P");
+					perror("\nFork L");
 					return -1;
 				}
 
-				if (P == 0) // P process
+				if (L == 0) // L process
 				{
-					char *node_name = "./P";
-					if (execvp(node_name, argv) < 0) // error handling for P process
+					char *node_name = "./L";
+					if (execvp(node_name, argv) < 0) // error handling for L process
 					{
-						perror("\nExec failed for P");
+						perror("\nExec failed for L");
 						return -1;
 					}
 				}
