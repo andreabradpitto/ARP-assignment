@@ -300,8 +300,7 @@ int main(int argc, char *argv[])
 
                         // Token computation
                         // using a custom formula as the one provided is not working properly
-                        token_value = log_msg.value + 1;
-                        //token_value = sin(2 * M_PI * config.rf * (log_msg.value + dt * (1 - log_msg.value))); // custom formula
+                        token_value = sin(2 * M_PI * config.rf * (log_msg.value + dt * (1 - log_msg.value))); // custom formula
                         //token_value = log_msg.value + dt * (1 - powf(log_msg.value, 2) / 2) * 2 * M_PI * config.rf; // original formula
 
                         sprintf(token, "%f", token_value);

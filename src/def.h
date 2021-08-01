@@ -51,8 +51,9 @@ typedef struct token_struct
 struct configuration
 {
 	int run_mode;				// set to 0 to go in Debug mode (= Single-machine mode), to 1 for Multi-machine mode [default: 0]
-	int chain_starter;			// in Multi-machine mode, set to 1 to flag this machine as the one starting the P-G communication [default: 0]
-	double rf;					// sine wave frequency [default: 1.0]
+    int chain_starter;          // in Multi-machine mode, set to 1 to flag this machine as the one starting the P-G communication.
+                                // Only a single PC in the chain should have this set to 1 [default: 0]
+ 	double rf;					// sine wave frequency [default: 1.0]
 	int waiting_time_microsecs; // waiting time, in microseconds, applied by process P before sending the updated token [default: 1000]
 	char *next_ip;				// IP address of the next machine in the chain ("hostname -I" to get your current IP) [default: 192.168.1.12]
 	int next_port;				// chosen remote port for the communication [default: 5000]
