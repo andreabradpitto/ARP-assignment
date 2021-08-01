@@ -39,7 +39,7 @@ struct log_message
 	struct timeval timestamp; // timestamp of the message
 	int status;				  // status = 0: pause; status = 1: computing; status = 3: open log file;
 							  // status = 8 new token data value from G; status = 9 new token data value from P
-	float value;			  // if status == 8 | satus == 9 this stores token.value, irrelevant otherwise
+	float value;			  // if status == 8 || satus == 9 this stores token.value, irrelevant otherwise
 };
 
 typedef struct token_struct

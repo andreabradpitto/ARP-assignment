@@ -201,7 +201,7 @@ int main(int argc, char *argv[])
     {
         char token[10]; // size 9 should be also fine
         float token_value = 0;
-        sprintf(token, "%f\n", token_value);
+        sprintf(token, "%f", token_value);
 
         struct timeval sent_ts; // timestamp for reception time
 
@@ -293,7 +293,7 @@ int main(int argc, char *argv[])
                         //token_value = sin(2 * M_PI * config.rf * (log_msg.value + dt * (1 - log_msg.value))); // custom formula
                         //token_value = log_msg.value + dt * (1 - powf(log_msg.value, 2) / 2) * 2 * M_PI * config.rf; // original formula
 
-                        sprintf(token, "%f\n", token_value);
+                        sprintf(token, "%f", token_value);
                         gettimeofday(&sent_ts, NULL);             // store token sending time
                         n = write(sockfd, &token, sizeof(token)); // sending the new token to G
                         if (n < 0)

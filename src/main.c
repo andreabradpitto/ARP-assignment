@@ -7,6 +7,19 @@
 
 #include "def.h"
 
+void interrupt_handler(int signum)
+{
+	kill(atoi(getenv("Spid")), SIGKILL);
+	kill(atoi(getenv("Gpid")), SIGKILL);
+	kill(atoi(getenv("Ppid")), SIGKILL);
+	kill(atoi(getenv("Lpid")), SIGKILL);
+	unsetenv("Spid");
+	unsetenv("Gpid");
+	unsetenv("Ppid");
+	unsetenv("Lpid");
+	_exit(0);
+}
+
 int main(int argc, char *argv[])
 {
 	pid_t P, G, S, L;
@@ -16,6 +29,7 @@ int main(int argc, char *argv[])
 	int pfd3[2]; // file descriptors (a.k.a. fd) for pipe 3 (P writes on it, L reads from it)
 
 	int wait_status = 0;
+	char pid_buf[10];
 
 	if (pipe(pfd1) < 0) // error condition for pipe 1
 	{
@@ -58,7 +72,11 @@ int main(int argc, char *argv[])
 	argv[4] = read3;  // pipe3: read
 	argv[5] = write3; // pipe3: write
 
+	signal(SIGINT, interrupt_handler); // reacts to "Ctrl+C"
+
 	S = fork();
+    sprintf(pid_buf, "%d", (int)S);
+    setenv("Spid", pid_buf, 1);
 
 	if (S < 0) // error condition on fork
 	{
@@ -79,6 +97,8 @@ int main(int argc, char *argv[])
 	else if (S > 0)
 	{
 		G = fork();
+		sprintf(pid_buf, "%d", (int)G);
+		setenv("Gpid", pid_buf, 1);
 
 		if (G < 0) // error condition on fork
 		{
@@ -97,39 +117,43 @@ int main(int argc, char *argv[])
 		}
 		else if (G > 0)
 		{
-			P = fork();
+			L = fork();
+			sprintf(pid_buf, "%d", (int)L);
+			setenv("Lpid", pid_buf, 1);
 
-			if (P < 0) //error condition on fork
+			if (L < 0) //error condition on fork
 			{
-				perror("\nFork P");
+				perror("\nFork L");
 				return -1;
 			}
 
-			if (P == 0) // P process
+			if (L == 0) // L process
 			{
-				char *node_name = "./P";
-				if (execvp(node_name, argv) < 0) //error handling for P process
+				char *node_name = "./L";
+				if (execvp(node_name, argv) < 0) //error handling for L process
 				{
-					perror("\nExec failed for P");
+					perror("\nExec failed for L");
 					return -1;
 				}
 			}
 			else if (P > 0)
 			{
-				L = fork();
+				P = fork();
+				sprintf(pid_buf, "%d", (int)P);
+				setenv("Ppid", pid_buf, 1);
 
-				if (L < 0) // error condition on fork
+				if (P < 0) // error condition on fork
 				{
-					perror("\nFork L");
+					perror("\nFork P");
 					return -1;
 				}
 
-				if (L == 0) // L process
+				if (P == 0) // P process
 				{
-					char *node_name = "./L";
-					if (execvp(node_name, argv) < 0) // error handling for L process
+					char *node_name = "./P";
+					if (execvp(node_name, argv) < 0) // error handling for P process
 					{
-						perror("\nExec failed for L");
+						perror("\nExec failed for P");
 						return -1;
 					}
 				}
