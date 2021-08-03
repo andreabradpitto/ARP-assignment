@@ -24,6 +24,8 @@ int main(int argc, char *argv[])
     struct log_message log_msg;
 
     struct timeval select_tv; // define patience (timeout) for select()
+    select_tv.tv_sec = 2;     // amount of seconds the select listens for incoming data from pipes
+    select_tv.tv_usec = 0;    // same as the previous line, but with microseconds
     int retval = 0;           // variable used to store the output of select()
 
     float dt = 0; // time delay between reception and delivery time instants of the token
@@ -97,9 +99,6 @@ int main(int argc, char *argv[])
 
         while (1)
         {
-            select_tv.tv_sec = 2;  // amount of seconds the select listens for incoming data from either pipe 1 and 2
-            select_tv.tv_usec = 0; // same as the previous line, but with microseconds
-
             FD_ZERO(&readfds);               // initialization of the set
             FD_SET(atoi(argv[0]), &readfds); // addition of the desired pipe ends to the set (read from S)
             FD_SET(atoi(argv[2]), &readfds); // addition of the desired pipe ends to the set (read from G)
@@ -256,16 +255,13 @@ int main(int argc, char *argv[])
             // If main is dead, end the process
             if (getppid() != Parpid)
             {
+                unlink(config.fifo);
                 close(atoi(argv[0]));
                 close(atoi(argv[5]));
                 close(sockfd);
                 close(fifofd);
-                unlink(config.fifo);
                 return 0;
             }
-
-            select_tv.tv_sec = 2;  // amount of seconds the select listens for incoming data from either pipe 1 and 2
-            select_tv.tv_usec = 0; // same as the previous line, but with microseconds
 
             FD_ZERO(&readfds);               // initialization of the set
             FD_SET(atoi(argv[0]), &readfds); // addition of the desired pipe ends to the set (read from S)

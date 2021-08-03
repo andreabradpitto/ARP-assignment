@@ -122,8 +122,8 @@ int main(int argc, char *argv[])
 				// If main is dead, end the process
 				if (getppid() != Parpid)
 				{
-					close(fifofd);
 					unlink(config.fifo);
+					close(fifofd);
 					close(sockfd);
 					return 0;
 				}
