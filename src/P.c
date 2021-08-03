@@ -23,9 +23,6 @@ int main(int argc, char *argv[])
 
     struct log_message log_msg;
 
-    struct timeval select_tv; // define patience (timeout) for select()
-    select_tv.tv_sec = 2;     // amount of seconds the select listens for incoming data from pipes
-    select_tv.tv_usec = 0;    // same as the previous line, but with microseconds
     int retval = 0;           // variable used to store the output of select()
 
     float dt = 0; // time delay between reception and delivery time instants of the token
@@ -105,7 +102,7 @@ int main(int argc, char *argv[])
 
             if (state == 1) // token computation is active
             {
-                retval = select(maxfd + 1, &readfds, NULL, NULL, &select_tv);
+                retval = select(maxfd + 1, &readfds, NULL, NULL, NULL);
 
                 if (retval == -1)
                 {
@@ -169,7 +166,7 @@ int main(int argc, char *argv[])
 
             else // state = 0 or 3: token computation is paused
             {
-                retval = select(maxfd + 1, &readfds, NULL, NULL, &select_tv);
+                retval = select(maxfd + 1, &readfds, NULL, NULL, NULL);
 
                 if (retval == -1)
                 {
@@ -269,7 +266,7 @@ int main(int argc, char *argv[])
 
             if (state == 1) // token computation is active
             {
-                retval = select(maxfd + 1, &readfds, NULL, NULL, &select_tv);
+                retval = select(maxfd + 1, &readfds, NULL, NULL, NULL);
 
                 if (retval == -1)
                 {
@@ -331,7 +328,7 @@ int main(int argc, char *argv[])
 
             else // state = 0 or 3: token computation is paused
             {
-                retval = select(maxfd + 1, &readfds, NULL, NULL, &select_tv);
+                retval = select(maxfd + 1, &readfds, NULL, NULL, NULL);
 
                 if (retval == -1)
                 {
